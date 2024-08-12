@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<project name="Eventiful" default="Build">
+    <condition property="serverPath" value="${user.home}\Desktop\Test Servers\1.21">
+        <os family="windows"/>
+    </condition>
+
+    <xmlproperty file="pom.xml" prefix="pom" keeproot="false"/>
+
+    <property name="eventiful.api.version" value="${pom.properties.eventiful.api.version}"/>
+    <property name="classgraph.version" value="${pom.properties.classgraph.version}"/>
+    <property name="trove4j.version" value="${pom.properties.trove4j.version}"/>
+    <property name="reflectasm.version" value="${pom.properties.reflectasm.version}"/>
+
+    <target name="Build">
+        <jar jarfile="${serverPath}\plugins\${ant.project.name}.jar" basedir="./target/classes/" includes="**/*">
+            <zipgroupfileset dir="${user.home}/.m2/repository/org/eventiful/eventiful-api/${eventiful.api.version}"
+                             includes="**/*${eventiful.api.version}.jar"/>
+
+            <zipgroupfileset dir="${user.home}/.m2/repository/io/github/classgraph/classgraph/${classgraph.version}/"
+                             includes="**/*${classgraph.version}.jar"/>
+
+            <zipgroupfileset dir="${user.home}/.m2/repository/net/sf/trove4j/trove4j/${trove4j.version}"
+                             includes="**/*${trove4j.version}.jar"/>
+
+            <zipgroupfileset dir="${user.home}/.m2/repository/com/esotericsoftware/reflectasm/${reflectasm.version}"
+                             includes="**/*${reflectasm.version}.jar"/>
+        </jar>
+    </target>
+</project>

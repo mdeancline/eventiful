@@ -1,0 +1,8 @@
+name: Eventiful
+description: ${project.description}
+author: Matthew Cline
+version: ${project.version}
+website: ${base.url}
+main: ${project.groupId}.plugin.EventifulPlugin
+api-version: 1.13
+load: STARTUP

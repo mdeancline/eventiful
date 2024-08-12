@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>io.github.eventiful</groupId>
+        <version>1.0.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>eventiful-plugin</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <plugin.name>Eventiful</plugin.name>
+        <eventiful.api.version>1.0.0</eventiful.api.version>
+        <classgraph.version>4.8.147</classgraph.version>
+        <trove4j.version>3.0.3</trove4j.version>
+        <reflectasm.version>1.11.9</reflectasm.version>
+
+        <shadedPattern>${project.groupId}.plugin.dependency</shadedPattern>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M6</version>
+                <!--                <configuration>-->
+                <!--                    <argLine>-->
+                <!--                        &#45;&#45;add-opens java.base/java.util=ALL-UNNAMED-->
+                <!--                        &#45;&#45;add-exports jdk.unsupported/sun.misc=ALL-UNNAMED-->
+                <!--                        &#45;&#45;add-opens java.base/java.lang.invoke=ALL-UNNAMED-->
+                <!--                        &#45;&#45;add-exports java.base/java.lang.invoke=ALL-UNNAMED-->
+                <!--                        &#45;&#45;add-exports java.base/jdk.internal.access=ALL-UNNAMED-->
+                <!--                        &#45;&#45;add-exports java.base/sun.nio.ch=ALL-UNNAMED-->
+                <!--                        &#45;&#45;add-opens java.base/java.lang=ALL-UNNAMED-->
+                <!--                        &#45;&#45;add-opens java.base/java.lang.reflect=ALL-UNNAMED-->
+                <!--                        &#45;&#45;add-opens java.base/java.io=ALL-UNNAMED-->
+                <!--                        &#45;&#45;add-exports jdk.unsupported/sun.misc=ALL-UNNAMED-->
+                <!--                    </argLine>-->
+                <!--                </configuration>-->
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+
+                <executions>
+                    <execution>
+                        <configuration>
+                            <finalName>${plugin.name}-${project.version}</finalName>
+                            <relocations>
+                                <relocation>
+                                    <pattern>nonapi</pattern>
+                                    <shadedPattern>${shadedPattern}.nonapi</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>io.github</pattern>
+                                    <shadedPattern>${shadedPattern}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>net.jodah</pattern>
+                                    <shadedPattern>${shadedPattern}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>gnu</pattern>
+                                    <shadedPattern>${shadedPattern}</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>com.esotericsoftware</pattern>
+                                    <shadedPattern>${shadedPattern}</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.eventiful</groupId>
+            <artifactId>eventiful-api</artifactId>
+            <version>${eventiful.api.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>${classgraph.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.trove4j</groupId>
+            <artifactId>trove4j</artifactId>
+            <version>${trove4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>reflectasm</artifactId>
+            <version>${reflectasm.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.seeseemelk</groupId>
+            <artifactId>MockBukkit-v1.21</artifactId>
+            <version>3.95.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
