@@ -7,9 +7,9 @@ import io.github.eventiful.plugin.registration.EventRegistration;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
 import io.github.eventiful.plugin.registration.SimpleEventRegistration;
 import io.github.eventiful.plugin.scanner.ClassScanner;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
@@ -29,19 +29,17 @@ public class EventBusImpl implements ServerEventBus {
     @Override
     public void dispatch(@NotNull final Event event) {
         final Class<? extends Event> type = event.getClass();
-        classScanner.scanSupertypes(type, scannedSupertype -> publishToChannel(event, scannedSupertype));
         publishToChannel(event, type);
-    }
-
-    @Override
-    public <T extends Event> void dispatch(@NotNull final T event, @NotNull final Class<? extends T> startingSubtype) {
-        classScanner.scanSubtypes(startingSubtype, scannedSubtype -> publishToChannel(event, scannedSubtype));
-        publishToChannel(event, event.getClass());
+        classScanner.scanSupertypes(type, scannedSupertype -> publishToChannel(event, scannedSupertype));
     }
 
     private void publishToChannel(final Event event, final Class<?> startingSubtype) {
         final Channel<Event> channel = channels.get(startingSubtype);
-        if (channel != null) channel.dispatch(event);
+
+        if (channel != null) {
+            if (event.isAsynchronous()) channel.dispatchAsync(event);
+            else channel.dispatch(event);
+        }
     }
 
     @Override
@@ -70,13 +68,23 @@ public class EventBusImpl implements ServerEventBus {
     }
 
     @SuppressWarnings("unchecked")
-    @RequiredArgsConstructor(access = AccessLevel.PACKAGE)
-    private static class Channel<T extends Event> {
+    private class Channel<T extends Event> {
         private final Map<EventToken, EventListener<T>> ownedListeners = new HashMap<>();
         private final Map<EventPriority, List<EventListener<T>>> orderedListeners = new EnumMap<>(EventPriority.class);
         private final EventTokenProvider tokenProvider;
-        private EventListener<T>[] iterationCache = new EventListener[0];
+        private volatile EventListener<T>[] iterationCache;
         private int size;
+
+        private Channel(final EventTokenProvider tokenProvider) {
+            this.tokenProvider = tokenProvider;
+
+            for (final EventPriority value : EventPriority.values())
+                orderedListeners.put(value, new ArrayList<>());
+        }
+
+        public void dispatchAsync(final T event) {
+            Bukkit.getScheduler().runTaskAsynchronously(EventBusImpl.this.plugin, () -> dispatch(event));
+        }
 
         public void dispatch(final T event) {
             for (final EventListener<T> listener : iterationCache)
@@ -88,7 +96,7 @@ public class EventBusImpl implements ServerEventBus {
             final EventListener<T> listener = registration.getListener();
             final EventPriority priority = registration.getPriority();
 
-            final List<EventListener<T>> listeners = orderedListeners.computeIfAbsent(priority, k -> new ArrayList<>());
+            final List<EventListener<T>> listeners = orderedListeners.get(priority);
             listeners.add(registration.getListener());
             ownedListeners.put(token, listener);
             refreshIterationCache(true);

@@ -17,7 +17,7 @@ public final class PlayerMoveEventCaller {
         for (final PlayerMoveContext<?> context : contexts) {
             if (context.appliesTo(event)) {
                 final PlayerMoveEvent transformed = context.transform(event);
-                eventBus.dispatch(transformed, transformed.getClass());
+                eventBus.dispatch(transformed);
 
                 if (transformed.isCancelled()) event.setCancelled(true);
             }

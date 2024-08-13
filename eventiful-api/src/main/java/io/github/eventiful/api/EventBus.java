@@ -29,16 +29,6 @@ public interface EventBus {
     void dispatch(@NotNull Event event);
 
     /**
-     * Calls the specified event, starting from a specific subtype, and triggers any {@link EventListener}s
-     * that are registered for this event type.
-     *
-     * @param <T>             The type of the event.
-     * @param event           The event to be called.
-     * @param startingSubtype The starting subtype from which to begin calling the event.
-     */
-    <T extends Event> void dispatch(@NotNull T event, @NotNull Class<? extends T> startingSubtype);
-
-    /**
      * Registers an {@link EventListener} for a specific event type, allowing the listener to listen for events of that type.
      *
      * @param <T>      The type of the event.
