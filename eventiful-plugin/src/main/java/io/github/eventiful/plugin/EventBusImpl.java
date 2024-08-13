@@ -28,6 +28,13 @@ public class EventBusImpl implements ServerEventBus {
 
     @Override
     public void dispatch(@NotNull final Event event) {
+        if (event.isAsynchronous())
+            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> dispatch0(event));
+        else
+            dispatch0(event);
+    }
+
+    private void dispatch0(final Event event) {
         final Class<? extends Event> type = event.getClass();
         publishToChannel(event, type);
         classScanner.scanSupertypes(type, scannedSupertype -> publishToChannel(event, scannedSupertype));
@@ -35,11 +42,7 @@ public class EventBusImpl implements ServerEventBus {
 
     private void publishToChannel(final Event event, final Class<?> startingSubtype) {
         final Channel<Event> channel = channels.get(startingSubtype);
-
-        if (channel != null) {
-            if (event.isAsynchronous()) channel.dispatchAsync(event);
-            else channel.dispatch(event);
-        }
+        if (channel != null) channel.dispatch(event);
     }
 
     @Override
@@ -68,7 +71,7 @@ public class EventBusImpl implements ServerEventBus {
     }
 
     @SuppressWarnings("unchecked")
-    private class Channel<T extends Event> {
+    private static class Channel<T extends Event> {
         private final Map<EventToken, EventListener<T>> ownedListeners = new HashMap<>();
         private final Map<EventPriority, List<EventListener<T>>> orderedListeners = new EnumMap<>(EventPriority.class);
         private final EventTokenProvider tokenProvider;
@@ -80,10 +83,6 @@ public class EventBusImpl implements ServerEventBus {
 
             for (final EventPriority value : EventPriority.values())
                 orderedListeners.put(value, new ArrayList<>());
-        }
-
-        public void dispatchAsync(final T event) {
-            Bukkit.getScheduler().runTaskAsynchronously(EventBusImpl.this.plugin, () -> dispatch(event));
         }
 
         public void dispatch(final T event) {
