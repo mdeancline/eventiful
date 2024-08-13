@@ -3,6 +3,7 @@ package io.github.eventiful.plugin;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.MockPlugin;
 import be.seeseemelk.mockbukkit.ServerMock;
+import gnu.trove.map.hash.TIntObjectHashMap;
 import io.github.classgraph.ClassGraph;
 import io.github.eventiful.api.EventBus;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
@@ -19,50 +20,74 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
+import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-@Fork(2)
-@Warmup(iterations = 2)
+@Fork(1)
+@Warmup(iterations = 1)
 @Measurement(iterations = 1)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-@Timeout(time = 1)
 public class PerformanceTest {
     @Benchmark
-    public void EventDispatch_EventBus_HandledByListeners(final EventifulState state) {
+    public void EventAssociation_ClassKeyObjectValue_InsertedInHashMap(MapState state) {
+        state.classesAndObjects.put(MockEvent.class, new Object());
+    }
+
+    @Benchmark
+    public void EventAssociation_ClassKeyObjectValue_InsertedInIdentityHashMap(MapState state) {
+        state.classesAndObjectsIdentity.put(MockEvent.class, new Object());
+    }
+
+    @Benchmark
+    public void EventAssociation_HashKeyObjectValue_InsertedInHashMap(MapState state) {
+        state.hashCodesAndObjects.put(MockEvent.class.hashCode(), new Object());
+    }
+
+    @Benchmark
+    public void EventAssociation_HashKeyObjectValue_InsertedInTIntObjectMap(MapState state) {
+        state.hashCodesAndObjectsTrove.put(MockEvent.class.hashCode(), new Object());
+    }
+
+    @Benchmark
+    public void EventDispatch_EventBus_HandledByListeners(EventifulState state) {
         state.eventBus.dispatch(new MockEvent("Testing 1 2 3"));
     }
 
     @Benchmark
-    public void EventDispatch_EventBus_HandledByListenersPreCached(final EventifulState state) {
+    public void EventDispatch_EventBus_HandledByListenersPreCached(EventifulState state) {
         state.classScanner.scanSubtypes(Event.class, ignored -> {});
         state.eventBus.dispatch(new MockEvent("Testing 1 2 3"));
     }
 
     @Benchmark
-    public void EventDispatch_PluginManager_MockedBehavior(final BukkitState state) {
+    @Timeout(time = 1)
+    public void EventDispatch_PluginManager_MockedBehavior(BukkitState state) {
         state.mockServer.getPluginManager().callEvent(new MockEvent("Testing 1 2 3"));
     }
 
     @Benchmark
-    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypes(final EventifulState state) {
+    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypes(EventifulState state) {
         state.eventBus.register(MockEvent.class, new MockEventListener());
     }
 
     @Benchmark
-    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypesPreCached(final EventifulState state) {
+    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypesPreCached(EventifulState state) {
         state.classScanner.scanSubtypes(Event.class, ignored -> {});
         state.eventBus.register(MockEvent.class, new MockEventListener());
     }
 
     @Benchmark
-    public void ListenerRegistration_PluginManager_MockedBehavior(final BukkitState state) {
+    @Timeout(time = 1)
+    public void ListenerRegistration_PluginManager_MockedBehavior(BukkitState state) {
         state.mockServer.getPluginManager().registerEvents(new MockListener(), state.mockPlugin);
     }
 
     @Benchmark
-    public void ListenerRegistration_PluginManager_ReplacedByProxyComponents(final EventifulState state) {
+    @Timeout(time = 1)
+    public void ListenerRegistration_PluginManager_ReplacedByProxyComponents(EventifulState state) {
         state.mockServer.getPluginManager().registerEvents(new MockListener(), state.mockPlugin);
     }
 
@@ -73,11 +98,35 @@ public class PerformanceTest {
     }
 
     @State(Scope.Benchmark)
+    public static class MapState {
+        HashMap<Class<?>, Object> classesAndObjects;
+        IdentityHashMap<Class<?>, Object> classesAndObjectsIdentity;
+        HashMap<Integer, Object> hashCodesAndObjects;
+        TIntObjectHashMap<Object> hashCodesAndObjectsTrove;
+
+        @Setup
+        public void setUp() {
+            classesAndObjects = new HashMap<>();
+            classesAndObjectsIdentity = new IdentityHashMap<>();
+            hashCodesAndObjects = new HashMap<>();
+            hashCodesAndObjectsTrove = new TIntObjectHashMap<>();
+        }
+
+        @TearDown
+        public void tearDown() {
+            classesAndObjects = null;
+            classesAndObjectsIdentity = null;
+            hashCodesAndObjects = null;
+            hashCodesAndObjectsTrove = null;
+        }
+    }
+
+    @State(Scope.Benchmark)
     public static class EventifulState {
-        private ServerMock mockServer;
-        private MockPlugin mockPlugin;
-        private ClassScanner classScanner;
-        private EventBus eventBus;
+        ServerMock mockServer;
+        MockPlugin mockPlugin;
+        ClassScanner classScanner;
+        EventBus eventBus;
 
         @Setup
         public void setUp() {
@@ -96,13 +145,15 @@ public class PerformanceTest {
         @TearDown
         public void tearDown() {
             MockBukkit.unmock();
+            classScanner = null;
+            eventBus = null;
         }
     }
 
     @State(Scope.Benchmark)
     public static class BukkitState {
-        private ServerMock mockServer;
-        private MockPlugin mockPlugin;
+        ServerMock mockServer;
+        MockPlugin mockPlugin;
 
         @Setup
         public void setUp() {
