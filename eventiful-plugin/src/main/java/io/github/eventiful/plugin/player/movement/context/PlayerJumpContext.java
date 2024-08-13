@@ -28,9 +28,10 @@ public class PlayerJumpContext implements PlayerMoveContext<PlayerJumpEvent> {
         final Player player = event.getPlayer();
         if (player.isFlying()) return false;
 
+        final UUID uuid = player.getUniqueId();
         final int current = repository.get(player, Statistic.JUMP);
-        final int last = jumps.get(player.getUniqueId());
-        if (last != current) jumps.put(player.getUniqueId(), current);
+        final int last = jumps.get(uuid);
+        if (last != current) jumps.put(uuid, current);
 
         return isActualJump(event);
     }
