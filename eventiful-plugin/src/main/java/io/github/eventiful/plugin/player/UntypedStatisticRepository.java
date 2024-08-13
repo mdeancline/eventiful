@@ -37,9 +37,7 @@ public final class UntypedStatisticRepository implements PlayerAuditor {
 
         if (statistic.getType() == Statistic.Type.UNTYPED) {
             final TObjectIntMap<Statistic> preciseStatistics = statistics.get(event.getPlayer().getUniqueId());
-
-            if (preciseStatistics != null)
-                preciseStatistics.put(statistic, event.getNewValue());
+            preciseStatistics.put(statistic, event.getNewValue());
         }
     }
 }
