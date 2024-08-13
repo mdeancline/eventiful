@@ -12,9 +12,9 @@ public class EventLogger {
         this.logger = logger;
     }
 
+    @SuppressWarnings("StringBufferReplaceableByString")
     public void logDeprecation(final EventRegistration<?> registration) {
-        final StringBuilder builder = new StringBuilder()
-                .append("Detected registration of deprecated event ")
+        final StringBuilder builder = new StringBuilder("Detected registration of deprecated event ")
                 .append(registration.getEventType().getName())
                 .append(" from ")
                 .append(registration.getListener().getClass().getName());
