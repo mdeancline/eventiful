@@ -2,48 +2,55 @@ package io.github.eventiful.plugin.reflect;
 
 import io.github.eventiful.plugin.MockEvent;
 import io.github.eventiful.plugin.MockHandlerList;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class ReflectionAccessTest {
-    @Test
-    public void GetFieldValue_UnsafeReflectionAccess_RetrievalAccessSuccessful() throws NoSuchFieldException {
-        testGetFieldValue(new UnsafeReflectionAccess());
+    private ReflectionAccess reflectionAccess;
+    private MockEvent mockEvent;
+    private MockHandlerList mockHandlers;
+
+    @Before
+    public void setUp() {
+        reflectionAccess = new UnsafeReflectionAccess();
+        mockEvent = new MockEvent("Testing 1 2 3");
+        mockHandlers = new MockHandlerList();
+    }
+
+    @After
+    public void tearDown() {
+        mockEvent = null;
+        mockHandlers = null;
+        reflectionAccess = null;
     }
 
     @Test
-    public void GetFieldValueStatic_UnsafeReflectionAccess_RetrievalAccessSuccessful() throws NoSuchFieldException {
-        testGetFieldValueStatic(new UnsafeReflectionAccess());
+    public void GetFieldValue_ReflectionAccess_SuccessfulRetrieval() throws NoSuchFieldException {
+        final String message = "Testing 1 2 3";
+        final Object fieldValue = reflectionAccess.getObject(mockEvent.getMessageField(), mockEvent);
+        assertEquals(message, fieldValue);
     }
 
     @Test
-    public void SetFieldValue_UnsafeReflectionAccess_WriteAccessSuccessful() throws NoSuchFieldException {
-        testSetFieldValue(new UnsafeReflectionAccess());
+    public void GetFieldValueStatic_ReflectionAccess_SuccessfulRetrieval() throws NoSuchFieldException {
+        final Object fieldValue = reflectionAccess.getObject(MockEvent.getHandlerListField());
+        assertNotNull(fieldValue);
+        assertTrue(fieldValue instanceof MockHandlerList);
     }
 
     @Test
-    public void SetFieldValueStatic_UnsafeReflectionAccess_WriteAccessSuccessful() throws NoSuchFieldException {
-        testSetFieldValueStatic(new UnsafeReflectionAccess());
+    public void SetFieldValue_ReflectionAccess_SuccessfulWrite() throws NoSuchFieldException {
+        final String newMessage = "Testing 3 2 1";
+        reflectionAccess.setObject(mockEvent.getMessageField(), newMessage, mockEvent);
+        assertEquals(newMessage, mockEvent.getMessage());
     }
 
-    private void testGetFieldValue(final ReflectionAccess reflectionAccess) throws NoSuchFieldException {
-        final MockEvent mockEvent = new MockEvent("Testing 7 8 9");
-        System.out.println("Field value: " + reflectionAccess.getObject(mockEvent.getMessageField(), mockEvent));
-    }
-
-    private void testGetFieldValueStatic(final ReflectionAccess reflectionAccess) throws NoSuchFieldException {
-        System.out.println("Static field value: " + reflectionAccess.getObject(MockEvent.getHandlerListField()));
-    }
-
-    private void testSetFieldValue(final ReflectionAccess reflectionAccess) throws NoSuchFieldException {
-        final MockEvent mockEvent = new MockEvent("Testing 1 2 3");
-        System.out.println("Original message: " + mockEvent.getMessage());
-        reflectionAccess.setObject(mockEvent.getMessageField(), "3 2 1 Testing", mockEvent);
-        System.out.println("Replaced message: " + mockEvent.getMessage());
-    }
-
-    private static void testSetFieldValueStatic(final ReflectionAccess reflectionAccess) throws NoSuchFieldException {
-        System.out.println("Original static field value: " + MockEvent.getHandlerList());
-        reflectionAccess.setObject(MockEvent.getHandlerListField(), new MockHandlerList());
-        System.out.println("Replaced static field value: " + MockEvent.getHandlerList());
+    @Test
+    public void SetFieldValueStatic_ReflectionAccess_SuccessfulWrite() throws NoSuchFieldException {
+        reflectionAccess.setObject(MockEvent.getHandlerListField(), mockHandlers);
+        assertEquals(mockHandlers, MockEvent.getHandlerList());
     }
 }
