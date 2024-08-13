@@ -40,8 +40,8 @@ public class EventBusImpl implements ServerEventBus {
         classScanner.scanSupertypes(type, scannedSupertype -> publishToChannel(event, scannedSupertype));
     }
 
-    private void publishToChannel(final Event event, final Class<?> startingSubtype) {
-        final Channel<Event> channel = channels.get(startingSubtype);
+    private void publishToChannel(final Event event, final Class<?> type) {
+        final Channel<Event> channel = channels.get(type);
         if (channel != null) channel.dispatch(event);
     }
 
