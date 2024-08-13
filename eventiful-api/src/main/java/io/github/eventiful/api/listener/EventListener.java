@@ -8,7 +8,8 @@ import org.bukkit.event.*;
  * generics to enhance efficiency and performance, particularly when dealing with {@link Cancellable} events.
  *
  * @param <T> the type of event that this listener handles, extending {@link Event}
- * @apiNote Only one "event handler method" is supported via {@link EventListener#handle(Event)}.
+ * @apiNote Only one "event handler method" is supported via {@link EventListener#handle(Event)}. If an event is
+ * asynchronous, any associated {@code EventListener}s will be executed in a separate thread.
  * @see CancellableEventListener
  * @see EventBus
  * @since 1.0.0
