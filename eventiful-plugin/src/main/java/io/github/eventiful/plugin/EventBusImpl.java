@@ -1,6 +1,7 @@
 package io.github.eventiful.plugin;
 
 import io.github.eventiful.api.EventToken;
+import io.github.eventiful.api.exception.EventConcurrencyException;
 import io.github.eventiful.api.exception.EventRegistrationException;
 import io.github.eventiful.api.listener.EventListener;
 import io.github.eventiful.plugin.registration.EventRegistration;
@@ -28,13 +29,12 @@ public class EventBusImpl implements ServerEventBus {
 
     @Override
     public void dispatch(@NotNull final Event event) {
-        if (event.isAsynchronous())
-            Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> dispatch0(event));
-        else
-            dispatch0(event);
-    }
+        if (event.isAsynchronous() && Bukkit.isPrimaryThread())
+            throw new EventConcurrencyException("Attempted to dispatch an asynchronous Event on the main thread");
 
-    private void dispatch0(final Event event) {
+        if (!event.isAsynchronous() && !Bukkit.isPrimaryThread())
+            throw new EventConcurrencyException("Attempted to dispatch a synchronous Event on thread " + Thread.currentThread().getName());
+
         final Class<? extends Event> type = event.getClass();
         publishToChannel(event, type);
         classScanner.scanSupertypes(type, scannedSupertype -> publishToChannel(event, scannedSupertype));

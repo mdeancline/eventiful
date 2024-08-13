@@ -1,5 +1,6 @@
 package io.github.eventiful.api;
 
+import io.github.eventiful.api.exception.EventConcurrencyException;
 import io.github.eventiful.api.listener.EventListener;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.ServicesManager;
@@ -22,9 +23,10 @@ import org.jetbrains.annotations.NotNull;
 public interface EventBus {
 
     /**
-     * Calls the specified event, triggering any {@link EventListener}s that are registered for this event type.
+     * Triggers the specified event, invoking all registered {@link EventListener}s associated with this event type.
      *
-     * @param event The event to be called.
+     * @param event The event to be triggered.
+     * @throws EventConcurrencyException if the event's state is unsuitable for the current thread.
      */
     void dispatch(@NotNull Event event);
 
