@@ -62,17 +62,5 @@ public final class MethodAccessListenerReflector implements ListenerReflector {
         public EventHandler getAnnotation() {
             return annotation;
         }
-
-        @Override
-        public String toString() {
-            final String methodName = access.getMethodNames()[accessIndex];
-            final String parameterType = access.getParameterTypes()[accessIndex][0].getName();
-
-            final StringBuilder builder = new StringBuilder()
-                    .append(listener.getClass().getName())
-                    .append(String.format(".%s(%s)", methodName, parameterType));
-
-            return builder.toString();
-        }
     }
 }
