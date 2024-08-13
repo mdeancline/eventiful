@@ -1,6 +1,7 @@
 package io.github.eventiful.plugin.reflect;
 
 import com.esotericsoftware.reflectasm.MethodAccess;
+import lombok.AllArgsConstructor;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,30 +33,24 @@ public final class MethodAccessListenerReflector implements ListenerReflector {
                 && Event.class.isAssignableFrom(parameterTypes[0]);
     }
 
+    @AllArgsConstructor
     private static final class AccessedMethod<T extends Event> implements ListenerMethod<T> {
         private final Listener listener;
         private final EventHandler annotation;
         private final MethodAccess access;
-        private final int accessIndex;
-
-        private AccessedMethod(final Listener listener, final EventHandler annotation, final MethodAccess access, final int accessIndex) {
-            this.listener = listener;
-            this.annotation = annotation;
-            this.access = access;
-            this.accessIndex = accessIndex;
-        }
+        private final int eventParameterIndex;
 
         @Override
         public void invoke(final T event) {
-            final Class<?>[] singletonParameterType = access.getParameterTypes()[accessIndex];
-            final String methodName = access.getMethodNames()[accessIndex];
+            final Class<?>[] singletonParameterType = access.getParameterTypes()[eventParameterIndex];
+            final String methodName = access.getMethodNames()[eventParameterIndex];
             access.invoke(listener, methodName, singletonParameterType, event);
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public Class<T> getParameterType() {
-            return access.getParameterTypes()[accessIndex][0];
+            return access.getParameterTypes()[eventParameterIndex][0];
         }
 
         @Override
