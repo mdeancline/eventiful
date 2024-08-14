@@ -3,6 +3,7 @@ package io.github.eventiful.api.event.player.armor;
 import io.github.eventiful.api.event.entity.armor.ArmorEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Called when a {@code Player} equips an item to be used as armor.
@@ -13,13 +14,7 @@ public class PlayerArmorEquipEvent extends ArmorEvent<Player> implements Cancell
     private final Cause cause;
     private boolean cancelled;
 
-    /**
-     * Constructs a new {@code PlayerArmorEquipEvent}.
-     *
-     * @param who   the player equipping the armor.
-     * @param type  the type of armor being equipped.
-     * @param cause the cause or method by which the armor is being equipped.
-     */
+    @ApiStatus.Internal
     public PlayerArmorEquipEvent(final Player who, final Type type, final Cause cause) {
         super(who, type);
         this.cause = cause;

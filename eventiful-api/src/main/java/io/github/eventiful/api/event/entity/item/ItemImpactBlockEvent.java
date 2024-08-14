@@ -4,6 +4,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Item;
 import org.bukkit.projectiles.ProjectileSource;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Called when an {@link Item} impacts a {@link Block}.
@@ -14,14 +15,7 @@ public class ItemImpactBlockEvent extends ItemImpactEvent {
     private final Block impactedBlock;
     private final BlockFace impactedFace;
 
-    /**
-     * Constructs a new {@code ItemImpactBlockEvent}.
-     *
-     * @param item          the item that has impacted the block.
-     * @param source        the source responsible for propelling the item.
-     * @param impactedBlock the block that the item has impacted.
-     * @param impactedFace  the face of the block that was impacted.
-     */
+    @ApiStatus.Internal
     public ItemImpactBlockEvent(final Item item, final ProjectileSource source, final Block impactedBlock, final BlockFace impactedFace) {
         super(item, source);
         this.impactedBlock = impactedBlock;

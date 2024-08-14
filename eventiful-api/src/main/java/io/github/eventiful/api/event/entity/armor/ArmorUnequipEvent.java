@@ -2,6 +2,7 @@ package io.github.eventiful.api.event.entity.armor;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Cancellable;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Called when a {@link LivingEntity} unequips an item formerly used as armor.
@@ -12,13 +13,7 @@ public class ArmorUnequipEvent extends ArmorEvent<LivingEntity> implements Cance
     private final Cause cause;
     private boolean cancelled;
 
-    /**
-     * Constructs a new {@code ArmorUnequipEvent}.
-     *
-     * @param who   the entity who unequipped the armor.
-     * @param type  the type of armor that was unequipped.
-     * @param cause the cause of the unequip event.
-     */
+    @ApiStatus.Internal
     public ArmorUnequipEvent(final LivingEntity who, final Type type, final Cause cause) {
         super(who, type);
         this.cause = cause;

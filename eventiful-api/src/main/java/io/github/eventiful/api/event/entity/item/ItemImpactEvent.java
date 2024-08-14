@@ -3,6 +3,7 @@ package io.github.eventiful.api.event.entity.item;
 import io.github.eventiful.api.event.entity.SpecificEntityEvent;
 import org.bukkit.entity.Item;
 import org.bukkit.projectiles.ProjectileSource;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Represents an event triggered when an item impacts a target. It is used to handle the behavior of an item when it
@@ -13,12 +14,7 @@ import org.bukkit.projectiles.ProjectileSource;
 public abstract class ItemImpactEvent extends SpecificEntityEvent<Item> {
     private final ProjectileSource source;
 
-    /**
-     * Constructs a new {@code ItemImpactEvent}.
-     *
-     * @param what   the item that has impacted.
-     * @param source the source responsible for propelling the item.
-     */
+    @ApiStatus.Internal
     public ItemImpactEvent(final Item what, final ProjectileSource source) {
         super(what);
         this.source = source;

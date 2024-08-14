@@ -3,6 +3,7 @@ package io.github.eventiful.api.event.entity.armor;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Cancellable;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Called when a {@link LivingEntity} equips an item to be used as armor.
@@ -13,13 +14,7 @@ public class ArmorEquipEvent extends ArmorEvent<LivingEntity> implements Cancell
     private final Cause cause;
     private boolean cancelled;
 
-    /**
-     * Constructs a new {@code ArmorEquipEvent}.
-     *
-     * @param who   the living entity that is equipping the armor.
-     * @param type  the type of armor being equipped.
-     * @param cause the cause of the armor being equipped.
-     */
+    @ApiStatus.Internal
     public ArmorEquipEvent(final LivingEntity who, final Type type, final Cause cause) {
         super(who, type);
         this.cause = cause;

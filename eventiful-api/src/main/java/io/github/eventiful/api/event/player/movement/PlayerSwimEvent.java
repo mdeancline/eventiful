@@ -3,6 +3,7 @@ package io.github.eventiful.api.event.player.movement;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.jetbrains.annotations.ApiStatus;
 
 /**
  * Called when a {@code Player} is swimming in liquid.
@@ -11,13 +12,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
  */
 public class PlayerSwimEvent extends PlayerMoveEvent {
 
-    /**
-     * Constructs a new {@code PlayerSwimEvent}.
-     *
-     * @param player the {@code Player} who is swimming
-     * @param from the {@code Location} where the swimming started
-     * @param to the {@code Location} where the swimming ended
-     */
+    @ApiStatus.Internal
     public PlayerSwimEvent(final Player player, final Location from, final Location to) {
         super(player, from, to);
     }
