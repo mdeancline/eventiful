@@ -1,6 +1,5 @@
 package io.github.eventiful.api.event.entity;
 
-import io.github.eventiful.api.exception.HandlerListUnsupportedException;
 import io.github.eventiful.api.listener.EventListener;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.HandlerList;
@@ -34,7 +33,7 @@ public abstract class SpecificEntityEvent<T extends Entity> extends EntityEvent 
     @ApiStatus.Internal
     @Override
     public final HandlerList getHandlers() {
-        throw new HandlerListUnsupportedException();
+        return new HandlerList();
     }
 
     @Override

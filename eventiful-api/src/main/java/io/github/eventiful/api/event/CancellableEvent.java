@@ -1,6 +1,5 @@
 package io.github.eventiful.api.event;
 
-import io.github.eventiful.api.exception.HandlerListUnsupportedException;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -20,7 +19,7 @@ public abstract class CancellableEvent extends Event implements Cancellable {
     @NotNull
     @Override
     public final HandlerList getHandlers() {
-        throw new HandlerListUnsupportedException();
+        return new HandlerList();
     }
 
     @Override
