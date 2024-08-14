@@ -4,7 +4,7 @@ import io.github.eventiful.api.EventBus;
 import io.github.eventiful.plugin.player.movement.context.PlayerMoveContext;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-public final class PlayerMoveEventCaller {
+public class PlayerMoveEventCaller {
     private final EventBus eventBus;
     private final PlayerMoveContext<?>[] contexts;
 
