@@ -3,7 +3,6 @@ package io.github.eventiful.plugin;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.MockPlugin;
 import be.seeseemelk.mockbukkit.ServerMock;
-import gnu.trove.map.hash.TIntObjectHashMap;
 import io.github.classgraph.ClassGraph;
 import io.github.eventiful.api.EventBus;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
@@ -20,8 +19,6 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -30,27 +27,7 @@ import java.util.logging.Logger;
 @Measurement(iterations = 1)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-public class PerformanceTest {
-    @Benchmark
-    public void MapInsertion_ClassKeyObjectValue_InsertedInHashMap(final MapState state) {
-        state.classesAndObjects.put(Object.class, new Object());
-    }
-
-    @Benchmark
-    public void MapInsertion_ClassKeyObjectValue_InsertedInIdentityHashMap(final MapState state) {
-        state.classesAndObjectsIdentity.put(Object.class, new Object());
-    }
-
-    @Benchmark
-    public void MapInsertion_HashKeyObjectValue_InsertedInHashMap(final MapState state) {
-        state.hashCodesAndObjects.put(Object.class.hashCode(), new Object());
-    }
-
-    @Benchmark
-    public void MapInsertion_HashKeyObjectValue_InsertedInTIntObjectMap(final MapState state) {
-        state.hashCodesAndObjectsTrove.put(Object.class.hashCode(), new Object());
-    }
-
+public class PipelinePerformanceTest {
     @Benchmark
     public void EventDispatch_EventBus_HandledByEventListeners(final EventifulState state) {
         state.eventBus.dispatch(new MockEvent("Testing 1 2 3"));
@@ -58,7 +35,8 @@ public class PerformanceTest {
 
     @Benchmark
     public void EventDispatch_EventBus_HandledByEventListenersPreCached(final EventifulState state) {
-        state.classScanner.scanSubtypes(Event.class, ignored -> {});
+        state.classScanner.scanSubtypes(Event.class, ignored -> {
+        });
         state.eventBus.dispatch(new MockEvent("Testing 1 2 3"));
     }
 
@@ -75,7 +53,8 @@ public class PerformanceTest {
 
     @Benchmark
     public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypesPreCached(final EventifulState state) {
-        state.classScanner.scanSubtypes(Event.class, ignored -> {});
+        state.classScanner.scanSubtypes(Event.class, ignored -> {
+        });
         state.eventBus.register(MockEvent.class, new MockEventListener());
     }
 
@@ -95,30 +74,6 @@ public class PerformanceTest {
     public void runBenchmarks() throws RunnerException {
         final Options options = new OptionsBuilder().include(getClass().getName()).build();
         new Runner(options).run();
-    }
-
-    @State(Scope.Benchmark)
-    public static class MapState {
-        HashMap<Class<?>, Object> classesAndObjects;
-        IdentityHashMap<Class<?>, Object> classesAndObjectsIdentity;
-        HashMap<Integer, Object> hashCodesAndObjects;
-        TIntObjectHashMap<Object> hashCodesAndObjectsTrove;
-
-        @Setup
-        public void setUp() {
-            classesAndObjects = new HashMap<>();
-            classesAndObjectsIdentity = new IdentityHashMap<>();
-            hashCodesAndObjects = new HashMap<>();
-            hashCodesAndObjectsTrove = new TIntObjectHashMap<>();
-        }
-
-        @TearDown
-        public void tearDown() {
-            classesAndObjects = null;
-            classesAndObjectsIdentity = null;
-            hashCodesAndObjects = null;
-            hashCodesAndObjectsTrove = null;
-        }
     }
 
     @State(Scope.Benchmark)
