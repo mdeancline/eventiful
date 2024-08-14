@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 
 @AllArgsConstructor
-public class HandlerListProxy extends HandlerList {
+class HandlerListProxy extends HandlerList {
     private final Class<? extends Event> eventType;
     private final ListenerRegistry listenerRegistry;
     private final RegisteredListener[] listenerProxies;
