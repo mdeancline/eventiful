@@ -21,5 +21,10 @@ public interface EventToken {
      */
     Class<? extends Event> getType();
 
+    /**
+     * Retrieves the priority of the associated {@link EventListener}.
+     *
+     * @return the associated priority
+     */
     EventPriority getPriority();
 }
