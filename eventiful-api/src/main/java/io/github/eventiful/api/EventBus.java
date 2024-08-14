@@ -26,7 +26,8 @@ public interface EventBus {
      * Triggers the specified event, invoking all registered {@link EventListener}s associated with this event type.
      *
      * @param event The event to be triggered.
-     * @throws EventConcurrencyException if the event's state is unsuitable for the current thread.
+     * @throws EventConcurrencyException if the event's state is not safe for the current thread.
+     * This exception is thrown to enforce thread safety, as most of the Bukkit API is not thread-safe.
      */
     void dispatch(@NotNull Event event);
 

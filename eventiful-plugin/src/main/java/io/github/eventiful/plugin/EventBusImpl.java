@@ -30,10 +30,12 @@ public class EventBusImpl implements ServerEventBus {
     @Override
     public void dispatch(@NotNull final Event event) {
         if (event.isAsynchronous() && Bukkit.isPrimaryThread())
-            throw new EventConcurrencyException("Attempted to dispatch an asynchronous Event on the main thread");
+            throw new EventConcurrencyException(String.format("Attempted to asynchronously trigger %s on the main thread",
+                    event.getEventName()));
 
         if (!event.isAsynchronous() && !Bukkit.isPrimaryThread())
-            throw new EventConcurrencyException("Attempted to dispatch a synchronous Event on thread " + Thread.currentThread().getName());
+            throw new EventConcurrencyException(String.format("Attempted to synchronously trigger %s on thread %s",
+                    event.getEventName(), Thread.currentThread().getName()));
 
         final Class<? extends Event> type = event.getClass();
         publishToChannel(event, type);
