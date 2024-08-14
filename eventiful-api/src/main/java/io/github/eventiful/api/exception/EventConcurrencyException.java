@@ -20,13 +20,4 @@ public class EventConcurrencyException extends EventException {
     public EventConcurrencyException(final String message) {
         super(message);
     }
-
-    /**
-     * Constructs a new {@code EventConcurrencyException} with the specified cause.
-     *
-     * @param cause The underlying exception that caused this exception to be thrown.
-     */
-    public EventConcurrencyException(final Exception cause) {
-        super(cause);
-    }
 }
