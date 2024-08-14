@@ -10,6 +10,7 @@ import org.bukkit.event.Event;
  * @since 1.0.0
  */
 public class EventConcurrencyException extends EventException {
+    private static final long serialVersionUID = -2070124872114185740L;
 
     /**
      * Constructs a new {@code EventConcurrencyException} with the specified detail message.
