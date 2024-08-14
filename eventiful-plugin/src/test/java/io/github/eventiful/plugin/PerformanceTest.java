@@ -32,62 +32,62 @@ import java.util.logging.Logger;
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 public class PerformanceTest {
     @Benchmark
-    public void EventAssociation_ClassKeyObjectValue_InsertedInHashMap(MapState state) {
-        state.classesAndObjects.put(MockEvent.class, new Object());
+    public void MapInsertion_ClassKeyObjectValue_InsertedInHashMap(final MapState state) {
+        state.classesAndObjects.put(Object.class, new Object());
     }
 
     @Benchmark
-    public void EventAssociation_ClassKeyObjectValue_InsertedInIdentityHashMap(MapState state) {
-        state.classesAndObjectsIdentity.put(MockEvent.class, new Object());
+    public void MapInsertion_ClassKeyObjectValue_InsertedInIdentityHashMap(final MapState state) {
+        state.classesAndObjectsIdentity.put(Object.class, new Object());
     }
 
     @Benchmark
-    public void EventAssociation_HashKeyObjectValue_InsertedInHashMap(MapState state) {
-        state.hashCodesAndObjects.put(MockEvent.class.hashCode(), new Object());
+    public void MapInsertion_HashKeyObjectValue_InsertedInHashMap(final MapState state) {
+        state.hashCodesAndObjects.put(Object.class.hashCode(), new Object());
     }
 
     @Benchmark
-    public void EventAssociation_HashKeyObjectValue_InsertedInTIntObjectMap(MapState state) {
-        state.hashCodesAndObjectsTrove.put(MockEvent.class.hashCode(), new Object());
+    public void MapInsertion_HashKeyObjectValue_InsertedInTIntObjectMap(final MapState state) {
+        state.hashCodesAndObjectsTrove.put(Object.class.hashCode(), new Object());
     }
 
     @Benchmark
-    public void EventDispatch_EventBus_HandledByListeners(EventifulState state) {
+    public void EventDispatch_EventBus_HandledByEventListeners(final EventifulState state) {
         state.eventBus.dispatch(new MockEvent("Testing 1 2 3"));
     }
 
     @Benchmark
-    public void EventDispatch_EventBus_HandledByListenersPreCached(EventifulState state) {
+    public void EventDispatch_EventBus_HandledByEventListenersPreCached(final EventifulState state) {
         state.classScanner.scanSubtypes(Event.class, ignored -> {});
         state.eventBus.dispatch(new MockEvent("Testing 1 2 3"));
     }
 
     @Benchmark
     @Timeout(time = 1)
-    public void EventDispatch_PluginManager_MockedBehavior(BukkitState state) {
+    public void EventDispatch_PluginManagerMock_HandledByListeners(final BukkitState state) {
         state.mockServer.getPluginManager().callEvent(new MockEvent("Testing 1 2 3"));
     }
 
     @Benchmark
-    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypes(EventifulState state) {
+    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypes(final EventifulState state) {
         state.eventBus.register(MockEvent.class, new MockEventListener());
     }
 
     @Benchmark
-    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypesPreCached(EventifulState state) {
+    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypesPreCached(final EventifulState state) {
         state.classScanner.scanSubtypes(Event.class, ignored -> {});
         state.eventBus.register(MockEvent.class, new MockEventListener());
     }
 
     @Benchmark
     @Timeout(time = 1)
-    public void ListenerRegistration_PluginManager_MockedBehavior(BukkitState state) {
+    public void ListenerRegistration_PluginManagerMock_AssociatesWithAbsoluteEventTypes(final BukkitState state) {
         state.mockServer.getPluginManager().registerEvents(new MockListener(), state.mockPlugin);
     }
 
     @Benchmark
     @Timeout(time = 1)
-    public void ListenerRegistration_PluginManager_ReplacedByProxyComponents(EventifulState state) {
+    public void ListenerRegistration_PluginManagerMock_HandledByProxyComponents(final EventifulState state) {
         state.mockServer.getPluginManager().registerEvents(new MockListener(), state.mockPlugin);
     }
 
