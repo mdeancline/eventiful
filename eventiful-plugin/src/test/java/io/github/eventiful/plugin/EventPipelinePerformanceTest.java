@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 @Measurement(iterations = 1)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-public class PipelinePerformanceTest {
+public class EventPipelinePerformanceTest {
     @Benchmark
     public void EventDispatch_EventBus_HandledByEventListeners(final EventifulState state) {
         state.eventBus.dispatch(new MockEvent("Testing 1 2 3"));
