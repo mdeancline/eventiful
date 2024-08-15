@@ -1,13 +1,13 @@
 package io.github.eventiful.plugin.player;
 
 import io.github.eventiful.api.listener.EventListener;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerQuitListener implements EventListener<PlayerQuitEvent> {
-    private final List<PlayerAuditor> auditors = new ArrayList<>(0);
+    private final List<PlayerAuditor> auditors = new ObjectArrayList<>(0);
 
     @Override
     public void handle(final PlayerQuitEvent event) {

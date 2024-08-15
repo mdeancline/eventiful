@@ -1,15 +1,19 @@
 package io.github.eventiful.plugin.scanner;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.AllArgsConstructor;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Consumer;
 
 @AllArgsConstructor
 public final class CacheableClassScanner implements ClassScanner {
-    private final Map<Class<?>, Class<?>[]> supertypes = new IdentityHashMap<>();
-    private final Map<Class<?>, Class<?>[]> subtypes = new IdentityHashMap<>();
+    private final Map<Class<?>, Class<?>[]> supertypes = new Object2ObjectOpenHashMap<>();
+    private final Map<Class<?>, Class<?>[]> subtypes = new Object2ObjectOpenHashMap<>();
     private final ClassScanner scanner;
 
     @Override
@@ -20,7 +24,7 @@ public final class CacheableClassScanner implements ClassScanner {
             for (final Class<?> supertype : preciseSupertypes)
                 consumer.accept(supertype);
         else {
-            final List<Class<?>> scannedTypes = new ArrayList<>();
+            final List<Class<?>> scannedTypes = new ObjectArrayList<>();
 
             scanner.scanSupertypes(clazz, supertype -> {
                 supertypes.put(supertype, scannedTypes.toArray(new Class[0]));

@@ -6,6 +6,7 @@ import io.github.eventiful.plugin.reflect.ListenerReflector;
 import io.github.eventiful.plugin.registration.EventRegistration;
 import io.github.eventiful.plugin.registration.ListenerMethodRegistration;
 import io.github.eventiful.plugin.registration.RegisteredListenerRegistration;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AllArgsConstructor;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
@@ -18,8 +19,8 @@ import java.util.*;
 
 @AllArgsConstructor
 class ListenerRegistry {
-    private final Map<Listener, List<EventToken>> tokens = new HashMap<>();
-    private final Map<Plugin, Set<Reference<Listener>>> listeners = new HashMap<>();
+    private final Map<Listener, List<EventToken>> tokens = new Object2ObjectOpenHashMap<>();
+    private final Map<Plugin, Set<Reference<Listener>>> listeners = new Object2ObjectOpenHashMap<>();
     private final ListenerReflector reflector;
     private final ServerEventBus eventBus;
 

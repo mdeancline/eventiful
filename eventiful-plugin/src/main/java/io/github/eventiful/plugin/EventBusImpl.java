@@ -8,6 +8,7 @@ import io.github.eventiful.plugin.registration.EventRegistration;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
 import io.github.eventiful.plugin.registration.SimpleEventRegistration;
 import io.github.eventiful.plugin.scanner.ClassScanner;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -16,12 +17,15 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 @Setter
 @RequiredArgsConstructor
 public class EventBusImpl implements ServerEventBus {
-    private final Map<Class<?>, Channel<Event>> channels = new IdentityHashMap<>();
+    private final Map<Class<?>, Channel<Event>> channels = new Object2ObjectOpenHashMap<>();
     private final ClassScanner classScanner;
     private final EventLogger logger;
     private final EventTokenProvider tokenProvider;
@@ -76,7 +80,7 @@ public class EventBusImpl implements ServerEventBus {
 
     @SuppressWarnings("unchecked")
     private static class Channel<T extends Event> {
-        private final Map<EventToken, EventListener<T>> ownedListeners = new HashMap<>();
+        private final Map<EventToken, EventListener<T>> ownedListeners = new Object2ObjectOpenHashMap<>();
         private final Map<EventPriority, List<EventListener<T>>> orderedListeners = new EnumMap<>(EventPriority.class);
         private final EventTokenProvider tokenProvider;
         private volatile EventListener<T>[] iterationCache;

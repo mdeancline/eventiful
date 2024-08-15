@@ -17,8 +17,8 @@
         <plugin.name>Eventiful</plugin.name>
         <eventiful.api.version>1.0.0</eventiful.api.version>
         <classgraph.version>4.8.147</classgraph.version>
-        <trove4j.version>3.0.3</trove4j.version>
         <reflectasm.version>1.11.9</reflectasm.version>
+        <fastutil.version>8.5.14</fastutil.version>
 
         <shadedPattern>${project.groupId}.plugin.dependency</shadedPattern>
     </properties>
@@ -113,15 +113,22 @@
         </dependency>
 
         <dependency>
-            <groupId>net.sf.trove4j</groupId>
-            <artifactId>trove4j</artifactId>
-            <version>${trove4j.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>com.esotericsoftware</groupId>
             <artifactId>reflectasm</artifactId>
             <version>${reflectasm.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil</artifactId>
+            <version>${fastutil.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.trove4j</groupId>
+            <artifactId>trove4j</artifactId>
+            <version>3.0.3</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

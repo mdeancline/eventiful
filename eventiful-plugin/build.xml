@@ -8,7 +8,7 @@
 
     <property name="eventiful.api.version" value="${pom.properties.eventiful.api.version}"/>
     <property name="classgraph.version" value="${pom.properties.classgraph.version}"/>
-    <property name="trove4j.version" value="${pom.properties.trove4j.version}"/>
+    <property name="fastutil.version" value="${pom.properties.fastutil.version}"/>
     <property name="reflectasm.version" value="${pom.properties.reflectasm.version}"/>
 
     <target name="Build">
@@ -19,8 +19,8 @@
             <zipgroupfileset dir="${user.home}/.m2/repository/io/github/classgraph/classgraph/${classgraph.version}/"
                              includes="**/*${classgraph.version}.jar"/>
 
-            <zipgroupfileset dir="${user.home}/.m2/repository/net/sf/trove4j/trove4j/${trove4j.version}"
-                             includes="**/*${trove4j.version}.jar"/>
+            <zipgroupfileset dir="${user.home}/.m2/repository/it/unimi/dsi/fastutil/${fastutil.version}"
+                             includes="**/*${fastutil.version}.jar"/>
 
             <zipgroupfileset dir="${user.home}/.m2/repository/com/esotericsoftware/reflectasm/${reflectasm.version}"
                              includes="**/*${reflectasm.version}.jar"/>

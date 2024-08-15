@@ -1,9 +1,9 @@
 package io.github.eventiful.plugin.player.movement.context;
 
-import gnu.trove.map.TObjectIntMap;
-import gnu.trove.map.hash.TObjectIntHashMap;
 import io.github.eventiful.api.event.player.movement.PlayerJumpEvent;
 import io.github.eventiful.plugin.player.UntypedStatisticRepository;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.AllArgsConstructor;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
@@ -20,9 +20,10 @@ public class PlayerJumpContext implements PlayerMoveContext<PlayerJumpEvent> {
     private static final double BLOCK_HEIGHT_MIN = 0.116;
     private static final double BLOCK_HEIGHT_MAX = 0.118;
 
-    private final TObjectIntMap<UUID> jumps = new TObjectIntHashMap<>();
+    private final Object2IntMap<UUID> jumps = new Object2IntOpenHashMap<>();
     private final UntypedStatisticRepository repository;
 
+    @SuppressWarnings("deprecation")
     @Override
     public boolean appliesTo(final PlayerMoveEvent event) {
         final Player player = event.getPlayer();

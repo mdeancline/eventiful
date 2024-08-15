@@ -1,21 +1,21 @@
 package io.github.eventiful.plugin.player;
 
-import gnu.trove.map.TObjectIntMap;
-import gnu.trove.map.hash.TObjectIntHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 
-import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public final class UntypedStatisticRepository implements PlayerAuditor {
-    private final Map<UUID, TObjectIntMap<Statistic>> statistics = new IdentityHashMap<>();
+    private final Map<UUID, Object2IntMap<Statistic>> statistics = new Object2ObjectOpenHashMap<>();
 
     @Override
     public void addPlayer(final Player player) {
-        final TObjectIntMap<Statistic> preciseStatistics = new TObjectIntHashMap<>();
+        final Object2IntMap<Statistic> preciseStatistics = new Object2IntOpenHashMap<>();
         statistics.put(player.getUniqueId(), preciseStatistics);
 
         for (final Statistic statistic : Statistic.values())
@@ -28,6 +28,7 @@ public final class UntypedStatisticRepository implements PlayerAuditor {
         statistics.remove(player.getUniqueId());
     }
 
+    @SuppressWarnings("deprecation")
     public int get(final Player player, final Statistic statistic) {
         return statistics.get(player.getUniqueId()).get(statistic);
     }
@@ -36,7 +37,7 @@ public final class UntypedStatisticRepository implements PlayerAuditor {
         final Statistic statistic = event.getStatistic();
 
         if (statistic.getType() == Statistic.Type.UNTYPED) {
-            final TObjectIntMap<Statistic> preciseStatistics = statistics.get(event.getPlayer().getUniqueId());
+            final Object2IntMap<Statistic> preciseStatistics = statistics.get(event.getPlayer().getUniqueId());
             preciseStatistics.put(statistic, event.getNewValue());
         }
     }
