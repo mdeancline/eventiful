@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.AllArgsConstructor;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -24,15 +23,15 @@ public final class CacheableClassScanner implements ClassScanner {
             for (final Class<?> supertype : preciseSupertypes)
                 consumer.accept(supertype);
         else {
-            final List<Class<?>> scannedTypes = new ObjectArrayList<>();
+            final ObjectArrayList<Class<?>> scannedTypes = ObjectArrayList.wrap(new Class<?>[0]);
 
             scanner.scanSupertypes(clazz, supertype -> {
-                supertypes.put(supertype, scannedTypes.toArray(new Class[0]));
+                supertypes.put(supertype, scannedTypes.elements());
                 scannedTypes.add(supertype);
                 consumer.accept(supertype);
             });
 
-            supertypes.put(clazz, scannedTypes.toArray(new Class[0]));
+            supertypes.put(clazz, scannedTypes.elements());
         }
     }
 
