@@ -12,12 +12,7 @@ import io.github.eventiful.plugin.scanner.ClassGraphScanner;
 import io.github.eventiful.plugin.scanner.ClassScanner;
 import org.bukkit.event.Event;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.runner.Runner;
-import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.Options;
-import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -27,7 +22,7 @@ import java.util.logging.Logger;
 @Measurement(iterations = 1)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-public class EventPipelinePerformanceTest {
+public class EventPipelineBenchmark {
     @Benchmark
     public void EventDispatch_EventBus_HandledByEventListeners(final EventifulState state) {
         state.eventBus.dispatch(new MockEvent("Testing 1 2 3"));
@@ -41,39 +36,79 @@ public class EventPipelinePerformanceTest {
     }
 
     @Benchmark
-    @Timeout(time = 1)
     public void EventDispatch_PluginManagerMock_HandledByListeners(final BukkitState state) {
         state.mockServer.getPluginManager().callEvent(new MockEvent("Testing 1 2 3"));
     }
 
     @Benchmark
-    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypes(final EventifulState state) {
+    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypes_1(final EventifulState state) {
         state.eventBus.register(MockEvent.class, new MockEventListener());
     }
 
+    @OperationsPerInvocation(10)
     @Benchmark
-    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypesPreCached(final EventifulState state) {
-        state.classScanner.scanSubtypes(Event.class, ignored -> {
-        });
-        state.eventBus.register(MockEvent.class, new MockEventListener());
+    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypes_10(final EventifulState state) {
+        for (int i = 0; i < 10; i++)
+            state.eventBus.register(MockEvent.class, new MockEventListener());
+    }
+
+    @OperationsPerInvocation(100)
+    @Benchmark
+    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypes_100(final EventifulState state) {
+        for (int i = 0; i < 100; i++)
+            state.eventBus.register(MockEvent.class, new MockEventListener());
+    }
+
+    @OperationsPerInvocation(1000)
+    @Benchmark
+    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypes_1000(final EventifulState state) {
+        for (int i = 0; i < 1000; i++)
+            state.eventBus.register(MockEvent.class, new MockEventListener());
+    }
+
+    @OperationsPerInvocation(10000)
+    @Benchmark
+    public void ListenerRegistration_EventBus_AssociatesWithDerivativeEventTypes_10000(final EventifulState state) {
+        for (int i = 0; i < 10000; i++)
+            state.eventBus.register(MockEvent.class, new MockEventListener());
     }
 
     @Benchmark
-    @Timeout(time = 1)
-    public void ListenerRegistration_PluginManagerMock_AssociatesWithAbsoluteEventTypes(final BukkitState state) {
+    public void ListenerRegistration_PluginManagerMock_AssociatesWithAbsoluteEventTypes_1(final BukkitState state) {
         state.mockServer.getPluginManager().registerEvents(new MockListener(), state.mockPlugin);
     }
 
+    @OperationsPerInvocation(10)
     @Benchmark
-    @Timeout(time = 1)
+    public void ListenerRegistration_PluginManagerMock_AssociatesWithAbsoluteEventTypes_10(final BukkitState state) {
+        for (int i = 0; i < 10; i++)
+            state.mockServer.getPluginManager().registerEvents(new MockListener(), state.mockPlugin);
+    }
+
+    @OperationsPerInvocation(100)
+    @Benchmark
+    public void ListenerRegistration_PluginManagerMock_AssociatesWithAbsoluteEventTypes_100(final BukkitState state) {
+        for (int i = 0; i < 100; i++)
+            state.mockServer.getPluginManager().registerEvents(new MockListener(), state.mockPlugin);
+    }
+
+    @OperationsPerInvocation(1000)
+    @Benchmark
+    public void ListenerRegistration_PluginManagerMock_AssociatesWithAbsoluteEventTypes_1000(final BukkitState state) {
+        for (int i = 0; i < 1000; i++)
+            state.mockServer.getPluginManager().registerEvents(new MockListener(), state.mockPlugin);
+    }
+
+    @OperationsPerInvocation(10000)
+    @Benchmark
+    public void ListenerRegistration_PluginManagerMock_AssociatesWithAbsoluteEventTypes_10000(final BukkitState state) {
+        for (int i = 0; i < 10000; i++)
+            state.mockServer.getPluginManager().registerEvents(new MockListener(), state.mockPlugin);
+    }
+
+    @Benchmark
     public void ListenerRegistration_PluginManagerMock_HandledByProxyComponents(final EventifulState state) {
         state.mockServer.getPluginManager().registerEvents(new MockListener(), state.mockPlugin);
-    }
-
-    @Test
-    public void runBenchmarks() throws RunnerException {
-        final Options options = new OptionsBuilder().include(getClass().getName()).build();
-        new Runner(options).run();
     }
 
     @State(Scope.Benchmark)

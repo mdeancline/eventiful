@@ -3,12 +3,7 @@ package io.github.eventiful.plugin;
 import gnu.trove.map.hash.TObjectIntHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.bukkit.Statistic;
-import org.junit.Test;
 import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.runner.Runner;
-import org.openjdk.jmh.runner.RunnerException;
-import org.openjdk.jmh.runner.options.Options;
-import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -20,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 1)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
-public class StatisticStoragePerformanceTest {
+public class StatisticStorageBenchmark {
     private Statistic statistic;
     private HashMap<Statistic, Integer> hashMap;
     private IdentityHashMap<Statistic, Integer> identityHashMap;
@@ -303,11 +298,5 @@ public class StatisticStoragePerformanceTest {
     public void ValueRetrieval_StatisticKey_ReturnsValueFromTObjectIntHashMap_10000() {
         for (int i = 0; i < 10000; i++)
             tObjectIntHashMap.get(statistic);
-    }
-
-    @Test
-    public void runBenchmarks() throws RunnerException {
-        final Options options = new OptionsBuilder().include(getClass().getName()).build();
-        new Runner(options).run();
     }
 }
