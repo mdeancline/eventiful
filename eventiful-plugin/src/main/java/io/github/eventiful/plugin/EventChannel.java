@@ -17,11 +17,12 @@ import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("unchecked")
 class EventChannel<T extends Event> {
+    private static final EventListener<?>[] DEFAULT_CACHE = new EventListener[0];
+
     private final Map<EventToken, EventListener<T>> ownedListeners = new Object2ObjectOpenHashMap<>();
     private final Map<EventPriority, List<EventListener<T>>> orderedListeners = new EnumMap<>(EventPriority.class);
     private final EventTokenProvider tokenProvider;
-    private volatile EventListener<T>[] iterationCache;
-    private int size;
+    private volatile EventListener<T>[] iterationCache = (EventListener<T>[]) DEFAULT_CACHE;
 
     EventChannel(final EventTokenProvider tokenProvider) {
         this.tokenProvider = tokenProvider;
@@ -59,8 +60,9 @@ class EventChannel<T extends Event> {
 
     private void refreshIterationCache(final boolean increment) {
         CompletableFuture.runAsync(() -> {
+            int length = iterationCache.length;
             int i = 0;
-            iterationCache = new EventListener[increment ? ++size : --size];
+            iterationCache = new EventListener[increment ? ++length : --length];
 
             for (final Map.Entry<EventPriority, List<EventListener<T>>> entry : orderedListeners.entrySet())
                 for (final EventListener<T> listener : entry.getValue())
