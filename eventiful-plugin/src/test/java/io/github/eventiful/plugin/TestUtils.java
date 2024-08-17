@@ -26,8 +26,7 @@ public class TestUtils {
     }
 
     private void logPriority(final EventPriority priority) {
-        System.out.printf("Priority: %s (%s)", priority, priority.getSlot());
-        System.out.println();
+        System.out.printf("Priority: %s (%s)\n", priority, priority.getSlot());
     }
 
     public EventBusImpl createEventBusImpl(final MockPlugin mockPlugin) {
