@@ -5,17 +5,13 @@ import be.seeseemelk.mockbukkit.MockPlugin;
 import be.seeseemelk.mockbukkit.ServerMock;
 import io.github.classgraph.ClassGraph;
 import io.github.eventiful.api.EventBus;
-import io.github.eventiful.plugin.registration.EventTokenProvider;
-import io.github.eventiful.plugin.registration.SimpleEventTokenProvider;
 import io.github.eventiful.plugin.scanner.CacheableClassScanner;
 import io.github.eventiful.plugin.scanner.ClassGraphScanner;
 import io.github.eventiful.plugin.scanner.ClassScanner;
 import org.bukkit.event.Event;
-import org.jetbrains.annotations.NotNull;
 import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 @Fork(1)
 @Warmup(iterations = 1)
@@ -123,13 +119,7 @@ public class EventPipelineBenchmark {
             mockServer = MockBukkit.mock();
             mockPlugin = MockBukkit.createMockPlugin();
             classScanner = new CacheableClassScanner(new ClassGraphScanner(new ClassGraph().enableAllInfo()));
-            eventBus = createEventBus();
-        }
-
-        private @NotNull EventBus createEventBus() {
-            final EventLogger logger = new EventLogger(Logger.getGlobal());
-            final EventTokenProvider tokenProvider = new SimpleEventTokenProvider();
-            return new EventBusImpl(classScanner, logger, tokenProvider, mockPlugin);
+            eventBus = TestUtils.createEventBusImpl(mockPlugin);
         }
 
         @TearDown

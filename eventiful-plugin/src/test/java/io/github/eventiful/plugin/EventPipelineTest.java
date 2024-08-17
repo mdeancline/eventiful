@@ -1,9 +1,7 @@
 package io.github.eventiful.plugin;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
-import be.seeseemelk.mockbukkit.MockPlugin;
-import io.github.eventiful.plugin.registration.SimpleEventRegistration;
-import io.github.eventiful.plugin.registration.SimpleEventTokenProvider;
+import io.github.eventiful.api.EventBus;
 import org.bukkit.event.EventPriority;
 import org.junit.After;
 import org.junit.Before;
@@ -16,42 +14,40 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 public class EventPipelineTest {
-    private MockPlugin mockPlugin;
-    private EventChannel<MockEvent> mockChannel;
+    private EventBus eventBus;
 
     @Before
     public void setUp() {
         MockBukkit.mock();
-        mockPlugin = MockBukkit.createMockPlugin();
-        mockChannel = new EventChannel<>(new SimpleEventTokenProvider());
+        eventBus = TestUtils.createEventBusImpl(MockBukkit.createMockPlugin());
     }
 
     @After
     public void tearDown() {
         MockBukkit.unmock();
-        mockChannel = null;
+        eventBus = null;
     }
 
     @Test
     public void ListenerRegistration_EventChannel_AssociatesWithTokenAndByPriority() {
-        mockChannel.register(new SimpleEventRegistration<>(MockEvent.class, new MockEventListener(), mockPlugin));
+        eventBus.register(MockEvent.class, new MockEventListener());
     }
 
     @Test
     public void ListenerRegistration_EventChannel_AssociatesWithTokensAndByDifferentPriority() {
-        mockChannel.register(new SimpleEventRegistration<>(MockEvent.class, new MockEventListener(), mockPlugin));
-        mockChannel.register(new SimpleEventRegistration<>(MockEvent.class, new MockEventListener(EventPriority.HIGHEST), mockPlugin));
-        mockChannel.register(new SimpleEventRegistration<>(MockEvent.class, new MockEventListener(EventPriority.LOWEST), mockPlugin));
-        mockChannel.register(new SimpleEventRegistration<>(MockEvent.class, new MockEventListener(EventPriority.HIGH), mockPlugin));
-        mockChannel.register(new SimpleEventRegistration<>(MockEvent.class, new MockEventListener(EventPriority.HIGH), mockPlugin));
-        mockChannel.register(new SimpleEventRegistration<>(MockEvent.class, new MockEventListener(EventPriority.HIGH), mockPlugin));
-        mockChannel.register(new SimpleEventRegistration<>(MockEvent.class, new MockEventListener(EventPriority.LOW), mockPlugin));
+        eventBus.register(MockEvent.class, new MockEventListener());
+        eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGHEST));
+        eventBus.register(MockEvent.class, new MockEventListener(EventPriority.LOWEST));
+        eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGH));
+        eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGH));
+        eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGH));
+        eventBus.register(MockEvent.class, new MockEventListener(EventPriority.LOW));
     }
 
     @Test
     public void ListenerRegistration_EventChannel_AssociatesWithTokensAndByDifferentPriorityThenIterates() {
         ListenerRegistration_EventChannel_AssociatesWithTokensAndByDifferentPriority();
-        mockChannel.dispatch(new MockEvent("Testing 1 2 3"));
+        eventBus.dispatch(new MockEvent("Testing 1 2 3"));
     }
 
     @Ignore
