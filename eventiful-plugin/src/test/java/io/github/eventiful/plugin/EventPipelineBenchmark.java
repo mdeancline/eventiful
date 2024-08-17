@@ -13,9 +13,9 @@ import org.openjdk.jmh.annotations.*;
 
 import java.util.concurrent.TimeUnit;
 
-@Fork(1)
-@Warmup(iterations = 1)
-@Measurement(iterations = 1)
+@Fork(2)
+@Warmup(iterations = 3)
+@Measurement(iterations = 5)
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 public class EventPipelineBenchmark {
