@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 
 import static org.junit.Assert.assertEquals;
 
-public class BatchIterationTest {
+public class BatchArrayTest {
     private Consumer<EventListener<MockEvent>> consumer;
 
     @Before
@@ -32,32 +32,40 @@ public class BatchIterationTest {
     }
 
     @Test
-    public void ArrayIteration_Partitioned4ArrayIterator_WithDifferentLengths() {
-        testBatchArrayIterator(4, Batch4ArrayIterator.class);
-        testBatchArrayIterator(6, Batch4ArrayIterator.class);
+    public void Iteration_Batch4Array_IteratesLength4() {
+        testBatchArrayIteration(4, Batch4Array.class);
     }
 
     @Test
-    public void ArrayIteration_Partitioned8ArrayIterator_WithDifferentLengths() {
-        testBatchArrayIterator(8, Batch8ArrayIterator.class);
-        testBatchArrayIterator(10, Batch8ArrayIterator.class);
+    public void Iteration_Batch8Array_IteratesLength6() {
+        testBatchArrayIteration(6, Batch4Array.class);
     }
 
-    private void testBatchArrayIterator(final int length, final Class<?> expectedIteratorClass) {
+    @Test
+    public void Iteration_Batch8Array_IteratesLength8() {
+        testBatchArrayIteration(8, Batch8Array.class);
+    }
+
+    @Test
+    public void Iteration_Batch8Array_IteratesLength10() {
+        testBatchArrayIteration(10, Batch8Array.class);
+    }
+
+    private void testBatchArrayIteration(final int length, final Class<?> expectedClass) {
         final EventListener<MockEvent>[] array = TestUtils.copiesOf(new MockEventListener(), length);
         assertEquals(length, array.length);
 
-        final BatchIterator<EventListener<MockEvent>> iterator = BatchIterators.of(array);
-        assertEquals(expectedIteratorClass, iterator.getClass());
+        final Iterable<EventListener<MockEvent>> batchArray = BatchIterables.of(array);
+        assertEquals(expectedClass, batchArray.getClass());
 
-        iterator.iterate(consumer);
+        batchArray.forEach(consumer);
     }
 
     @Ignore
     @Test
     public void runBenchmark() throws RunnerException {
         final Options options = new OptionsBuilder()
-                .include(BatchIterationBenchmark.class.getName())
+                .include(BatchArrayBenchmark.class.getName())
                 .resultFormat(ResultFormatType.JSON)
                 .build();
         new Runner(options).run();

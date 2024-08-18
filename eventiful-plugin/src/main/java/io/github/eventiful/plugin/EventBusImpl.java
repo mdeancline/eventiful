@@ -4,8 +4,7 @@ import io.github.eventiful.api.EventToken;
 import io.github.eventiful.api.exception.EventConcurrencyException;
 import io.github.eventiful.api.exception.EventRegistrationException;
 import io.github.eventiful.api.listener.EventListener;
-import io.github.eventiful.plugin.iteration.BatchIterator;
-import io.github.eventiful.plugin.iteration.BatchIterators;
+import io.github.eventiful.plugin.iteration.BatchIterables;
 import io.github.eventiful.plugin.registration.EventRegistration;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
 import io.github.eventiful.plugin.registration.SimpleEventRegistration;
@@ -20,6 +19,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +84,7 @@ public class EventBusImpl implements ServerEventBus {
         private final Map<EventToken, EventListener<T>> ownedListeners = new Object2ObjectOpenHashMap<>();
         private final Map<EventPriority, List<EventListener<T>>> orderedListeners = new EnumMap<>(EventPriority.class);
         private final EventTokenProvider tokenProvider;
-        private volatile BatchIterator<EventListener<T>> listenerIterator = BatchIterators.empty();
+        private volatile Iterable<EventListener<T>> iterationCache = Collections.emptyList();
         private int size;
 
         private Channel(final EventTokenProvider tokenProvider) {
@@ -95,7 +95,7 @@ public class EventBusImpl implements ServerEventBus {
         }
 
         public void dispatch(final T event) {
-            listenerIterator.iterate(listener -> listener.handle(event));
+            iterationCache.forEach(listener -> listener.handle(event));
         }
 
         public synchronized EventToken register(final EventRegistration<T> registration) {
@@ -130,7 +130,7 @@ public class EventBusImpl implements ServerEventBus {
                     for (final EventListener<T> listener : entry.getValue())
                         cache[i++] = listener;
 
-                listenerIterator = BatchIterators.of(cache);
+                iterationCache = BatchIterables.of(cache);
             });
         }
     }
