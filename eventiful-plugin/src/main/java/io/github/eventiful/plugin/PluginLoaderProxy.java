@@ -1,5 +1,7 @@
 package io.github.eventiful.plugin;
 
+import lombok.AllArgsConstructor;
+import lombok.experimental.Delegate;
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
@@ -11,17 +13,15 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
-class PluginLoaderProxy extends AbstractPluginLoader {
+@AllArgsConstructor
+class PluginLoaderProxy implements PluginLoader {
+    @Delegate
+    private final PluginLoader source;
     private final ListenerRegistry registry;
-
-    PluginLoaderProxy(final PluginLoader delegate, final ListenerRegistry registry) {
-        super(delegate);
-        this.registry = registry;
-    }
 
     @NotNull
     @Override
-    public Map<Class<? extends Event>, Set<RegisteredListener>> createRegisteredListeners(final Listener listener, final Plugin plugin) {
+    public Map<Class<? extends Event>, Set<RegisteredListener>> createRegisteredListeners(@NotNull final Listener listener, @NotNull final Plugin plugin) {
         registry.register(listener, plugin);
         return Collections.emptyMap(); // The Bukkit event system uses this when registering listeners in its own way
     }
