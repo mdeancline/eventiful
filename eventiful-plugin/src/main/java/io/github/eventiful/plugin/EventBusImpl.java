@@ -27,8 +27,6 @@ import java.util.concurrent.Executors;
 @Setter
 @RequiredArgsConstructor
 public class EventBusImpl implements ServerEventBus {
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
-
     private final Map<Class<?>, Channel<Event>> channels = new Object2ObjectOpenHashMap<>();
     private final ClassScanner classScanner;
     private final EventLogger logger;
@@ -80,6 +78,7 @@ public class EventBusImpl implements ServerEventBus {
 
     @SuppressWarnings("unchecked")
     private static class Channel<T extends Event> {
+        private static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
         private static final EventListener<?>[] DEFAULT_CACHE = new EventListener[0];
 
         private final Map<EventToken, EventListener<T>> ownedListeners = new Object2ObjectOpenHashMap<>();
