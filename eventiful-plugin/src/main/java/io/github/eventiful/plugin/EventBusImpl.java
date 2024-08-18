@@ -4,6 +4,8 @@ import io.github.eventiful.api.EventToken;
 import io.github.eventiful.api.exception.EventConcurrencyException;
 import io.github.eventiful.api.exception.EventRegistrationException;
 import io.github.eventiful.api.listener.EventListener;
+import io.github.eventiful.plugin.iteration.BatchIterator;
+import io.github.eventiful.plugin.iteration.BatchIterators;
 import io.github.eventiful.plugin.registration.EventRegistration;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
 import io.github.eventiful.plugin.registration.SimpleEventRegistration;
@@ -76,15 +78,14 @@ public class EventBusImpl implements ServerEventBus {
         channels.get(token.getType()).unregister(token);
     }
 
-    @SuppressWarnings("unchecked")
     private static class Channel<T extends Event> {
         private static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
-        private static final EventListener<?>[] DEFAULT_CACHE = new EventListener[0];
 
         private final Map<EventToken, EventListener<T>> ownedListeners = new Object2ObjectOpenHashMap<>();
         private final Map<EventPriority, List<EventListener<T>>> orderedListeners = new EnumMap<>(EventPriority.class);
         private final EventTokenProvider tokenProvider;
-        private volatile EventListener<T>[] iterationCache = (EventListener<T>[]) DEFAULT_CACHE;
+        private volatile BatchIterator<EventListener<T>> listenerIterator = BatchIterators.empty();
+        private int size;
 
         private Channel(final EventTokenProvider tokenProvider) {
             this.tokenProvider = tokenProvider;
@@ -94,8 +95,7 @@ public class EventBusImpl implements ServerEventBus {
         }
 
         public void dispatch(final T event) {
-            for (final EventListener<T> listener : iterationCache)
-                listener.handle(event);
+            listenerIterator.iterate(listener -> listener.handle(event));
         }
 
         public synchronized EventToken register(final EventRegistration<T> registration) {
@@ -106,7 +106,7 @@ public class EventBusImpl implements ServerEventBus {
             final List<EventListener<T>> listeners = orderedListeners.get(priority);
             listeners.add(registration.getListener());
             ownedListeners.put(token, listener);
-            refreshIterationCache(true);
+            updateListenerIterator(true);
 
             return token;
         }
@@ -117,18 +117,20 @@ public class EventBusImpl implements ServerEventBus {
                 throw new EventRegistrationException("No EventListener under that EventToken is registered");
 
             orderedListeners.get(token.getPriority()).remove(listener);
-            refreshIterationCache(false);
+            updateListenerIterator(false);
         }
 
-        private void refreshIterationCache(final boolean increment) {
+        @SuppressWarnings("unchecked")
+        private void updateListenerIterator(final boolean increment) {
             EXECUTOR_SERVICE.execute(() -> {
-                int length = iterationCache.length;
                 int i = 0;
-                iterationCache = new EventListener[increment ? ++length : --length];
+                final EventListener<T>[] cache = new EventListener[increment ? ++size : --size];
 
                 for (final Map.Entry<EventPriority, List<EventListener<T>>> entry : orderedListeners.entrySet())
                     for (final EventListener<T> listener : entry.getValue())
-                        iterationCache[i++] = listener;
+                        cache[i++] = listener;
+
+                listenerIterator = BatchIterators.of(cache);
             });
         }
     }

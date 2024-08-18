@@ -35,4 +35,13 @@ public class TestUtils {
         final ClassScanner classScanner = new CacheableClassScanner(new ClassGraphScanner(new ClassGraph().enableAllInfo()));
         return new EventBusImpl(classScanner, logger, tokenProvider, mockPlugin);
     }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T[] copiesOf(final T source, final int length) {
+        final T[] spanned = (T[]) Array.newInstance(source.getClass(), length);
+        for (int i = 0; i < length; i++)
+            spanned[i] = source;
+
+        return spanned;
+    }
 }
