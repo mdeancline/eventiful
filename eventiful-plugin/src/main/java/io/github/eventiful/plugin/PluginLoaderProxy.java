@@ -24,7 +24,8 @@ class PluginLoaderProxy implements PluginLoader {
     public Map<Class<? extends Event>, Set<RegisteredListener>> createRegisteredListeners(@NotNull final Listener listener, @NotNull final Plugin plugin) {
         registry.register(listener, plugin);
 
-        // The Bukkit event system uses this when registering listeners in its own way
+        // Returning an empty map here prevents the default Bukkit event system
+        // from activating, which is not needed in this context.
         return Collections.emptyMap();
     }
 }
