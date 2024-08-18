@@ -105,7 +105,7 @@ public class EventBusImpl implements ServerEventBus {
             final List<EventListener<T>> listeners = orderedListeners.get(priority);
             listeners.add(registration.getListener());
             ownedListeners.put(token, listener);
-            updateListenerIterator(true);
+            updateIterationCache(true);
 
             return token;
         }
@@ -116,11 +116,11 @@ public class EventBusImpl implements ServerEventBus {
                 throw new EventRegistrationException("No EventListener under that EventToken is registered");
 
             orderedListeners.get(token.getPriority()).remove(listener);
-            updateListenerIterator(false);
+            updateIterationCache(false);
         }
 
         @SuppressWarnings("unchecked")
-        private void updateListenerIterator(final boolean increment) {
+        private void updateIterationCache(final boolean increment) {
             CompletableFuture.runAsync(() -> {
                 int i = 0;
                 iterationCache = new EventListener[increment ? ++size : --size];
