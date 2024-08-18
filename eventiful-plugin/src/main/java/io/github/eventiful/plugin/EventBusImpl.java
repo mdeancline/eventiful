@@ -99,7 +99,7 @@ public class EventBusImpl implements ServerEventBus {
                 listener.handle(event);
         }
 
-        public EventToken register(final EventRegistration<T> registration) {
+        public synchronized EventToken register(final EventRegistration<T> registration) {
             final EventToken token = tokenProvider.createToken(registration);
             final EventListener<T> listener = registration.getListener();
             final EventPriority priority = registration.getPriority();
@@ -112,7 +112,7 @@ public class EventBusImpl implements ServerEventBus {
             return token;
         }
 
-        public void unregister(final EventToken token) {
+        public synchronized void unregister(final EventToken token) {
             final EventListener<T> listener = ownedListeners.remove(token);
             if (listener == null)
                 throw new EventRegistrationException("No EventListener under that EventToken is registered");
