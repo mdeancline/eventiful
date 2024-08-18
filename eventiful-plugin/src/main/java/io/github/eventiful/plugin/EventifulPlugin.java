@@ -48,6 +48,12 @@ public class EventifulPlugin extends JavaPlugin {
         return new UnsafeReflectionAccess();
     }
 
+    private ListenerReflector createListenerReflector() {
+        final ListenerReflector methodAccessReflector = new MethodAccessListenerReflector();
+        final ListenerReflector cancellableReflector = new CancellableListenerReflector(methodAccessReflector);
+        return new CacheableListenerReflector(cancellableReflector);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void onLoad() {
@@ -95,11 +101,5 @@ public class EventifulPlugin extends JavaPlugin {
                 }
             }
         }
-    }
-
-    private ListenerReflector createListenerReflector() {
-        final ListenerReflector methodAccessReflector = new MethodAccessListenerReflector();
-        final ListenerReflector cancellableReflector = new CancellableListenerReflector(methodAccessReflector);
-        return new CacheableListenerReflector(cancellableReflector);
     }
 }
