@@ -21,8 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.CompletableFuture;
 
 @Setter
 @RequiredArgsConstructor
@@ -78,7 +77,6 @@ public class EventBusImpl implements ServerEventBus {
 
     @SuppressWarnings("unchecked")
     private static class Channel<T extends Event> {
-        private static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
         private static final EventListener<?>[] DEFAULT_CACHE = new EventListener[0];
 
         private final Map<EventToken, EventListener<T>> ownedListeners = new Object2ObjectOpenHashMap<>();
@@ -123,7 +121,7 @@ public class EventBusImpl implements ServerEventBus {
 
         @SuppressWarnings("unchecked")
         private void updateListenerIterator(final boolean increment) {
-            EXECUTOR_SERVICE.execute(() -> {
+            CompletableFuture.runAsync(() -> {
                 int i = 0;
                 iterationCache = new EventListener[increment ? ++size : --size];
 
