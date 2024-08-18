@@ -1,4 +1,4 @@
-package io.github.eventiful.plugin;
+package io.github.eventiful.plugin.player;
 
 import gnu.trove.map.hash.TObjectIntHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;

@@ -1,4 +1,4 @@
-package io.github.eventiful.plugin;
+package io.github.eventiful.plugin.player;
 
 import org.junit.Test;
 import org.openjdk.jmh.runner.Runner;
