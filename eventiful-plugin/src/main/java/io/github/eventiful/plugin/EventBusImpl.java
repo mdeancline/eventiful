@@ -21,11 +21,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 @Setter
 @RequiredArgsConstructor
 public class EventBusImpl implements ServerEventBus {
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
+
     private final Map<Class<?>, Channel<Event>> channels = new Object2ObjectOpenHashMap<>();
     private final ClassScanner classScanner;
     private final EventLogger logger;
@@ -119,7 +122,7 @@ public class EventBusImpl implements ServerEventBus {
         }
 
         private void refreshIterationCache(final boolean increment) {
-            Executors.newSingleThreadExecutor().execute(() -> {
+            EXECUTOR_SERVICE.execute(() -> {
                 int length = iterationCache.length;
                 int i = 0;
                 iterationCache = new EventListener[increment ? ++length : --length];
