@@ -11,12 +11,13 @@ import io.github.eventiful.plugin.scanner.ClassScanner;
 import lombok.experimental.UtilityClass;
 import org.bukkit.event.EventPriority;
 
+import java.lang.reflect.Array;
 import java.util.logging.Logger;
 
 @UtilityClass
 public class TestUtils {
     public void logEvent(final MockEvent event, final EventPriority priority) {
-        System.out.println(event.getEventName() + " was called");
+        System.out.print(event.getEventName() + " was called");
         logPriority(priority);
     }
 
@@ -26,7 +27,7 @@ public class TestUtils {
     }
 
     private void logPriority(final EventPriority priority) {
-        System.out.printf("Priority: %s (%s)\n", priority, priority.getSlot());
+        System.out.printf("; priority: %s (%s)\n", priority, priority.getSlot());
     }
 
     public EventBusImpl createEventBusImpl(final MockPlugin mockPlugin) {
