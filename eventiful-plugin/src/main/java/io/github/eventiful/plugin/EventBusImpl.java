@@ -4,7 +4,6 @@ import io.github.eventiful.api.EventToken;
 import io.github.eventiful.api.exception.EventConcurrencyException;
 import io.github.eventiful.api.exception.EventRegistrationException;
 import io.github.eventiful.api.listener.EventListener;
-import io.github.eventiful.plugin.iteration.BatchIterables;
 import io.github.eventiful.plugin.registration.EventRegistration;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
 import io.github.eventiful.plugin.registration.SimpleEventRegistration;
@@ -19,7 +18,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -78,13 +76,15 @@ public class EventBusImpl implements ServerEventBus {
         channels.get(token.getType()).unregister(token);
     }
 
+    @SuppressWarnings("unchecked")
     private static class Channel<T extends Event> {
         private static final ExecutorService EXECUTOR_SERVICE = Executors.newSingleThreadExecutor();
+        private static final EventListener<?>[] DEFAULT_CACHE = new EventListener[0];
 
         private final Map<EventToken, EventListener<T>> ownedListeners = new Object2ObjectOpenHashMap<>();
         private final Map<EventPriority, List<EventListener<T>>> orderedListeners = new EnumMap<>(EventPriority.class);
         private final EventTokenProvider tokenProvider;
-        private volatile Iterable<EventListener<T>> iterationCache = Collections.emptyList();
+        private volatile EventListener<T>[] iterationCache = (EventListener<T>[]) DEFAULT_CACHE;
         private int size;
 
         private Channel(final EventTokenProvider tokenProvider) {
@@ -95,7 +95,8 @@ public class EventBusImpl implements ServerEventBus {
         }
 
         public void dispatch(final T event) {
-            iterationCache.forEach(listener -> listener.handle(event));
+            for (final EventListener<T> listener : iterationCache)
+                listener.handle(event);
         }
 
         public synchronized EventToken register(final EventRegistration<T> registration) {
@@ -124,13 +125,11 @@ public class EventBusImpl implements ServerEventBus {
         private void updateListenerIterator(final boolean increment) {
             EXECUTOR_SERVICE.execute(() -> {
                 int i = 0;
-                final EventListener<T>[] cache = new EventListener[increment ? ++size : --size];
+                iterationCache = new EventListener[increment ? ++size : --size];
 
                 for (final Map.Entry<EventPriority, List<EventListener<T>>> entry : orderedListeners.entrySet())
                     for (final EventListener<T> listener : entry.getValue())
-                        cache[i++] = listener;
-
-                iterationCache = BatchIterables.of(cache);
+                        iterationCache[i++] = listener;
             });
         }
     }

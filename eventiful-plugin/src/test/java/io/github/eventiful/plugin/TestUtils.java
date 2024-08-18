@@ -11,7 +11,6 @@ import io.github.eventiful.plugin.scanner.ClassScanner;
 import lombok.experimental.UtilityClass;
 import org.bukkit.event.EventPriority;
 
-import java.lang.reflect.Array;
 import java.util.logging.Logger;
 
 @UtilityClass
@@ -35,14 +34,5 @@ public class TestUtils {
         final EventTokenProvider tokenProvider = new SimpleEventTokenProvider();
         final ClassScanner classScanner = new CacheableClassScanner(new ClassGraphScanner(new ClassGraph().enableAllInfo()));
         return new EventBusImpl(classScanner, logger, tokenProvider, mockPlugin);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> T[] copiesOf(final T source, final int length) {
-        final T[] spanned = (T[]) Array.newInstance(source.getClass(), length);
-        for (int i = 0; i < length; i++)
-            spanned[i] = source;
-
-        return spanned;
     }
 }
