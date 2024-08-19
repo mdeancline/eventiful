@@ -1,6 +1,6 @@
 package io.github.eventiful.plugin.reflect;
 
-import io.github.eventiful.plugin.MockEvent;
+import io.github.eventiful.MockEvent;
 import io.github.eventiful.plugin.MockHandlerList;
 import org.junit.After;
 import org.junit.Before;

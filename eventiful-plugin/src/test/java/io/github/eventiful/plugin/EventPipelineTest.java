@@ -1,6 +1,9 @@
 package io.github.eventiful.plugin;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
+import io.github.eventiful.MockEvent;
+import io.github.eventiful.MockEventListener;
+import io.github.eventiful.TestUtils;
 import io.github.eventiful.api.EventBus;
 import io.github.eventiful.api.EventToken;
 import org.bukkit.event.EventPriority;

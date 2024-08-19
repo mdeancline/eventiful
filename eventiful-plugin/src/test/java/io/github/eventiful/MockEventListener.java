@@ -1,4 +1,4 @@
-package io.github.eventiful.plugin;
+package io.github.eventiful;
 
 import io.github.eventiful.api.listener.EventListener;
 import lombok.AllArgsConstructor;

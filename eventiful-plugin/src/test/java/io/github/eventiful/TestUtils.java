@@ -1,7 +1,9 @@
-package io.github.eventiful.plugin;
+package io.github.eventiful;
 
 import be.seeseemelk.mockbukkit.MockPlugin;
 import io.github.classgraph.ClassGraph;
+import io.github.eventiful.plugin.EventBusImpl;
+import io.github.eventiful.plugin.EventLogger;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
 import io.github.eventiful.plugin.registration.SimpleEventTokenProvider;
 import io.github.eventiful.plugin.scanner.CacheableClassScanner;
