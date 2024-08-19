@@ -17,8 +17,6 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import static org.junit.Assert.assertTrue;
-
 public class EventPipelineTest {
     private EventBus eventBus;
 
@@ -57,7 +55,7 @@ public class EventPipelineTest {
     }
 
     private void assertRegistered(final EventToken token) {
-        assertTrue(eventBus.isRegistered(token));
+        TestUtils.assertRegistered(eventBus, token);
     }
 
     @Ignore
