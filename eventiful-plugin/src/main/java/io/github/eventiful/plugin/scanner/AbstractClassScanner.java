@@ -7,6 +7,6 @@ abstract class AbstractClassScanner implements ClassScanner {
     public final void scanSupertypesExcludingObject(final Class<?> type, final Consumer<Class<?>> consumer) {
         Class<?> supertype = type;
         while ((supertype = supertype.getSuperclass()) != Object.class)
-            consumer.accept(supertype = supertype.getSuperclass());
+            consumer.accept(supertype);
     }
 }
