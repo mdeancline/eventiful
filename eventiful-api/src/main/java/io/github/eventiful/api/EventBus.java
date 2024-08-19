@@ -47,4 +47,13 @@ public interface EventBus {
      * @param token The token representing the listener registration to be removed.
      */
     void unregister(@NotNull EventToken token);
+
+    /**
+     * Determines if an {@link EventListener} is registered from its associated {@link EventToken}.
+     *
+     * @param token The token representing the listener registration.
+     * @return {@code true} if the listener associated with the given token is currently registered;
+     * {@code false} otherwise.
+     */
+    boolean isRegistered(@NotNull EventToken token);
 }

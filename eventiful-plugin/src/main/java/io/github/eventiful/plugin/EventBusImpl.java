@@ -75,6 +75,12 @@ public class EventBusImpl implements ServerEventBus {
         channels.get(token.getType()).unregister(token);
     }
 
+    @Override
+    public boolean isRegistered(@NotNull final EventToken token) {
+        final Channel<?> channel = channels.get(token.getType());
+        return channel != null && channel.isRegistered(token);
+    }
+
     @SuppressWarnings("unchecked")
     private static class Channel<T extends Event> {
         private static final EventListener<?>[] DEFAULT_CACHE = new EventListener[0];
@@ -129,6 +135,10 @@ public class EventBusImpl implements ServerEventBus {
                     for (final EventListener<T> listener : entry.getValue())
                         iterationCache[i++] = listener;
             });
+        }
+
+        public boolean isRegistered(final EventToken token) {
+            return ownedListeners.containsKey(token);
         }
     }
 }
