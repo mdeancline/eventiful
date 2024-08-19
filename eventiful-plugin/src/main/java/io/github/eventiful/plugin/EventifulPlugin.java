@@ -2,6 +2,8 @@ package io.github.eventiful.plugin;
 
 import io.github.classgraph.ClassGraph;
 import io.github.eventiful.api.EventBus;
+import io.github.eventiful.api.event.server.ServerLoadEvent;
+import io.github.eventiful.api.exception.EventRegistrationException;
 import io.github.eventiful.api.listener.decorator.IdentityEventInclusion;
 import io.github.eventiful.plugin.player.PlayerJoinListener;
 import io.github.eventiful.plugin.player.PlayerQuitListener;
@@ -100,6 +102,26 @@ public class EventifulPlugin extends JavaPlugin {
                     break;
                 }
             }
+        }
+
+        if (getReloadCount() == 0)
+            eventBus.dispatch(new ServerLoadEvent(ServerLoadEvent.LoadType.STARTUP));
+
+        Bukkit.getScheduler().runTaskLater(this, ()
+                -> eventBus.dispatch(new ServerLoadEvent(ServerLoadEvent.LoadType.FINISHED)), 1);
+    }
+
+    @Override
+    public void onDisable() {
+        if (getReloadCount() > 0)
+            eventBus.dispatch(new ServerLoadEvent(ServerLoadEvent.LoadType.RELOAD));
+    }
+
+    private int getReloadCount() {
+        try {
+            return (int) reflectionAccess.getObject(getServer().getClass().getDeclaredField("reloadCount"), getServer());
+        } catch (NoSuchFieldException e) {
+            throw new EventRegistrationException(e);
         }
     }
 }
