@@ -13,6 +13,7 @@ import io.github.eventiful.plugin.scanner.ClassGraphScanner;
 import io.github.eventiful.plugin.scanner.ClassScanner;
 import lombok.experimental.UtilityClass;
 
+import java.util.concurrent.CompletionStage;
 import java.util.logging.Logger;
 
 import static org.junit.Assert.assertTrue;
@@ -26,7 +27,11 @@ public class TestUtils {
         return new EventBusImpl(classScanner, logger, tokenProvider, mockPlugin);
     }
 
-    public void assertRegistered(final EventBus eventBus, final EventToken token) {
+    public void assertRegistration(final EventBus eventBus, final CompletionStage<EventToken> tokenStage) {
+        tokenStage.thenAccept(token -> assertRegistration(eventBus, token));
+    }
+
+    public void assertRegistration(final EventBus eventBus, final EventToken token) {
         assertTrue(eventBus.isRegistered(token));
     }
 }

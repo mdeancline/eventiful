@@ -43,7 +43,7 @@ class ListenerRegistry {
 
     private void associateRegistration(final EventRegistration<?> registration, final Listener listener) {
         final List<EventToken> ownedTokens = tokens.computeIfAbsent(listener, k -> new LinkedList<>());
-        ownedTokens.add(eventBus.register(registration));
+        eventBus.register(registration).thenAccept(ownedTokens::add);
     }
 
     public void unregister(final Listener listener) {

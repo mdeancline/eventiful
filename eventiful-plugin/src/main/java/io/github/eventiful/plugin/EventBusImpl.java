@@ -22,15 +22,21 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.function.Supplier;
 
 @Setter
 @RequiredArgsConstructor
 public class EventBusImpl implements ServerEventBus {
+    private static final EventListener<?>[] DEFAULT_CACHE = new EventListener[0];
+
     private final Map<Class<?>, Channel<Event>> channels = new Object2ObjectOpenHashMap<>();
     private final ClassScanner classScanner;
     private final EventLogger logger;
     private final EventTokenProvider tokenProvider;
     private final Plugin plugin;
+    @Setter
+    private boolean serverLoaded;
 
     @Override
     public void dispatch(@NotNull final Event event) {
@@ -52,12 +58,12 @@ public class EventBusImpl implements ServerEventBus {
     }
 
     @Override
-    public <T extends Event> EventToken register(@NotNull final Class<T> type, @NotNull final EventListener<T> listener) {
+    public <T extends Event> CompletionStage<EventToken> register(@NotNull final Class<T> type, @NotNull final EventListener<T> listener) {
         return register(new SimpleEventRegistration<>(type, listener, plugin));
     }
 
     @Override
-    public EventToken register(final EventRegistration<?> registration) {
+    public CompletionStage<EventToken> register(final EventRegistration<?> registration) {
         if (!plugin.equals(registration.getPlugin()) && registration.getEventType().isAnnotationPresent(Deprecated.class))
             logger.logDeprecation(registration);
 
@@ -65,7 +71,7 @@ public class EventBusImpl implements ServerEventBus {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Event> EventToken registerAsTyped(final EventRegistration<T> registration) {
+    private <T extends Event> CompletionStage<EventToken> registerAsTyped(final EventRegistration<T> registration) {
         final Channel<T> channel = (Channel<T>) channels.computeIfAbsent(registration.getEventType(), k
                 -> new Channel<>(tokenProvider));
         return channel.register(registration);
@@ -83,9 +89,7 @@ public class EventBusImpl implements ServerEventBus {
     }
 
     @SuppressWarnings("unchecked")
-    private static class Channel<T extends Event> {
-        private static final EventListener<?>[] DEFAULT_CACHE = new EventListener[0];
-
+    private class Channel<T extends Event> {
         private final Map<EventToken, EventListener<T>> ownedListeners = new Object2ObjectOpenHashMap<>();
         private final Map<EventPriority, List<EventListener<T>>> orderedListeners = new EnumMap<>(EventPriority.class);
         private final EventTokenProvider tokenProvider;
@@ -104,7 +108,7 @@ public class EventBusImpl implements ServerEventBus {
                 listener.handle(event);
         }
 
-        public synchronized EventToken register(final EventRegistration<T> registration) {
+        public synchronized CompletionStage<EventToken> register(final EventRegistration<T> registration) {
             final EventToken token = tokenProvider.createToken(registration);
             final EventListener<T> listener = registration.getListener();
             final EventPriority priority = registration.getPriority();
@@ -112,9 +116,8 @@ public class EventBusImpl implements ServerEventBus {
             final List<EventListener<T>> listeners = orderedListeners.get(priority);
             listeners.add(registration.getListener());
             ownedListeners.put(token, listener);
-            updateIterationCache(true);
 
-            return token;
+            return updateIterationCache(token, true);
         }
 
         public synchronized void unregister(final EventToken token) {
@@ -123,19 +126,27 @@ public class EventBusImpl implements ServerEventBus {
                 throw new EventRegistrationException("No EventListener under that EventToken is registered");
 
             orderedListeners.get(token.getPriority()).remove(listener);
-            updateIterationCache(false);
+            updateIterationCache(token, false);
+        }
+
+        private CompletionStage<EventToken> updateIterationCache(final EventToken token, final boolean increment) {
+            return serverLoaded
+                    ? CompletableFuture.supplyAsync(createUpdateIterationCacheTask(token, increment))
+                    : CompletableFuture.completedFuture(createUpdateIterationCacheTask(token, increment).get());
         }
 
         @SuppressWarnings("unchecked")
-        private void updateIterationCache(final boolean increment) {
-            CompletableFuture.runAsync(() -> {
+        private Supplier<EventToken> createUpdateIterationCacheTask(final EventToken token, final boolean increment) {
+            return () -> {
                 int i = 0;
                 iterationCache = new EventListener[increment ? ++size : --size];
 
                 for (final Map.Entry<EventPriority, List<EventListener<T>>> entry : orderedListeners.entrySet())
                     for (final EventListener<T> listener : entry.getValue())
                         iterationCache[i++] = listener;
-            });
+
+                return token;
+            };
         }
 
         public boolean isRegistered(final EventToken token) {
