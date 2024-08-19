@@ -47,7 +47,8 @@ public class EventBusImpl implements ServerEventBus {
 
     private void publishToChannel(final Event event, final Class<?> type) {
         final Channel<Event> channel = channels.get(type);
-        if (channel != null) channel.dispatch(event);
+        if (channel != null)
+            channel.dispatch(event);
     }
 
     @Override

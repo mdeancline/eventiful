@@ -30,7 +30,8 @@ public class EventExclusion<T extends Event> extends EventCircumscription<T> {
         final Class<? extends Event> type = event.getClass();
 
         for (final Class<?> ignoredType : circumscribedTypes)
-            if (ignoredType.isInstance(type)) return;
+            if (ignoredType.isAssignableFrom(type))
+                return;
 
         listener.handle(event);
     }
