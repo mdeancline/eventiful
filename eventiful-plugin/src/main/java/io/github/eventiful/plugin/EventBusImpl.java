@@ -42,7 +42,7 @@ public class EventBusImpl implements ServerEventBus {
 
         final Class<? extends Event> type = event.getClass();
         publishToChannel(event, type);
-        classScanner.scanSupertypes(type, scannedSupertype -> publishToChannel(event, scannedSupertype));
+        classScanner.scanSupertypesExcludingObject(type, scannedSupertype -> publishToChannel(event, scannedSupertype));
     }
 
     private void publishToChannel(final Event event, final Class<?> type) {

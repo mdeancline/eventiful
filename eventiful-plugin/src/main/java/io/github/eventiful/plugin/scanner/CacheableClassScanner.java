@@ -11,13 +11,13 @@ import java.util.function.Consumer;
 
 @AllArgsConstructor
 public final class CacheableClassScanner implements ClassScanner {
-    private final Map<Class<?>, Class<?>[]> supertypes = new Object2ObjectOpenHashMap<>();
+    private final Map<Class<?>, Class<?>[]> supertypesExcludingObject = new Object2ObjectOpenHashMap<>();
     private final Map<Class<?>, Class<?>[]> subtypes = new Object2ObjectOpenHashMap<>();
     private final ClassScanner scanner;
 
     @Override
-    public void scanSupertypes(final Class<?> clazz, final Consumer<Class<?>> consumer) {
-        final Class<?>[] preciseSupertypes = supertypes.get(clazz);
+    public void scanSupertypesExcludingObject(final Class<?> clazz, final Consumer<Class<?>> consumer) {
+        final Class<?>[] preciseSupertypes = supertypesExcludingObject.get(clazz);
 
         if (preciseSupertypes != null)
             for (final Class<?> supertype : preciseSupertypes)
@@ -25,13 +25,13 @@ public final class CacheableClassScanner implements ClassScanner {
         else {
             final ObjectArrayList<Class<?>> scannedTypes = ObjectArrayList.wrap(new Class<?>[0]);
 
-            scanner.scanSupertypes(clazz, supertype -> {
-                supertypes.put(supertype, scannedTypes.elements());
+            scanner.scanSupertypesExcludingObject(clazz, supertype -> {
+                supertypesExcludingObject.put(supertype, scannedTypes.elements());
                 scannedTypes.add(supertype);
                 consumer.accept(supertype);
             });
 
-            supertypes.put(clazz, scannedTypes.elements());
+            supertypesExcludingObject.put(clazz, scannedTypes.elements());
         }
     }
 
