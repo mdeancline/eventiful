@@ -2,6 +2,7 @@ package io.github.eventiful.plugin;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import io.github.eventiful.api.EventBus;
+import io.github.eventiful.api.EventToken;
 import org.bukkit.event.EventPriority;
 import org.junit.After;
 import org.junit.Before;
@@ -12,6 +13,8 @@ import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
+
+import static org.junit.Assert.assertTrue;
 
 public class EventPipelineTest {
     private EventBus eventBus;
@@ -30,24 +33,28 @@ public class EventPipelineTest {
 
     @Test
     public void ListenerRegistration_EventChannel_AssociatesWithTokenAndByPriority() {
-        eventBus.register(MockEvent.class, new MockEventListener());
+        assertRegistered(eventBus.register(MockEvent.class, new MockEventListener()));
     }
 
     @Test
     public void ListenerRegistration_EventChannel_AssociatesWithTokensAndByDifferentPriority() {
-        eventBus.register(MockEvent.class, new MockEventListener());
-        eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGHEST));
-        eventBus.register(MockEvent.class, new MockEventListener(EventPriority.LOWEST));
-        eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGH));
-        eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGH));
-        eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGH));
-        eventBus.register(MockEvent.class, new MockEventListener(EventPriority.LOW));
+        assertRegistered(eventBus.register(MockEvent.class, new MockEventListener()));
+        assertRegistered(eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGHEST)));
+        assertRegistered(eventBus.register(MockEvent.class, new MockEventListener(EventPriority.LOWEST)));
+        assertRegistered(eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGH)));
+        assertRegistered(eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGH)));
+        assertRegistered(eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGH)));
+        assertRegistered(eventBus.register(MockEvent.class, new MockEventListener(EventPriority.LOW)));
     }
 
     @Test
     public void ListenerRegistration_EventChannel_AssociatesWithTokensAndByDifferentPriorityThenIterates() {
         ListenerRegistration_EventChannel_AssociatesWithTokensAndByDifferentPriority();
         eventBus.dispatch(new MockEvent("Testing 1 2 3"));
+    }
+
+    private void assertRegistered(final EventToken token) {
+        assertTrue(eventBus.isRegistered(token));
     }
 
     @Ignore
