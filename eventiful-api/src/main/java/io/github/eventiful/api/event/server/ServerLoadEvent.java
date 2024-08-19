@@ -28,6 +28,7 @@ public class ServerLoadEvent extends ServerEvent {
         return type;
     }
 
+    @ApiStatus.Internal
     @NotNull
     @Override
     public HandlerList getHandlers() {
