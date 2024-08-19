@@ -1,13 +1,13 @@
 package io.github.eventiful.plugin;
 
 import io.github.eventiful.MockEvent;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MockListener implements Listener {
     private int invocationCount;
 
