@@ -1,12 +1,15 @@
 package io.github.eventiful;
 
 import io.github.eventiful.api.listener.EventListener;
-import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventPriority;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MockEventListener implements EventListener<MockEvent> {
     private final EventPriority priority;
+    @Getter
+    private int invocationCount;
 
     public MockEventListener() {
         this(EventPriority.NORMAL);
@@ -14,7 +17,7 @@ public class MockEventListener implements EventListener<MockEvent> {
 
     @Override
     public void handle(final MockEvent event) {
-        TestUtils.logEvent(event, priority);
+        invocationCount++;
     }
 
     @Override
