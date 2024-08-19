@@ -2,7 +2,6 @@ package io.github.eventiful.plugin;
 
 import be.seeseemelk.mockbukkit.MockPlugin;
 import io.github.classgraph.ClassGraph;
-import io.github.eventiful.api.event.CancellableEvent;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
 import io.github.eventiful.plugin.registration.SimpleEventTokenProvider;
 import io.github.eventiful.plugin.scanner.CacheableClassScanner;
@@ -16,11 +15,6 @@ import java.util.logging.Logger;
 @UtilityClass
 public class TestUtils {
     public void logEvent(final MockEvent event, final EventPriority priority) {
-        System.out.print(event.getEventName() + " was called");
-        logPriority(priority);
-    }
-
-    public void logEvent(final CancellableEvent event, final EventPriority priority) {
         System.out.printf("%s was called (cancelled = %s)", event.getEventName(), event.isCancelled());
         logPriority(priority);
     }
