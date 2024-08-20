@@ -129,10 +129,12 @@ public class EventBusImpl implements ServerEventBus {
         }
 
         private void updateIterationCache(final boolean increment) {
+            final Runnable task = createUpdateIterationCacheTask(increment);
+
             if (serverLoaded)
-                CompletableFuture.runAsync(createUpdateIterationCacheTask(increment));
+                CompletableFuture.runAsync(task);
             else
-                createUpdateIterationCacheTask(increment).run();
+                task.run();
         }
 
         @SuppressWarnings("unchecked")
