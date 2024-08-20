@@ -11,20 +11,20 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.0.0
  */
 public class ServerLoadEvent extends ServerEvent {
-    private final LoadType type;
+    private final Type type;
 
     @ApiStatus.Internal
-    public ServerLoadEvent(@NotNull final LoadType type) {
+    public ServerLoadEvent(@NotNull final Type type) {
         this.type = type;
     }
 
     /**
      * Retrieves the specific context in which the server was loaded.
      *
-     * @return The corresponding {@link LoadType}.
+     * @return The corresponding {@link Type}.
      */
     @NotNull
-    public LoadType getType() {
+    public Type getType() {
         return type;
     }
 
@@ -38,7 +38,7 @@ public class ServerLoadEvent extends ServerEvent {
     /**
      * Represents the different contexts in which the server load event can occur.
      */
-    public enum LoadType {
+    public enum Type {
 
         /**
          * Indicates that the server has completed loading during its initial startup.

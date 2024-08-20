@@ -10,6 +10,6 @@ class ServerLoadListener implements EventListener<ServerLoadEvent> {
 
     @Override
     public void handle(final ServerLoadEvent event) {
-        eventBus.setServerLoaded(event.getType() == ServerLoadEvent.LoadType.FINISHED);
+        eventBus.setServerLoaded(event.getType() == ServerLoadEvent.Type.FINISHED);
     }
 }

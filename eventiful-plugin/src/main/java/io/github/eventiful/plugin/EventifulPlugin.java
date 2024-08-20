@@ -105,16 +105,16 @@ public class EventifulPlugin extends JavaPlugin {
         }
 
         if (getReloadCount() == 0)
-            eventBus.dispatch(new ServerLoadEvent(ServerLoadEvent.LoadType.STARTUP));
+            eventBus.dispatch(new ServerLoadEvent(ServerLoadEvent.Type.STARTUP));
 
         Bukkit.getScheduler().runTaskLater(this, ()
-                -> eventBus.dispatch(new ServerLoadEvent(ServerLoadEvent.LoadType.FINISHED)), 1);
+                -> eventBus.dispatch(new ServerLoadEvent(ServerLoadEvent.Type.FINISHED)), 1);
     }
 
     @Override
     public void onDisable() {
         if (getReloadCount() > 0)
-            eventBus.dispatch(new ServerLoadEvent(ServerLoadEvent.LoadType.RELOAD));
+            eventBus.dispatch(new ServerLoadEvent(ServerLoadEvent.Type.RELOAD));
     }
 
     private int getReloadCount() {
