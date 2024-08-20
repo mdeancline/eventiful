@@ -122,7 +122,7 @@ public class EventPipelineBenchmark {
             mockServer = MockBukkit.mock();
             mockPlugin = MockBukkit.createMockPlugin();
             classScanner = new CacheableClassScanner(new ClassGraphScanner(new ClassGraph().enableAllInfo()));
-            eventBus = TestUtils.createEventBusImpl(mockPlugin);
+            eventBus = TestUtils.createEventBusImpl();
         }
 
         @TearDown

@@ -23,8 +23,7 @@ public class EventCircumscriptionTest {
 
     @Before
     public void setUp() {
-        MockBukkit.mock();
-        eventBus = TestUtils.createEventBusImpl(MockBukkit.createMockPlugin());
+        eventBus = TestUtils.createEventBusImpl();
     }
 
     @After
