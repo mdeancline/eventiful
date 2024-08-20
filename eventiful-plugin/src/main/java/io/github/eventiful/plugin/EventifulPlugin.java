@@ -121,7 +121,7 @@ public class EventifulPlugin extends JavaPlugin {
     private int getReloadCount() {
         try {
             return (int) reflectionAccess.getObject(getServer().getClass().getDeclaredField("reloadCount"), getServer());
-        } catch (NoSuchFieldException e) {
+        } catch (final NoSuchFieldException e) {
             throw new EventRegistrationException(e);
         }
     }
