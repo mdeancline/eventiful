@@ -62,17 +62,15 @@ public class EventCircumscriptionTest {
     }
 
     private void testEventDispatchWithCircumscription(final EventCircumscription<MockEvent> circumscription, final MockEventListener mockListener) {
-        eventBus.register(MockEvent.class, circumscription).thenAccept(token -> {
-            TestUtils.assertRegistration(eventBus, token);
-            assertTrue(circumscription.circumscribedTypes.contains(ExtendedMockEvent.class));
-            assertTrue(MockEvent.class.isAssignableFrom(ExtendedMockEvent.class));
-            assertFalse(ExtendedMockEvent.class.isAssignableFrom(MockEvent.class));
+        TestUtils.assertRegistered(eventBus, eventBus.register(MockEvent.class, circumscription));
+        assertTrue(circumscription.circumscribedTypes.contains(ExtendedMockEvent.class));
+        assertTrue(MockEvent.class.isAssignableFrom(ExtendedMockEvent.class));
+        assertFalse(ExtendedMockEvent.class.isAssignableFrom(MockEvent.class));
 
-            eventBus.dispatch(new MockEvent("Testing 7 8 9"));
-            eventBus.dispatch(new ExtendedMockEvent("9 8 7 Testing"));
+        eventBus.dispatch(new MockEvent("Testing 7 8 9"));
+        eventBus.dispatch(new ExtendedMockEvent("9 8 7 Testing"));
 
-            assertEquals(1, mockListener.getInvocationCount());
-        });
+        assertEquals(1, mockListener.getInvocationCount());
     }
 
     @Ignore

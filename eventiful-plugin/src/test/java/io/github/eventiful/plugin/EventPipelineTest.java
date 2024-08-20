@@ -17,8 +17,6 @@ import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import java.util.concurrent.CompletionStage;
-
 public class EventPipelineTest {
     private EventBus eventBus;
 
@@ -56,8 +54,8 @@ public class EventPipelineTest {
         eventBus.dispatch(new MockEvent("Testing 1 2 3"));
     }
 
-    private void assertRegistered(final CompletionStage<EventToken> tokenStage) {
-        TestUtils.assertRegistration(eventBus, tokenStage);
+    private void assertRegistered(final EventToken token) {
+        TestUtils.assertRegistered(eventBus, token);
     }
 
     @Ignore

@@ -22,8 +22,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.function.Supplier;
 
 @Setter
 @RequiredArgsConstructor
@@ -58,12 +56,12 @@ public class EventBusImpl implements ServerEventBus {
     }
 
     @Override
-    public <T extends Event> CompletionStage<EventToken> register(@NotNull final Class<T> type, @NotNull final EventListener<T> listener) {
+    public <T extends Event> EventToken register(@NotNull final Class<T> type, @NotNull final EventListener<T> listener) {
         return register(new SimpleEventRegistration<>(type, listener, plugin));
     }
 
     @Override
-    public CompletionStage<EventToken> register(final EventRegistration<?> registration) {
+    public EventToken register(final EventRegistration<?> registration) {
         if (!plugin.equals(registration.getPlugin()) && registration.getEventType().isAnnotationPresent(Deprecated.class))
             logger.logDeprecation(registration);
 
@@ -71,7 +69,7 @@ public class EventBusImpl implements ServerEventBus {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Event> CompletionStage<EventToken> registerAsTyped(final EventRegistration<T> registration) {
+    private <T extends Event> EventToken registerAsTyped(final EventRegistration<T> registration) {
         final Channel<T> channel = (Channel<T>) channels.computeIfAbsent(registration.getEventType(), k
                 -> new Channel<>(tokenProvider));
         return channel.register(registration);
@@ -108,7 +106,7 @@ public class EventBusImpl implements ServerEventBus {
                 listener.handle(event);
         }
 
-        public synchronized CompletionStage<EventToken> register(final EventRegistration<T> registration) {
+        public synchronized EventToken register(final EventRegistration<T> registration) {
             final EventToken token = tokenProvider.createToken(registration);
             final EventListener<T> listener = registration.getListener();
             final EventPriority priority = registration.getPriority();
@@ -116,8 +114,9 @@ public class EventBusImpl implements ServerEventBus {
             final List<EventListener<T>> listeners = orderedListeners.get(priority);
             listeners.add(registration.getListener());
             ownedListeners.put(token, listener);
+            updateIterationCache(true);
 
-            return updateIterationCache(token, true);
+            return token;
         }
 
         public synchronized void unregister(final EventToken token) {
@@ -126,17 +125,18 @@ public class EventBusImpl implements ServerEventBus {
                 throw new EventRegistrationException("No EventListener under that EventToken is registered");
 
             orderedListeners.get(token.getPriority()).remove(listener);
-            updateIterationCache(token, false);
+            updateIterationCache(false);
         }
 
-        private CompletionStage<EventToken> updateIterationCache(final EventToken token, final boolean increment) {
-            return serverLoaded
-                    ? CompletableFuture.supplyAsync(createUpdateIterationCacheTask(token, increment))
-                    : CompletableFuture.completedFuture(createUpdateIterationCacheTask(token, increment).get());
+        private void updateIterationCache(final boolean increment) {
+            if (serverLoaded)
+                CompletableFuture.runAsync(createUpdateIterationCacheTask(increment));
+            else
+                createUpdateIterationCacheTask(increment).run();
         }
 
         @SuppressWarnings("unchecked")
-        private Supplier<EventToken> createUpdateIterationCacheTask(final EventToken token, final boolean increment) {
+        private Runnable createUpdateIterationCacheTask(final boolean increment) {
             return () -> {
                 int i = 0;
                 iterationCache = new EventListener[increment ? ++size : --size];
@@ -144,8 +144,6 @@ public class EventBusImpl implements ServerEventBus {
                 for (final Map.Entry<EventPriority, List<EventListener<T>>> entry : orderedListeners.entrySet())
                     for (final EventListener<T> listener : entry.getValue())
                         iterationCache[i++] = listener;
-
-                return token;
             };
         }
 

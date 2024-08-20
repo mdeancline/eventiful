@@ -8,8 +8,6 @@ import org.bukkit.plugin.ServicesManager;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.concurrent.CompletionStage;
-
 /**
  * Responsible for the registration and dispatching of events.
  *
@@ -35,15 +33,17 @@ public interface EventBus {
     void dispatch(@NotNull Event event);
 
     /**
-     * Registers an {@link EventListener} for a specific event type, enabling the listener to handle events of that type.
+     * Registers an {@link EventListener} to handle a specific type of event.
+     * <br><br>
+     * <b>Warning:</b> The registration process will only maintain synchronous execution if the {@link Server} is not
+     * fully loaded.
      *
-     * @param <T>      The type of the event.
-     * @param type     The class representing the event type to be monitored.
-     * @param listener The listener that will process events of the specified type.
-     * @return A {@link CompletionStage} that completes with an {@link EventToken} associated with the registration of
-     * the listener. This stage will complete immediately if the {@link Server} is loaded.
+     * @param <T>      The type of the event to be handled.
+     * @param type     The class representing the event type to monitor.
+     * @param listener The listener that will handle events of the specified type.
+     * @return An {@link EventToken} representing the registration of the listener.
      */
-    <T extends Event> CompletionStage<EventToken> register(@NotNull Class<T> type, @NotNull EventListener<T> listener);
+    <T extends Event> EventToken register(@NotNull Class<T> type, @NotNull EventListener<T> listener);
 
     /**
      * Unregisters an {@link EventListener} using the given token.
