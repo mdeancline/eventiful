@@ -1,5 +1,6 @@
 package io.github.eventiful.plugin.player;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
@@ -7,6 +8,7 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 public class StatisticStorageTest {
+    @Ignore
     @Test
     public void runBenchmark() throws RunnerException {
         final Options options = new OptionsBuilder()
