@@ -30,7 +30,7 @@ public class EventInclusion<T extends Event> extends EventCircumscription<T> {
         final Class<? extends Event> type = event.getClass();
 
         for (final Class<?> boundedType : circumscribedTypes) {
-            if (boundedType.isInstance(type)) {
+            if (boundedType.isAssignableFrom(type)) {
                 listener.handle(event);
                 break;
             }
