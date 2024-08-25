@@ -15,19 +15,19 @@ import java.util.Set;
  */
 abstract class EventCircumscription<T extends Event> implements EventListener<T> {
     protected final Set<Class<?>> circumscribedTypes = Collections.newSetFromMap(new IdentityHashMap<>());
-    protected final EventListener<T> listener;
+    protected final EventListener<T> source;
 
     @SafeVarargs
-    EventCircumscription(final EventListener<T> listener, final Class<? extends T>... circumscribedTypes) {
+    EventCircumscription(final EventListener<T> source, final Class<? extends T>... circumscribedTypes) {
         if (circumscribedTypes.length == 0)
             throw new EventRegistrationException("Circumscribed Event types must not be empty");
 
-        this.listener = listener;
+        this.source = source;
         this.circumscribedTypes.addAll(Arrays.asList(circumscribedTypes));
     }
 
     @Override
     public final EventPriority getPriority() {
-        return listener.getPriority();
+        return source.getPriority();
     }
 }

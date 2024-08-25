@@ -10,7 +10,6 @@ import io.github.eventiful.plugin.player.PlayerQuitListener;
 import io.github.eventiful.plugin.player.PlayerStatisticIncrementListener;
 import io.github.eventiful.plugin.player.UntypedStatisticRepository;
 import io.github.eventiful.plugin.player.movement.PlayerMoveEventCaller;
-import io.github.eventiful.plugin.player.movement.PlayerMoveListener;
 import io.github.eventiful.plugin.player.movement.context.*;
 import io.github.eventiful.plugin.reflect.*;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
@@ -72,7 +71,7 @@ public class EventifulPlugin extends JavaPlugin {
         });
 
         final UntypedStatisticRepository repository = new UntypedStatisticRepository();
-        final PlayerMoveEventCaller resolver = new PlayerMoveEventCaller(eventBus,
+        final PlayerMoveEventCaller playerMoveEventCaller = new PlayerMoveEventCaller(eventBus,
                 new PlayerJumpContext(repository),
                 new PlayerRotateContext(),
                 new PlayerSprintContext(),
@@ -87,7 +86,7 @@ public class EventifulPlugin extends JavaPlugin {
         eventBus.register(PlayerJoinEvent.class, joinListener);
         eventBus.register(PlayerQuitEvent.class, quitListener);
         eventBus.register(PlayerStatisticIncrementEvent.class, new PlayerStatisticIncrementListener(repository));
-        eventBus.register(PlayerMoveEvent.class, new IdentityEventInclusion<>(new PlayerMoveListener(resolver), PlayerMoveEvent.class));
+        eventBus.register(PlayerMoveEvent.class, new IdentityEventInclusion<>(playerMoveEventCaller, PlayerMoveEvent.class));
 
         Bukkit.getServicesManager().register(EventBus.class, eventBus, this, ServicePriority.Normal);
     }

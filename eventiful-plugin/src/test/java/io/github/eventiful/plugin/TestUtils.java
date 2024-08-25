@@ -1,11 +1,9 @@
-package io.github.eventiful;
+package io.github.eventiful.plugin;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import io.github.classgraph.ClassGraph;
 import io.github.eventiful.api.EventBus;
 import io.github.eventiful.api.EventToken;
-import io.github.eventiful.plugin.EventBusImpl;
-import io.github.eventiful.plugin.EventLogger;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
 import io.github.eventiful.plugin.registration.SimpleEventTokenProvider;
 import io.github.eventiful.plugin.scanner.CacheableClassScanner;
@@ -19,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 @UtilityClass
 public class TestUtils {
-    public EventBusImpl createEventBusImpl() {
+    public ServerEventBus createServerEventBusImpl() {
         if (!MockBukkit.isMocked())
             MockBukkit.mock();
 

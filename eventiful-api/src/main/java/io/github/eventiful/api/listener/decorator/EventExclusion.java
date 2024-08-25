@@ -33,6 +33,6 @@ public class EventExclusion<T extends Event> extends EventCircumscription<T> {
             if (ignoredType.isAssignableFrom(type))
                 return;
 
-        listener.handle(event);
+        source.handle(event);
     }
 }

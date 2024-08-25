@@ -14,6 +14,10 @@ public class MockEvent extends CancellableEvent {
 
     private final String message;
 
+    public MockEvent() {
+        this("");
+    }
+
     public static HandlerList getHandlerList() {
         return HANDLER_LIST;
     }

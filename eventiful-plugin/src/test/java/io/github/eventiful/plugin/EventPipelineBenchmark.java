@@ -6,7 +6,6 @@ import be.seeseemelk.mockbukkit.ServerMock;
 import io.github.classgraph.ClassGraph;
 import io.github.eventiful.MockEvent;
 import io.github.eventiful.MockEventListener;
-import io.github.eventiful.TestUtils;
 import io.github.eventiful.api.EventBus;
 import io.github.eventiful.plugin.scanner.CacheableClassScanner;
 import io.github.eventiful.plugin.scanner.ClassGraphScanner;
@@ -122,7 +121,7 @@ public class EventPipelineBenchmark {
             mockServer = MockBukkit.mock();
             mockPlugin = MockBukkit.createMockPlugin();
             classScanner = new CacheableClassScanner(new ClassGraphScanner(new ClassGraph().enableAllInfo()));
-            eventBus = TestUtils.createEventBusImpl();
+            eventBus = TestUtils.createServerEventBusImpl();
         }
 
         @TearDown

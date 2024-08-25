@@ -4,8 +4,8 @@ import be.seeseemelk.mockbukkit.MockBukkit;
 import io.github.eventiful.ExtendedMockEvent;
 import io.github.eventiful.MockEvent;
 import io.github.eventiful.MockEventListener;
-import io.github.eventiful.TestUtils;
 import io.github.eventiful.api.EventBus;
+import io.github.eventiful.plugin.TestUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -23,7 +23,8 @@ public class EventCircumscriptionTest {
 
     @Before
     public void setUp() {
-        eventBus = TestUtils.createEventBusImpl();
+        MockBukkit.mock();
+        eventBus = TestUtils.createServerEventBusImpl();
     }
 
     @After

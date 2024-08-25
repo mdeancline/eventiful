@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 
 @Setter
 @RequiredArgsConstructor
-public class EventBusImpl implements ServerEventBus {
+class EventBusImpl implements ServerEventBus {
     private static final EventListener<?>[] DEFAULT_CACHE = new EventListener[0];
 
     private final Map<Class<?>, Channel<Event>> channels = new Object2ObjectOpenHashMap<>();

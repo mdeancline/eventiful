@@ -28,6 +28,6 @@ public class IdentityEventInclusion<T extends Event> extends EventCircumscriptio
     @Override
     public void handle(final T event) {
         if (circumscribedTypes.contains(event.getClass()))
-            listener.handle(event);
+            source.handle(event);
     }
 }
