@@ -1,6 +1,6 @@
 package io.github.eventiful.plugin.player.movement.context;
 
-import io.github.eventiful.api.event.player.movement.PlayerJumpEvent;
+import io.github.eventiful.api.event.player.PlayerJumpEvent;
 import io.github.eventiful.plugin.player.UntypedStatisticRepository;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;

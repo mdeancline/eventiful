@@ -1,6 +1,6 @@
 package io.github.eventiful.plugin.player.movement.context;
 
-import io.github.eventiful.api.event.player.movement.PlayerRotateEvent;
+import io.github.eventiful.api.event.player.PlayerRotateEvent;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerMoveEvent;
 

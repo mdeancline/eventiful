@@ -1,6 +1,5 @@
-package io.github.eventiful.api.event.entity.item;
+package io.github.eventiful.api.event.entity;
 
-import io.github.eventiful.api.event.entity.SpecificEntityEvent;
 import org.bukkit.entity.Item;
 import org.bukkit.projectiles.ProjectileSource;
 import org.jetbrains.annotations.ApiStatus;

@@ -1,4 +1,4 @@
-package io.github.eventiful.api.event.entity.item;
+package io.github.eventiful.api.event.entity;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;

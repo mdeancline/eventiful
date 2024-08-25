@@ -1,4 +1,4 @@
-package io.github.eventiful.api.event.player.movement;
+package io.github.eventiful.api.event.player;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

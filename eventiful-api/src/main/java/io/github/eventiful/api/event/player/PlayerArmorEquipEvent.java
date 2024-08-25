@@ -1,6 +1,6 @@
-package io.github.eventiful.api.event.player.armor;
+package io.github.eventiful.api.event.player;
 
-import io.github.eventiful.api.event.entity.armor.ArmorEvent;
+import io.github.eventiful.api.event.entity.ArmorEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.jetbrains.annotations.ApiStatus;

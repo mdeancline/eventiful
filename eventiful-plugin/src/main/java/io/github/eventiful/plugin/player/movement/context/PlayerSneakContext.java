@@ -1,6 +1,6 @@
 package io.github.eventiful.plugin.player.movement.context;
 
-import io.github.eventiful.api.event.player.movement.PlayerSneakEvent;
+import io.github.eventiful.api.event.player.PlayerSneakEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class PlayerSneakContext implements PlayerMoveContext<PlayerSneakEvent> {

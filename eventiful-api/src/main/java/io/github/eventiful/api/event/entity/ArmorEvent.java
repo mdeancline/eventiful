@@ -1,6 +1,5 @@
-package io.github.eventiful.api.event.entity.armor;
+package io.github.eventiful.api.event.entity;
 
-import io.github.eventiful.api.event.entity.SpecificEntityEvent;
 import io.github.eventiful.api.listener.EventListener;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;

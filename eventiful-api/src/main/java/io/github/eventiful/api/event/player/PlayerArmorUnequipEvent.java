@@ -1,21 +1,22 @@
-package io.github.eventiful.api.event.entity.armor;
+package io.github.eventiful.api.event.player;
 
-import org.bukkit.entity.LivingEntity;
+import io.github.eventiful.api.event.entity.ArmorEvent;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
- * Called when a {@link LivingEntity} unequips an item formerly used as armor.
+ * Called when a {@code Player} unequips an item formerly used as armor.
  *
  * @since 1.0.0
  */
-public class ArmorUnequipEvent extends ArmorEvent<LivingEntity> implements Cancellable {
+public class PlayerArmorUnequipEvent extends ArmorEvent<Player> implements Cancellable {
     private final Cause cause;
     private boolean cancelled;
 
     @ApiStatus.Internal
-    public ArmorUnequipEvent(final LivingEntity who, final Type type, final Cause cause) {
-        super(who, type);
+    public PlayerArmorUnequipEvent(final Player player, final Type type, final Cause cause) {
+        super(player, type);
         this.cause = cause;
     }
 
@@ -39,30 +40,28 @@ public class ArmorUnequipEvent extends ArmorEvent<LivingEntity> implements Cance
     }
 
     /**
-     * Represents the various causes for an entity unequipping armor.
-     *
-     * @since 1.0.0
+     * Represents the various causes for a player unequipping armor.
      */
     public enum Cause {
 
         /**
-         * Indicates that the armor broke due to damage.
+         * The armor broke due to damage.
          */
         BROKE,
 
         /**
-         * Indicates that the entity died, resulting in the armor being unequipped.
+         * The player died, resulting in the armor being unequipped.
          */
         DEATH,
 
         /**
-         * Indicates that the armor was unequipped by a dispenser.
+         * The armor was unequipped by a dispenser.
          */
         DISPENSER,
 
         /**
-         * Indicates that the armor was removed through external means, such as a command or plugin.
+         * The armor was removed due to the player's inventory being cleared.
          */
-        EXTERNAL
+        INVENTORY_CLEARED
     }
 }

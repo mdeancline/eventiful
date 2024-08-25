@@ -1,4 +1,4 @@
-package io.github.eventiful.api.event.entity.armor;
+package io.github.eventiful.api.event.entity;
 
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.LivingEntity;

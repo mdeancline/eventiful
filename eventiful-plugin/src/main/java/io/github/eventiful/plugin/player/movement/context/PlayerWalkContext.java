@@ -1,6 +1,6 @@
 package io.github.eventiful.plugin.player.movement.context;
 
-import io.github.eventiful.api.event.player.movement.PlayerWalkEvent;
+import io.github.eventiful.api.event.player.PlayerWalkEvent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;

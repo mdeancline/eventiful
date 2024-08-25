@@ -1,4 +1,4 @@
-package io.github.eventiful.api.event.entity.item;
+package io.github.eventiful.api.event.entity;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;

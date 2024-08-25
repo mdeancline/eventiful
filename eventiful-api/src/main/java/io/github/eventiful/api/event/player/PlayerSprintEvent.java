@@ -1,4 +1,4 @@
-package io.github.eventiful.api.event.player.movement;
+package io.github.eventiful.api.event.player;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -6,14 +6,14 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
- * Called when a {@code Player} jumps.
+ * Called when a {@code Player} is sprinting.
  *
  * @since 1.0.0
  */
-public class PlayerJumpEvent extends PlayerMoveEvent {
+public class PlayerSprintEvent extends PlayerMoveEvent {
 
     @ApiStatus.Internal
-    public PlayerJumpEvent(final Player player, final Location from, final Location to) {
+    public PlayerSprintEvent(final Player player, final Location from, final Location to) {
         super(player, from, to);
     }
 }
