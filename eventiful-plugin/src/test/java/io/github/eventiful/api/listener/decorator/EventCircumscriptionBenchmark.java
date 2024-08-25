@@ -16,6 +16,11 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 public class EventCircumscriptionBenchmark {
     @Benchmark
+    public void ListenerDispatch_MockEventListener_HandlesAsNormal(final NormalDispatchState state) {
+        state.eventBus.dispatch(new MockEvent());
+    }
+
+    @Benchmark
     public void ListenerDispatch_EventExclusion_HandlesIfNotExcludedType(final ExclusionDispatchState state) {
         state.eventBus.dispatch(new ExtendedMockEvent());
     }
@@ -33,6 +38,22 @@ public class EventCircumscriptionBenchmark {
     @Benchmark
     public void ListenerDispatch_IdentityEventInclusion_HandlesIfNotExcludedType(final IdentityInclusionDispatchState state) {
         state.eventBus.dispatch(new ExtendedMockEvent());
+    }
+
+    @State(Scope.Benchmark)
+    public static class NormalDispatchState {
+        EventBus eventBus;
+
+        @Setup
+        public void setUp() {
+            eventBus = TestUtils.createServerEventBusImpl();
+            eventBus.register(MockEvent.class, new MockEventListener());
+        }
+
+        @TearDown
+        public void tearDown() {
+            eventBus = null;
+        }
     }
 
     @State(Scope.Benchmark)
