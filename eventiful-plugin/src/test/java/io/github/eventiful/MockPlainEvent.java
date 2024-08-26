@@ -1,6 +1,6 @@
 package io.github.eventiful;
 
-import io.github.eventiful.api.event.PlainEvent;
+import io.github.eventiful.api.event.AbstractEvent;
 
-public class MockPlainEvent extends PlainEvent {
+public class MockPlainEvent extends AbstractEvent {
 }

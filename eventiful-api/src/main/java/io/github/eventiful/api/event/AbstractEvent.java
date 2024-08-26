@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 1.0.0
  */
-public abstract class PlainEvent extends Event {
+public abstract class AbstractEvent extends Event {
     private static final PluginManagerVerification VERIFICATION = new PluginManagerVerification();
     private static final HandlerList HANDLER_LIST = new HandlerList();
 

@@ -1,6 +1,6 @@
 package io.github.eventiful;
 
-import io.github.eventiful.api.event.PlainEvent;
+import io.github.eventiful.api.event.AbstractEvent;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -12,7 +12,7 @@ import java.lang.reflect.Field;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class MockEvent extends PlainEvent implements Cancellable {
+public class MockEvent extends AbstractEvent implements Cancellable {
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
     private final String message;
