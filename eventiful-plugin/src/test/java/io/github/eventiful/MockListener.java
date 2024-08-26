@@ -1,6 +1,5 @@
-package io.github.eventiful.plugin;
+package io.github.eventiful;
 
-import io.github.eventiful.MockEvent;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
