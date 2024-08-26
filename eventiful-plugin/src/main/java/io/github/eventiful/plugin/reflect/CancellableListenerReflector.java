@@ -1,6 +1,5 @@
 package io.github.eventiful.plugin.reflect;
 
-import io.github.eventiful.api.event.CancellableEvent;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -57,5 +56,8 @@ public final class CancellableListenerReflector implements ListenerReflector {
         public String toString() {
             return source.toString();
         }
+    }
+
+    private abstract static class CancellableEvent extends Event implements Cancellable {
     }
 }

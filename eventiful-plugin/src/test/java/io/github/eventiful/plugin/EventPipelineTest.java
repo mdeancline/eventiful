@@ -1,8 +1,11 @@
 package io.github.eventiful.plugin;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
+import be.seeseemelk.mockbukkit.MockPlugin;
+import be.seeseemelk.mockbukkit.plugin.PluginManagerMock;
 import io.github.eventiful.MockEvent;
 import io.github.eventiful.MockEventListener;
+import io.github.eventiful.MockPlainListener;
 import io.github.eventiful.api.EventBus;
 import io.github.eventiful.api.EventToken;
 import org.bukkit.event.EventPriority;
@@ -18,10 +21,13 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 public class EventPipelineTest {
     private EventBus eventBus;
+    private PluginManagerMock mockPluginManager;
+    private MockPlugin mockPlugin;
 
     @Before
     public void setUp() {
-        MockBukkit.mock();
+        mockPluginManager = MockBukkit.mock().getPluginManager();
+        mockPlugin = MockBukkit.createMockPlugin();
         eventBus = TestUtils.createServerEventBusImpl();
     }
 
@@ -29,6 +35,8 @@ public class EventPipelineTest {
     public void tearDown() {
         MockBukkit.unmock();
         eventBus = null;
+        mockPlugin = null;
+        mockPluginManager = null;
     }
 
     @Test
@@ -45,6 +53,11 @@ public class EventPipelineTest {
         assertRegistered(eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGH)));
         assertRegistered(eventBus.register(MockEvent.class, new MockEventListener(EventPriority.HIGH)));
         assertRegistered(eventBus.register(MockEvent.class, new MockEventListener(EventPriority.LOW)));
+    }
+
+    @Test
+    public void ListenerRegistration_PluginManagerMock_ExecutesMockBehavior() {
+        mockPluginManager.registerEvents(new MockPlainListener(), mockPlugin);
     }
 
     @Test

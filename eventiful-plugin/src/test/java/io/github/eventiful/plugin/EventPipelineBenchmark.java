@@ -6,6 +6,7 @@ import be.seeseemelk.mockbukkit.ServerMock;
 import io.github.classgraph.ClassGraph;
 import io.github.eventiful.MockEvent;
 import io.github.eventiful.MockEventListener;
+import io.github.eventiful.MockListener;
 import io.github.eventiful.api.EventBus;
 import io.github.eventiful.plugin.scanner.CacheableClassScanner;
 import io.github.eventiful.plugin.scanner.ClassGraphScanner;
