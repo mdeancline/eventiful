@@ -2,6 +2,7 @@ package io.github.eventiful.plugin;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.MockPlugin;
+import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.plugin.PluginManagerMock;
 import io.github.eventiful.MockEvent;
 import io.github.eventiful.MockEventListener;
@@ -20,13 +21,15 @@ import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 public class EventPipelineTest {
+    private ServerMock mockServer;
     private EventBus eventBus;
     private PluginManagerMock mockPluginManager;
     private MockPlugin mockPlugin;
 
     @Before
     public void setUp() {
-        mockPluginManager = MockBukkit.mock().getPluginManager();
+        mockServer = MockBukkit.mock();
+        mockPluginManager = mockServer.getPluginManager();
         mockPlugin = MockBukkit.createMockPlugin();
         eventBus = TestUtils.createServerEventBusImpl();
     }
@@ -34,6 +37,7 @@ public class EventPipelineTest {
     @After
     public void tearDown() {
         MockBukkit.unmock();
+        mockServer = null;
         eventBus = null;
         mockPlugin = null;
         mockPluginManager = null;
