@@ -1,20 +1,20 @@
 package io.github.eventiful.api.event.entity;
 
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Mob;
 import org.bukkit.event.Cancellable;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
- * Called when a {@link LivingEntity} unequips an item formerly used as armor.
+ * Called when a {@link Mob} unequips an item formerly used as armor.
  *
  * @since 1.0.0
  */
-public class ArmorUnequipEvent extends ArmorEvent<LivingEntity> implements Cancellable {
+public class MobArmorUnequipEvent extends ArmorEvent<Mob> implements Cancellable {
     private final Cause cause;
     private boolean cancelled;
 
     @ApiStatus.Internal
-    public ArmorUnequipEvent(final LivingEntity who, final Type type, final Cause cause) {
+    public MobArmorUnequipEvent(final Mob who, final Type type, final Cause cause) {
         super(who, type);
         this.cause = cause;
     }
