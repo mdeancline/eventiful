@@ -5,6 +5,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityEvent;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * An abstract event class that is specifically tied to a certain type of {@link Entity}.
@@ -30,12 +31,14 @@ public abstract class SpecificEntityEvent<T extends Entity> extends EntityEvent 
         this.entity = entity;
     }
 
+    @NotNull
     @ApiStatus.Internal
     @Override
     public final HandlerList getHandlers() {
         return new HandlerList();
     }
 
+    @NotNull
     @Override
     public T getEntity() {
         return entity;

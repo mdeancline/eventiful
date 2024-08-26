@@ -3,6 +3,7 @@ package io.github.eventiful.api.event.entity;
 import io.github.eventiful.api.listener.EventListener;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents an event related to armor interactions with a living entity.
@@ -16,7 +17,7 @@ public abstract class ArmorEvent<T extends LivingEntity> extends SpecificEntityE
     private final Type type;
     private ItemStack armorItem;
 
-    protected ArmorEvent(final T who, final Type type) {
+    protected ArmorEvent(@NotNull final T who, @NotNull final Type type) {
         super(who);
         this.type = type;
     }
