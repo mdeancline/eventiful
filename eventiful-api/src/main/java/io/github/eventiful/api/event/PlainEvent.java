@@ -19,18 +19,14 @@ public abstract class PlainEvent extends Event {
     private static final PluginManagerVerification VERIFICATION = new PluginManagerVerification();
     private static final HandlerList HANDLER_LIST = new HandlerList();
 
-    public static HandlerList getHandlerList() {
-        if (!VERIFICATION.isFromPluginManager())
-            throw new EventRegistrationException("Illegal HandlerList access");
-
-        return HANDLER_LIST;
-    }
-
     @ApiStatus.Internal
     @NotNull
     @Override
     public final HandlerList getHandlers() {
-        return getHandlerList();
+        if (!VERIFICATION.isFromPluginManager())
+            throw new EventRegistrationException("Illegal HandlerList access");
+
+        return HANDLER_LIST;
     }
 
     private static class PluginManagerVerification extends SecurityManager {
