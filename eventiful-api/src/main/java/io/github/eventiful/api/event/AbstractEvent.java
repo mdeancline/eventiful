@@ -1,9 +1,7 @@
 package io.github.eventiful.api.event;
 
-import io.github.eventiful.api.exception.EventRegistrationException;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,26 +14,10 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.0.0
  */
 public abstract class AbstractEvent extends Event {
-    private static final PluginManagerVerification VERIFICATION = new PluginManagerVerification();
-    private static final HandlerList HANDLER_LIST = new HandlerList();
-
     @ApiStatus.Internal
     @NotNull
     @Override
     public final HandlerList getHandlers() {
-        if (!VERIFICATION.isFromPluginManager())
-            throw new EventRegistrationException("Illegal HandlerList access");
-
-        return HANDLER_LIST;
-    }
-
-    private static class PluginManagerVerification extends SecurityManager {
-        public boolean isFromPluginManager() {
-            for (final Class<?> callerClass : getClassContext())
-                if (PluginManager.class.isAssignableFrom(callerClass))
-                    return true;
-
-            return false;
-        }
+        return NonOperableHandlerList.getInstance();
     }
 }
