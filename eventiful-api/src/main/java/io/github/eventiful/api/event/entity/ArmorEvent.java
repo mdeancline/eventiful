@@ -94,6 +94,7 @@ public abstract class ArmorEvent<T extends LivingEntity> extends SpecificEntityE
         BOOTS(8);
 
         private static final Set<Material> HEAD_MATERIALS = EnumSet.noneOf(Material.class);
+
         private final int slot;
 
         Type(final int slot) {
@@ -101,15 +102,13 @@ public abstract class ArmorEvent<T extends LivingEntity> extends SpecificEntityE
         }
 
         static {
-            for (final Material material : Material.values()) {
-                if (material.name().contains("HEAD") || material.name().contains("SKULL")) {
+            for (final Material material : Material.values())
+                if (material.name().contains("HEAD") || material.name().contains("SKULL"))
                     HEAD_MATERIALS.add(material);
-                }
-            }
         }
 
         /**
-         * Determines the armor {@link Type} based on the provided {@link ItemStack}.
+         * Determines the {@link Type} based on the provided {@link ItemStack}.
          *
          * @param itemStack The {@link ItemStack} to analyze.
          * @return The corresponding {@link Type} if the item is armor; {@code null} otherwise.
@@ -120,7 +119,7 @@ public abstract class ArmorEvent<T extends LivingEntity> extends SpecificEntityE
         }
 
         /**
-         * Determines the armor {@link Type} based on the provided {@link Material}.
+         * Determines the {@link Type} based on the provided {@link Material}.
          *
          * @param material The {@link Material} to analyze.
          * @return The corresponding {@link Type} if the material is armor; {@code null} otherwise.
