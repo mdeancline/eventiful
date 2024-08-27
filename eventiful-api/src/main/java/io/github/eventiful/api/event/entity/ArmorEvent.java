@@ -4,6 +4,7 @@ import io.github.eventiful.api.listener.EventListener;
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,12 +21,12 @@ import java.util.Set;
  * @since 1.0.0
  */
 public abstract class ArmorEvent<T extends LivingEntity> extends SpecificEntityEvent<T> {
-    private final Type type;
-    private ItemStack armorItem;
+    private final EquipmentSlot slot;
+    protected ItemStack armorItem;
 
-    protected ArmorEvent(@NotNull final T who, @NotNull final Type type) {
+    protected ArmorEvent(@NotNull final T who, @NotNull final EquipmentSlot slot) {
         super(who);
-        this.type = type;
+        this.slot = slot;
     }
 
     /**
@@ -40,12 +41,12 @@ public abstract class ArmorEvent<T extends LivingEntity> extends SpecificEntityE
     }
 
     /**
-     * Returns the type of armor involved in the event.
+     * Returns the {@link EquipmentSlot} involved in the event.
      *
-     * @return the armor type
+     * @return the slot
      */
-    public Type getArmorType() {
-        return type;
+    public final EquipmentSlot getSlot() {
+        return slot;
     }
 
     /**
@@ -53,17 +54,8 @@ public abstract class ArmorEvent<T extends LivingEntity> extends SpecificEntityE
      *
      * @return the armor item stack
      */
-    public ItemStack getArmorItem() {
+    public final ItemStack getArmorItem() {
         return armorItem;
-    }
-
-    /**
-     * Sets the item stack representing the armor involved in the event.
-     *
-     * @param armorItem the new armor item stack
-     */
-    public void setArmorItem(final ItemStack armorItem) {
-        this.armorItem = armorItem;
     }
 
     /**
@@ -74,37 +66,37 @@ public abstract class ArmorEvent<T extends LivingEntity> extends SpecificEntityE
     public enum Type {
 
         /**
-         * Represents a helmet-type armor piece, which is equipped in the head slot (inventory slot 5).
+         * Represents a helmet-type armor piece, which is equipped in the head slot.
          */
-        HELMET(5),
+        HELMET(EquipmentSlot.HEAD),
 
         /**
-         * Represents a chest plate-type armor piece, which is equipped in the torso slot (inventory slot 6).
+         * Represents a chest plate-type armor piece, which is equipped in the torso slot.
          */
-        CHEST_PLATE(6),
+        CHEST_PLATE(EquipmentSlot.CHEST),
 
         /**
-         * Represents leggings-type armor, which is equipped in the leg slot (inventory slot 7).
+         * Represents leggings-type armor, which is equipped in the leg slot.
          */
-        LEGGINGS(7),
+        LEGGINGS(EquipmentSlot.LEGS),
 
         /**
-         * Represents boots-type armor, which is equipped in the feet slot (inventory slot 8).
+         * Represents boots-type armor, which is equipped in the feet slot.
          */
-        BOOTS(8);
+        BOOTS(EquipmentSlot.FEET);
 
         private static final Set<Material> HEAD_MATERIALS = EnumSet.noneOf(Material.class);
 
-        private final int slot;
-
-        Type(final int slot) {
-            this.slot = slot;
-        }
+        private final EquipmentSlot slot;
 
         static {
             for (final Material material : Material.values())
                 if (material.name().contains("HEAD") || material.name().contains("SKULL"))
                     HEAD_MATERIALS.add(material);
+        }
+
+        Type(final EquipmentSlot slot) {
+            this.slot = slot;
         }
 
         /**
@@ -139,16 +131,7 @@ public abstract class ArmorEvent<T extends LivingEntity> extends SpecificEntityE
             }
         }
 
-        /**
-         * Retrieves the inventory slot associated with this armor {@link Type}.
-         * <p>
-         * The returned slot number corresponds to the default inventory slot where this armor type
-         * would be equipped (e.g., helmet in slot 5, chest plate in slot 6, etc.).
-         * </p>
-         *
-         * @return The inventory slot number associated with this armor type.
-         */
-        public int getInventorySlot() {
+        public EquipmentSlot getEquipmentSlot() {
             return slot;
         }
     }

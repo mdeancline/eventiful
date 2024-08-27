@@ -1,13 +1,14 @@
 package io.github.eventiful.plugin.player.armor;
 
 import io.github.eventiful.api.EventBus;
-import io.github.eventiful.api.event.entity.ArmorEvent;
 import io.github.eventiful.api.event.player.PlayerArmorEquipEvent;
 import io.github.eventiful.api.listener.CancellableEventListener;
+import io.github.eventiful.plugin.util.Inventories;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.inventory.EquipmentSlot;
 
 @AllArgsConstructor
 public class PlayerArmorDragListener extends CancellableEventListener<InventoryDragEvent> {
@@ -15,15 +16,15 @@ public class PlayerArmorDragListener extends CancellableEventListener<InventoryD
 
     @Override
     protected void handleCancellable(final InventoryDragEvent event) {
-        final ArmorEvent.Type armorType = ArmorEvent.Type.of(event.getOldCursor());
+        final EquipmentSlot slot = Inventories.matchEquipmentSlot(event.getOldCursor());
 
-        if (armorType != null)
-            handleAsEquipEvent(event, armorType);
+        if (slot != null)
+            dispatchAsEquipEvent(event, slot);
     }
 
-    private void handleAsEquipEvent(final InventoryDragEvent event, final ArmorEvent.Type armorType) {
+    private void dispatchAsEquipEvent(final InventoryDragEvent event, final EquipmentSlot slot) {
         final Player player = (Player) event.getWhoClicked();
-        final PlayerArmorEquipEvent equipEvent = new PlayerArmorEquipEvent(player, armorType, PlayerArmorEquipEvent.Cause.INVENTORY_DRAG);
+        final PlayerArmorEquipEvent equipEvent = new PlayerArmorEquipEvent(player, slot, PlayerArmorEquipEvent.Cause.INVENTORY_DRAG);
         equipEvent.setArmorItem(event.getOldCursor());
         eventBus.dispatch(equipEvent);
 

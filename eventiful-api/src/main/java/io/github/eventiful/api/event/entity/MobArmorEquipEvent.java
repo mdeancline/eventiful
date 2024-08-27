@@ -3,6 +3,7 @@ package io.github.eventiful.api.event.entity;
 import org.bukkit.block.Dispenser;
 import org.bukkit.entity.Mob;
 import org.bukkit.event.Cancellable;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -15,8 +16,8 @@ public class MobArmorEquipEvent extends ArmorEvent<Mob> implements Cancellable {
     private boolean cancelled;
 
     @ApiStatus.Internal
-    public MobArmorEquipEvent(final Mob who, final Type type, final Cause cause) {
-        super(who, type);
+    public MobArmorEquipEvent(final Mob who, final EquipmentSlot slot, final Cause cause) {
+        super(who, slot);
         this.cause = cause;
     }
 

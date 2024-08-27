@@ -2,6 +2,7 @@ package io.github.eventiful.api.event.entity;
 
 import org.bukkit.entity.Mob;
 import org.bukkit.event.Cancellable;
+import org.bukkit.inventory.EquipmentSlot;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
@@ -14,8 +15,8 @@ public class MobArmorUnequipEvent extends ArmorEvent<Mob> implements Cancellable
     private boolean cancelled;
 
     @ApiStatus.Internal
-    public MobArmorUnequipEvent(final Mob who, final Type type, final Cause cause) {
-        super(who, type);
+    public MobArmorUnequipEvent(final Mob who, final EquipmentSlot slot, final Cause cause) {
+        super(who, slot);
         this.cause = cause;
     }
 
@@ -58,11 +59,6 @@ public class MobArmorUnequipEvent extends ArmorEvent<Mob> implements Cancellable
         /**
          * Indicates that the armor was unequipped by a dispenser.
          */
-        DISPENSER,
-
-        /**
-         * Indicates that the armor was removed through external means, such as a command or plugin.
-         */
-        EXTERNAL
+        DISPENSER
     }
 }

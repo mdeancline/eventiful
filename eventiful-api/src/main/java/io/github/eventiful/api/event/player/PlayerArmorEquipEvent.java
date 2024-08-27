@@ -3,7 +3,10 @@ package io.github.eventiful.api.event.player;
 import io.github.eventiful.api.event.entity.ArmorEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Called when a {@code Player} equips an item to be used as armor.
@@ -15,8 +18,8 @@ public class PlayerArmorEquipEvent extends ArmorEvent<Player> implements Cancell
     private boolean cancelled;
 
     @ApiStatus.Internal
-    public PlayerArmorEquipEvent(final Player who, final Type type, final Cause cause) {
-        super(who, type);
+    public PlayerArmorEquipEvent(final Player who, final EquipmentSlot slot, final Cause cause) {
+        super(who, slot);
         this.cause = cause;
     }
 
@@ -28,6 +31,15 @@ public class PlayerArmorEquipEvent extends ArmorEvent<Player> implements Cancell
     @Override
     public void setCancelled(final boolean cancelled) {
         this.cancelled = cancelled;
+    }
+
+    /**
+     * Sets the item stack representing the armor involved in the event.
+     *
+     * @param armorItem the new armor item stack
+     */
+    public void setArmorItem(@NotNull final ItemStack armorItem) {
+        this.armorItem = armorItem;
     }
 
     /**
