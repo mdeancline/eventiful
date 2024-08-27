@@ -1,13 +1,15 @@
 package io.github.eventiful.api.event.entity;
 
-import org.bukkit.block.Dispenser;
+import io.github.eventiful.api.event.armor.ArmorEvent;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.event.Cancellable;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
- * Called when a {@link Mob} equips an item to be used as armor.
+ * Called when a {@link LivingEntity} equips an item to be used as armor.
  *
  * @since 1.0.0
  */
@@ -32,12 +34,16 @@ public class MobArmorEquipEvent extends ArmorEvent<Mob> implements Cancellable {
     }
 
     /**
-     * Retrieves the cause of this event being triggered.
+     * Retrieves the natural cause of this event being triggered.
      *
-     * @return The cause of the armor equip event.
+     * @return The natural cause of the armor equip event.
      */
-    public Cause getCause() {
+    public Cause cause() {
         return cause;
+    }
+
+    public void setArmorItem(final ItemStack armorItem) {
+        this.armorItem = armorItem;
     }
 
     /**
@@ -48,22 +54,13 @@ public class MobArmorEquipEvent extends ArmorEvent<Mob> implements Cancellable {
     public enum Cause {
 
         /**
-         * Indicates that a {@code Mob} equipped armor due to being in range of a {@link Dispenser} that
-         * dispensed the armor onto the entity.
-         *
-         * @apiNote This requires a server implementation supporting
-         * <a href="https://hub.spigotmc.org/javadocs/spigot/org/bukkit/event/block/BlockDispenseArmorEvent.html">BlockDispenseArmorEvent</a>.
+         * Indicates that a {@code LivingEntity} equipped armor due to an outside source applying it for them.
          */
-        DISPENSER,
+        FROM_APPLICATOR,
 
         /**
-         * Indicates that a {@code Mob} equipped armor after picking it up as loot.
+         * Indicates that a {@code LivingEntity} equipped armor after picking it up as loot.
          */
-        LOOT_PICKUP,
-
-        /**
-         * Indicates that a {@code Mob} equipped armor through external means, such as a command or plugin.
-         */
-        EXTERNAL
+        ITEM_PICKUP
     }
 }

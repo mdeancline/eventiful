@@ -1,6 +1,6 @@
 package io.github.eventiful.api.event.player;
 
-import io.github.eventiful.api.event.entity.ArmorEvent;
+import io.github.eventiful.api.event.armor.ArmorEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.inventory.EquipmentSlot;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.ApiStatus;
  */
 public class PlayerArmorUnequipEvent extends ArmorEvent<Player> implements Cancellable {
     private final Cause cause;
-    private boolean cancelled;
+    private boolean cancel;
 
     @ApiStatus.Internal
     public PlayerArmorUnequipEvent(final Player player, final EquipmentSlot slot, final Cause cause, final ItemStack armorItem) {
@@ -25,43 +25,28 @@ public class PlayerArmorUnequipEvent extends ArmorEvent<Player> implements Cance
 
     @Override
     public boolean isCancelled() {
-        return cancelled;
+        return cancel;
     }
 
     @Override
-    public void setCancelled(final boolean cancelled) {
-        this.cancelled = cancelled;
+    public void setCancelled(final boolean cancel) {
+        this.cancel = cancel;
     }
 
-    /**
-     * Gets the cause of the armor unequip event.
-     *
-     * @return The cause of the unequip event.
-     */
     public Cause getCause() {
         return cause;
     }
 
     /**
-     * Represents the various causes for a player unequipping armor.
-     *
-     * @since 1.0.0
+     * Represents various situations for a {@code Player} equipping a piece of armor.
      */
     public enum Cause {
-
-        /**
-         * Indicates that the armor broke due to damage.
-         */
         BROKE,
 
-        /**
-         * Indicates that the player died, resulting in the armor being unequipped.
-         */
         DEATH,
 
-        /**
-         * Indicates that the armor was unequipped by a dispenser.
-         */
-        DISPENSER
+        DRAG,
+
+        SHIFT_CLICK,
     }
 }

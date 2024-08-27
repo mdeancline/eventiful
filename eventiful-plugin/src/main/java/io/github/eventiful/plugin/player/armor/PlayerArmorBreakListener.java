@@ -3,7 +3,7 @@ package io.github.eventiful.plugin.player.armor;
 import io.github.eventiful.api.EventBus;
 import io.github.eventiful.api.event.player.PlayerArmorUnequipEvent;
 import io.github.eventiful.api.listener.EventListener;
-import io.github.eventiful.plugin.util.Inventories;
+import io.github.eventiful.plugin.util.EquipmentSlotResolver;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemBreakEvent;
@@ -16,10 +16,11 @@ import java.util.Objects;
 @AllArgsConstructor
 public class PlayerArmorBreakListener implements EventListener<PlayerItemBreakEvent> {
     private final EventBus eventBus;
+    private final EquipmentSlotResolver slotResolver;
 
     @Override
     public void handle(final PlayerItemBreakEvent event) {
-        final EquipmentSlot slot = Inventories.matchEquipmentSlot(event.getBrokenItem());
+        final EquipmentSlot slot = slotResolver.getArmorSlotFor(event.getBrokenItem());
 
         if (slot != null)
             dispatchAsUnequipEvent(event, slot);

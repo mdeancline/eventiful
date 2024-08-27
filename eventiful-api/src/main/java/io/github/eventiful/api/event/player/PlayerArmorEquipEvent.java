@@ -1,6 +1,6 @@
 package io.github.eventiful.api.event.player;
 
-import io.github.eventiful.api.event.entity.ArmorEvent;
+import io.github.eventiful.api.event.armor.ArmorEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.inventory.EquipmentSlot;
@@ -56,24 +56,15 @@ public class PlayerArmorEquipEvent extends ArmorEvent<Player> implements Cancell
      */
     public enum Cause {
 
-        /**
-         * The player equips the armor directly from the hotbar.
-         */
-        HOTBAR,
+        DISPENSER,
+
+        DRAG,
 
         /**
-         * The player swaps the item from the hotbar with an existing armor piece.
+         * Indicates that the player equips the armor by holding it and then right-clicking.
          */
-        HOTBAR_SWAP,
+        RIGHT_CLICK,
 
-        /**
-         * The player drags the armor item from the inventory to the armor slot.
-         */
-        INVENTORY_DRAG,
-
-        /**
-         * The player uses the shift-click method to equip the armor from the inventory.
-         */
-        INVENTORY_SHIFT_CLICK
+        SHIFT_CLICK
     }
 }

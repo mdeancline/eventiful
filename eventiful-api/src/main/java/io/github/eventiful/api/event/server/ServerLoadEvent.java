@@ -1,5 +1,6 @@
 package io.github.eventiful.api.event.server;
 
+import io.github.eventiful.api.event.NonOperableHandlerList;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.server.ServerEvent;
 import org.jetbrains.annotations.ApiStatus;
@@ -31,8 +32,8 @@ public class ServerLoadEvent extends ServerEvent {
     @ApiStatus.Internal
     @NotNull
     @Override
-    public HandlerList getHandlers() {
-        return new HandlerList();
+    public final HandlerList getHandlers() {
+        return NonOperableHandlerList.getInstance();
     }
 
     /**
