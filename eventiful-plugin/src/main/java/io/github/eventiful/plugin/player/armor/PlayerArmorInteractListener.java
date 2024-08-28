@@ -13,6 +13,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Objects;
+
 @AllArgsConstructor
 public class PlayerArmorInteractListener extends CancellableEventListener<PlayerInteractEvent> {
     private final EventBus eventBus;
@@ -30,18 +32,16 @@ public class PlayerArmorInteractListener extends CancellableEventListener<Player
     }
 
     private void dispatchAsEquipEvent(final PlayerInteractEvent event, final EquipmentSlot slot) {
-        final ItemStack item = event.getItem();
-        if (item == null) return;
+        final ItemStack newItem = event.getItem();
+        if (newItem == null) return;
 
         final Player player = event.getPlayer();
-        final PlayerArmorEquipEvent equipEvent = new PlayerArmorEquipEvent(player, slot, PlayerArmorEquipEvent.Cause.RIGHT_CLICK);
-        equipEvent.setArmorItem(item);
+        final ItemStack oldItem = Objects.requireNonNull(player.getEquipment()).getItem(slot);
+        final PlayerArmorEquipEvent equipEvent = new PlayerArmorEquipEvent(player, slot, oldItem, newItem);
         eventBus.dispatch(equipEvent);
 
         if (equipEvent.isCancelled())
             event.setCancelled(true);
-        else
-            player.getInventory().setItem(slot, equipEvent.getArmorItem());
     }
 
     @Override

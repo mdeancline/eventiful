@@ -1,4 +1,4 @@
-package io.github.eventiful.api.event;
+package io.github.eventiful.api;
 
 import io.github.eventiful.api.exception.EventRegistrationException;
 import org.bukkit.event.HandlerList;

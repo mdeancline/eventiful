@@ -1,5 +1,6 @@
 package io.github.eventiful.api.event;
 
+import io.github.eventiful.api.NonOperableHandlerList;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.ApiStatus;

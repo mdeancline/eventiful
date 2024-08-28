@@ -1,6 +1,6 @@
-package io.github.eventiful.api.event.entity;
+package io.github.eventiful.api.event;
 
-import io.github.eventiful.api.event.NonOperableHandlerList;
+import io.github.eventiful.api.NonOperableHandlerList;
 import io.github.eventiful.api.listener.EventListener;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.HandlerList;
@@ -27,7 +27,7 @@ public abstract class SpecificEntityEvent<T extends Entity> extends EntityEvent 
      *
      * @param entity the entity involved in this event
      */
-    public SpecificEntityEvent(final T entity) {
+    protected SpecificEntityEvent(@NotNull final T entity) {
         super(entity);
         this.entity = entity;
     }

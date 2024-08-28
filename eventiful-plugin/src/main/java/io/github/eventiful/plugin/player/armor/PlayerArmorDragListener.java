@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 @AllArgsConstructor
 public class PlayerArmorDragListener extends CancellableEventListener<InventoryDragEvent> {
@@ -25,14 +26,13 @@ public class PlayerArmorDragListener extends CancellableEventListener<InventoryD
 
     private void dispatchAsEquipEvent(final InventoryDragEvent event, final EquipmentSlot slot) {
         final Player player = (Player) event.getWhoClicked();
-        final PlayerArmorEquipEvent equipEvent = new PlayerArmorEquipEvent(player, slot, PlayerArmorEquipEvent.Cause.DRAG);
-        equipEvent.setArmorItem(event.getOldCursor());
+        final ItemStack oldItem = event.getOldCursor();
+        final ItemStack newItem = event.getCursor();
+        final PlayerArmorEquipEvent equipEvent = new PlayerArmorEquipEvent(player, slot, oldItem, newItem);
         eventBus.dispatch(equipEvent);
 
         if (equipEvent.isCancelled())
             event.setCancelled(true);
-        else
-            event.setCursor(equipEvent.getArmorItem());
     }
 
     @Override

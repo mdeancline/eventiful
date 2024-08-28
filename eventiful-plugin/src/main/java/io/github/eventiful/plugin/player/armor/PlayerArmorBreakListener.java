@@ -5,6 +5,7 @@ import io.github.eventiful.api.event.player.PlayerArmorUnequipEvent;
 import io.github.eventiful.api.listener.EventListener;
 import io.github.eventiful.plugin.util.EquipmentSlotResolver;
 import lombok.AllArgsConstructor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerItemBreakEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -27,13 +28,13 @@ public class PlayerArmorBreakListener implements EventListener<PlayerItemBreakEv
     }
 
     private void dispatchAsUnequipEvent(final PlayerItemBreakEvent event, final EquipmentSlot slot) {
-        final ItemStack brokenItem = event.getBrokenItem();
+        final ItemStack oldItem = event.getBrokenItem();
         final Player player = event.getPlayer();
-        final PlayerArmorUnequipEvent unequipEvent = new PlayerArmorUnequipEvent(player, slot, PlayerArmorUnequipEvent.Cause.BROKE, brokenItem);
+        final PlayerArmorUnequipEvent unequipEvent = new PlayerArmorUnequipEvent(player, slot, oldItem, new ItemStack(Material.AIR));
         eventBus.dispatch(unequipEvent);
 
         if (unequipEvent.isCancelled())
-            player.getInventory().setItem(slot, recoverBrokenItem(brokenItem));
+            player.getInventory().setItem(slot, recoverBrokenItem(oldItem));
     }
 
     private static ItemStack recoverBrokenItem(final ItemStack brokenItem) {

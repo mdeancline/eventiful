@@ -1,6 +1,5 @@
-package io.github.eventiful.api.event.armor;
+package io.github.eventiful.api.event;
 
-import io.github.eventiful.api.event.entity.SpecificEntityEvent;
 import io.github.eventiful.api.listener.EventListener;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EquipmentSlot;
@@ -17,11 +16,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class ArmorEvent<T extends LivingEntity> extends SpecificEntityEvent<T> {
     private final EquipmentSlot slot;
-    protected ItemStack armorItem;
+    private final ItemStack oldItem;
+    private final ItemStack newItem;
 
-    protected ArmorEvent(@NotNull final T who, @NotNull final EquipmentSlot slot) {
+    protected ArmorEvent(@NotNull final T who, @NotNull final EquipmentSlot slot, @NotNull final ItemStack oldItem, @NotNull final ItemStack newItem) {
         super(who);
         this.slot = slot;
+        this.oldItem = oldItem;
+        this.newItem = newItem;
     }
 
     /**
@@ -45,11 +47,20 @@ public abstract class ArmorEvent<T extends LivingEntity> extends SpecificEntityE
     }
 
     /**
-     * Returns the {@link ItemStack} representing the armor involved in the event.
+     * Retrieves the {@link ItemStack} representing the old armor piece involved in the event.
      *
      * @return the armor item stack
      */
-    public final ItemStack getArmorItem() {
-        return armorItem;
+    public final ItemStack getOldItem() {
+        return oldItem;
+    }
+
+    /**
+     * Retrieves the {@link ItemStack} representing the new armor piece involved in the event.
+     *
+     * @return the armor item stack
+     */
+    public final ItemStack getNewItem() {
+        return newItem;
     }
 }

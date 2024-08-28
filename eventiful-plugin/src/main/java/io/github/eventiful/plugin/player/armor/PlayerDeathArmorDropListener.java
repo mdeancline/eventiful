@@ -5,6 +5,7 @@ import io.github.eventiful.api.event.player.PlayerArmorUnequipEvent;
 import io.github.eventiful.api.listener.EventListener;
 import io.github.eventiful.plugin.util.EquipmentSlotResolver;
 import lombok.AllArgsConstructor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -24,11 +25,11 @@ public class PlayerDeathArmorDropListener implements EventListener<PlayerDeathEv
 
     private void dispatchAsUnequipEvent(final PlayerDeathEvent event, final EquipmentSlot slot) {
         final Player player = event.getEntity();
-        final ItemStack armorItem = player.getInventory().getItem(slot);
-        final PlayerArmorUnequipEvent unequipEvent = new PlayerArmorUnequipEvent(player, slot, PlayerArmorUnequipEvent.Cause.DEATH, armorItem);
+        final ItemStack oldItem = player.getInventory().getItem(slot);
+        final PlayerArmorUnequipEvent unequipEvent = new PlayerArmorUnequipEvent(player, slot, oldItem, new ItemStack(Material.AIR));
         eventBus.dispatch(unequipEvent);
 
         if (unequipEvent.isCancelled())
-            event.getDrops().remove(armorItem);
+            event.getDrops().remove(oldItem);
     }
 }
