@@ -4,7 +4,10 @@ import io.github.eventiful.plugin.VersionHandler;
 import lombok.AllArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -15,8 +18,9 @@ import java.util.Set;
 @AllArgsConstructor
 public class EquipmentSlotResolver {
     private static final EquipmentSlot[] ARMOR_PIECE_SLOTS = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
+    private static final Set<EntityType> ENTITIES_WITH_BODY_ARMOR = EnumSet.of(EntityType.HORSE, EntityType.WOLF);
     private static final Set<Material> HEAD_MATERIALS = EnumSet.noneOf(Material.class);
-    private static final int BODY_ARMOR_VERSION_INTRO_INT = 1_9;
+    private static final int BODY_ARMOR_VERSION_INTRO_INT = 1_21;
 
     private final VersionHandler versionHandler;
 
@@ -47,14 +51,26 @@ public class EquipmentSlotResolver {
         } else if (EnchantmentTarget.ARMOR_FEET.includes(material)) {
             return EquipmentSlot.FEET;
         } else if (material.name().contains("ARMOR")) {
-            return versionHandler.getMinecraftVersionInt() >= BODY_ARMOR_VERSION_INTRO_INT
-                    ? EquipmentSlot.BODY : null;
+            final EquipmentSlot[] slots = retrieveBodySlots();
+            return slots.length == 1 ? slots[0] : null;
         } else {
             return null;
         }
     }
 
-    public EquipmentSlot[] getArmorPieces() {
-        return ARMOR_PIECE_SLOTS;
+    private EquipmentSlot[] retrieveBodySlots() {
+        return versionHandler.getMinecraftVersionInt() >= BODY_ARMOR_VERSION_INTRO_INT
+                ? new EquipmentSlot[]{EquipmentSlot.BODY}
+                : ARMOR_PIECE_SLOTS;
+    }
+
+    public EquipmentSlot[] getArmorSlotsFor(final LivingEntity entity) {
+        final EntityEquipment equipment = entity.getEquipment();
+        if (equipment == null)
+            return null;
+
+        return ENTITIES_WITH_BODY_ARMOR.contains(entity.getType())
+                ? retrieveBodySlots()
+                : ARMOR_PIECE_SLOTS;
     }
 }
