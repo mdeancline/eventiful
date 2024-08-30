@@ -53,12 +53,10 @@ public class EventifulPlugin extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        if (MinecraftVersion.isAtLeast(MinecraftVersion.v1_8_0))
-            loadComponents();
-        else {
-            logger.logWarning("Minecraft version 1.8 or later is required");
-            getServer().getPluginManager().disablePlugin(this);
-        }
+        if (!MinecraftVersion.isAtLeast(MinecraftVersion.v1_8_0))
+            logger.logWarning("You are running an untested Minecraft server version. Use at your own risk!");
+
+        loadComponents();
     }
 
     @SuppressWarnings("unchecked")
