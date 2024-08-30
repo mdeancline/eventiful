@@ -54,7 +54,8 @@ public class EventifulPlugin extends JavaPlugin {
     @Override
     public void onLoad() {
         if (!MinecraftVersion.isAtLeast(MinecraftVersion.v1_8_0))
-            logger.logWarning("You are running an untested Minecraft server version. Use at your own risk!");
+            logger.logWarning("You are using an unsupported Minecraft server version with this plugin. " +
+                    "This version has not been tested for compatibility, so proceed with caution and use at your own risk!");
 
         loadComponents();
     }
