@@ -16,6 +16,7 @@
     <properties>
         <plugin.name>Eventiful</plugin.name>
         <eventiful.api.version>1.0.0</eventiful.api.version>
+        <spigotutils.version>0.4.0</spigotutils.version>
         <classgraph.version>4.8.147</classgraph.version>
         <reflectasm.version>1.11.9</reflectasm.version>
         <fastutil.version>8.5.14</fastutil.version>
@@ -104,6 +105,12 @@
             <artifactId>eventiful-api</artifactId>
             <version>${eventiful.api.version}</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.insprill</groupId>
+            <artifactId>spigot-utils</artifactId>
+            <version>${spigotutils.version}</version>
         </dependency>
 
         <dependency>

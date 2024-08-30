@@ -1,7 +1,7 @@
 package io.github.eventiful.plugin.util;
 
-import io.github.eventiful.plugin.VersionHandler;
 import lombok.AllArgsConstructor;
+import net.insprill.spigotutils.MinecraftVersion;
 import org.bukkit.Material;
 import org.bukkit.enchantments.EnchantmentTarget;
 import org.bukkit.entity.EntityType;
@@ -20,9 +20,6 @@ public class EquipmentSlotResolver {
     private static final EquipmentSlot[] ARMOR_PIECE_SLOTS = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     private static final Set<EntityType> ENTITIES_WITH_BODY_ARMOR = EnumSet.of(EntityType.HORSE, EntityType.WOLF);
     private static final Set<Material> HEAD_MATERIALS = EnumSet.noneOf(Material.class);
-    private static final int BODY_ARMOR_VERSION_INTRO_INT = 1_21;
-
-    private final VersionHandler versionHandler;
 
     static {
         for (final Material material : Material.values())
@@ -51,15 +48,15 @@ public class EquipmentSlotResolver {
         } else if (EnchantmentTarget.ARMOR_FEET.includes(material)) {
             return EquipmentSlot.FEET;
         } else if (material.name().contains("ARMOR")) {
-            final EquipmentSlot[] slots = retrieveBodySlots();
+            final EquipmentSlot[] slots = getEntityArmorSlots();
             return slots.length == 1 ? slots[0] : null;
         } else {
             return null;
         }
     }
 
-    private EquipmentSlot[] retrieveBodySlots() {
-        return versionHandler.getMinecraftVersionInt() >= BODY_ARMOR_VERSION_INTRO_INT
+    private EquipmentSlot[] getEntityArmorSlots() {
+        return MinecraftVersion.isAtLeast(MinecraftVersion.v1_21_0)
                 ? new EquipmentSlot[]{EquipmentSlot.BODY}
                 : ARMOR_PIECE_SLOTS;
     }
@@ -70,7 +67,7 @@ public class EquipmentSlotResolver {
             return null;
 
         return ENTITIES_WITH_BODY_ARMOR.contains(entity.getType())
-                ? retrieveBodySlots()
+                ? getEntityArmorSlots()
                 : ARMOR_PIECE_SLOTS;
     }
 }

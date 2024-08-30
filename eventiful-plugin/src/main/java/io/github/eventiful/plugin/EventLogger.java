@@ -19,6 +19,14 @@ public class EventLogger {
                 .append(" from ")
                 .append(registration.getListener().getClass().getName());
 
-        logger.log(Level.WARNING, builder.toString());
+        logWarning(builder.toString());
+    }
+
+    public void logInfo(final String message) {
+        logger.log(Level.INFO, message);
+    }
+
+    public void logWarning(final String message) {
+        logger.log(Level.WARNING, message);
     }
 }

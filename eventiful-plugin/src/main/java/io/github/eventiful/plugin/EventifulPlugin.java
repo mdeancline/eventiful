@@ -12,6 +12,7 @@ import io.github.eventiful.plugin.registration.SimpleEventTokenProvider;
 import io.github.eventiful.plugin.scanner.CacheableClassScanner;
 import io.github.eventiful.plugin.scanner.ClassGraphScanner;
 import io.github.eventiful.plugin.scanner.ClassScanner;
+import net.insprill.spigotutils.MinecraftVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -28,6 +29,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 public class EventifulPlugin extends JavaPlugin {
+    private final EventLogger logger = new EventLogger(getLogger());
     private final ClassGraphScanner classGraphScanner = new ClassGraphScanner(new ClassGraph().enableAllInfo());
     private final ReflectionAccess reflectionAccess = createReflectionAccess();
     private final ServerEventBus eventBus = createServerEventBus();
@@ -35,7 +37,6 @@ public class EventifulPlugin extends JavaPlugin {
 
     private ServerEventBus createServerEventBus() {
         final ClassScanner classScanner = new CacheableClassScanner(classGraphScanner);
-        final EventLogger logger = new EventLogger(getLogger());
         final EventTokenProvider tokenProvider = new SimpleEventTokenProvider();
         return new EventBusImpl(classScanner, logger, tokenProvider, this);
     }
@@ -50,9 +51,18 @@ public class EventifulPlugin extends JavaPlugin {
         return new CacheableListenerReflector(cancellableReflector);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void onLoad() {
+        if (MinecraftVersion.isAtLeast(MinecraftVersion.v1_8_0))
+            loadComponents();
+        else {
+            logger.logWarning("Minecraft version 1.8 or later is required");
+            getServer().getPluginManager().disablePlugin(this);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void loadComponents() {
         final EventBusAdapter eventBusAdapter = new EventBusAdapter(eventBus, this);
         final HandlerListInjector handlersInjector = new HandlerListInjector(reflectionAccess);
         final RegisteredListener[] listenerProxies = new RegisteredListener[]{eventBusAdapter};

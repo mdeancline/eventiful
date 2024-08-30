@@ -4,7 +4,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,15 +14,13 @@ import org.jetbrains.annotations.NotNull;
  */
 public class ArmorDamageEvent extends ArmorEvent implements Cancellable {
     private final EntityDamageEvent.DamageCause cause;
-    private final Damageable itemMeta;
     private final double inflictedDamage;
     private boolean cancel;
 
     @ApiStatus.Internal
-    public ArmorDamageEvent(@NotNull final LivingEntity who, @NotNull final ItemStack currentItem, final EntityDamageEvent.DamageCause cause, final Damageable itemMeta, final double inflictedDamage) {
+    public ArmorDamageEvent(@NotNull final LivingEntity who, @NotNull final ItemStack currentItem, final EntityDamageEvent.DamageCause cause, final double inflictedDamage) {
         super(who, currentItem);
         this.cause = cause;
-        this.itemMeta = itemMeta;
         this.inflictedDamage = inflictedDamage;
     }
 
@@ -44,15 +41,6 @@ public class ArmorDamageEvent extends ArmorEvent implements Cancellable {
      */
     public EntityDamageEvent.DamageCause getCause() {
         return cause;
-    }
-
-    /**
-     * Retrieves the metadata of the armor item.
-     *
-     * @return the item metadata
-     */
-    public Damageable getItemMeta() {
-        return itemMeta;
     }
 
     /**

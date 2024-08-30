@@ -3,8 +3,10 @@ package io.github.eventiful.plugin.event;
 import io.github.eventiful.api.EventBus;
 import io.github.eventiful.api.event.entity.ArmorDamageEvent;
 import io.github.eventiful.api.listener.CancellableEventListener;
-import io.github.eventiful.plugin.util.ArmorDamageCalculator;
 import io.github.eventiful.plugin.util.EquipmentSlotResolver;
+import io.github.eventiful.plugin.util.ItemDamageCalculator;
+import io.github.eventiful.plugin.util.ItemDamageInfo;
+import io.github.eventiful.plugin.util.ItemDamageSupport;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -12,7 +14,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 
 import java.util.Objects;
 
@@ -20,6 +21,7 @@ import java.util.Objects;
 public class ArmorDamageListener extends CancellableEventListener<EntityDamageEvent> {
     private final EventBus eventBus;
     private final EquipmentSlotResolver slotResolver;
+    private final ItemDamageCalculator damageCalculator;
 
     @Override
     protected void handleCancellable(final EntityDamageEvent event) {
@@ -39,17 +41,13 @@ public class ArmorDamageListener extends CancellableEventListener<EntityDamageEv
 
     private void dispatchAsArmorDamageEvent(final EntityDamageEvent event, final LivingEntity damaged, final EquipmentSlot slot) {
         final ItemStack currentItem = Objects.requireNonNull(damaged.getEquipment()).getItem(slot);
-        final Damageable meta = (Damageable) Objects.requireNonNull(currentItem.getItemMeta());
-        final ArmorDamageCalculator damageCalculator = new ArmorDamageCalculator(meta);
-        final double inflictedDamage = damageCalculator.calculateFinalDamage(event.getDamage());
-        final ArmorDamageEvent armorDamageEvent = new ArmorDamageEvent(damaged, currentItem, event.getCause(), meta, inflictedDamage);
+        final ItemDamageInfo damageInfo = ItemDamageSupport.createInfoWithResistanceEffects(currentItem, damaged.getActivePotionEffects());
+        final double inflictedDamage = damageCalculator.calculateInflictedDamage(damageInfo);
+        final ArmorDamageEvent armorDamageEvent = new ArmorDamageEvent(damaged, currentItem, event.getCause(), inflictedDamage);
         eventBus.dispatch(armorDamageEvent);
 
-        if (armorDamageEvent.isCancelled()) {
-            final Damageable clonedMeta = meta.clone();
-            clonedMeta.setDamage((int) (meta.getDamage() - inflictedDamage));
-            currentItem.setItemMeta(clonedMeta);
-        }
+        if (armorDamageEvent.isCancelled())
+            ItemDamageSupport.setDamage(currentItem, ItemDamageSupport.createNoDamageInfo(damageInfo));
     }
 
     @Override

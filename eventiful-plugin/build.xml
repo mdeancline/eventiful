@@ -7,6 +7,7 @@
     <xmlproperty file="pom.xml" prefix="pom" keeproot="false"/>
 
     <property name="eventiful.api.version" value="${pom.properties.eventiful.api.version}"/>
+    <property name="spigotutils.version" value="${pom.properties.spigotutils.version}"/>
     <property name="classgraph.version" value="${pom.properties.classgraph.version}"/>
     <property name="fastutil.version" value="${pom.properties.fastutil.version}"/>
     <property name="reflectasm.version" value="${pom.properties.reflectasm.version}"/>
@@ -15,6 +16,9 @@
         <jar jarfile="${serverPath}\plugins\${ant.project.name}.jar" basedir="./target/classes/" includes="**/*">
             <zipgroupfileset dir="${user.home}/.m2/repository/org/eventiful/eventiful-api/${eventiful.api.version}"
                              includes="**/*${eventiful.api.version}.jar"/>
+
+            <zipgroupfileset dir="${user.home}/.m2/repository/net/insprill/spigot-utils/${spigotutils.version}"
+                             includes="**/*${spigotutils.version}.jar"/>
 
             <zipgroupfileset dir="${user.home}/.m2/repository/io/github/classgraph/classgraph/${classgraph.version}/"
                              includes="**/*${classgraph.version}.jar"/>
