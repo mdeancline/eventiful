@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ class LegacyItemDamageInfo implements ItemDamageInfo {
 
     @SuppressWarnings("deprecation")
     public LegacyItemDamageInfo(final ItemStack itemStack) {
-        enchantments = itemStack.getEnchantments();
+        enchantments = new HashMap<>(itemStack.getEnchantments());
         durability = itemStack.getDurability();
         initialDamage = itemStack.getType().getMaxDurability() - durability;
     }
