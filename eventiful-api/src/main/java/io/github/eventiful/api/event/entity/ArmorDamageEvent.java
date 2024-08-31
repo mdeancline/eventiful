@@ -47,8 +47,11 @@ public class ArmorDamageEvent extends ArmorEvent implements Cancellable {
      * Retrieves the amount of damage inflicted on the armor item. This value takes into account internally set armor
      * toughness, as well as any durability-modifying enchantments and potion effects.
      *
+     * @apiNote Until an internal solution is devised to calculate a 100% accurate value, this method is considered as
+     * unstable.
      * @return the amount of damage inflicted on the armor item
      */
+    @ApiStatus.Experimental
     public double getInflictedDamage() {
         return inflictedDamage;
     }
