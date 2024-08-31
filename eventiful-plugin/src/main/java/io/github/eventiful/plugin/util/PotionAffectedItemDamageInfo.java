@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.Delegate;
 
 @AllArgsConstructor
-class ModifiedDefenseItemInfo implements ItemDamageInfo {
+class PotionAffectedItemDamageInfo implements ItemDamageInfo {
     @Delegate
     private final ItemDamageInfo source;
-    private final double mod;
+    private final double potionResistance;
 
     @Override
-    public double getDefensePoints() {
-        return source.getDefensePoints() + mod;
+    public double getPotionResistancePoints() {
+        return potionResistance;
     }
 }

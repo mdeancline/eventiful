@@ -12,9 +12,13 @@ import io.github.eventiful.plugin.registration.SimpleEventTokenProvider;
 import io.github.eventiful.plugin.scanner.CacheableClassScanner;
 import io.github.eventiful.plugin.scanner.ClassGraphScanner;
 import io.github.eventiful.plugin.scanner.ClassScanner;
+import io.github.eventiful.plugin.util.EquipmentSlotResolver;
+import io.github.eventiful.plugin.util.ItemDamageCalculator;
+import io.github.eventiful.plugin.util.ItemDamageSupport;
 import net.insprill.spigotutils.MinecraftVersion;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -91,6 +95,10 @@ public class EventifulPlugin extends JavaPlugin {
         eventBus.register(PlayerQuitEvent.class, quitListener);
         eventBus.register(PlayerStatisticIncrementEvent.class, new PlayerStatisticIncrementListener(repository));
         eventBus.register(PlayerMoveEvent.class, new IdentityEventInclusion<>(playerMoveEventCaller, PlayerMoveEvent.class));
+
+        final EquipmentSlotResolver slotResolver = new EquipmentSlotResolver();
+        final ItemDamageCalculator itemDamageCalculator = ItemDamageSupport.newItemDamageCalculator();
+        eventBus.register(EntityDamageEvent.class, new EntityArmorDamageListener(eventBus, slotResolver, itemDamageCalculator));
 
         Bukkit.getServicesManager().register(EventBus.class, eventBus, this, ServicePriority.Normal);
     }

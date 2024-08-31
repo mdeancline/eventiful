@@ -18,10 +18,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.Objects;
 
 @AllArgsConstructor
-public class ArmorDamageListener extends CancellableEventListener<EntityDamageEvent> {
+public class EntityArmorDamageListener extends CancellableEventListener<EntityDamageEvent> {
     private final EventBus eventBus;
     private final EquipmentSlotResolver slotResolver;
-    private final ItemDamageCalculator damageCalculator;
+    private final ItemDamageCalculator itemDamageCalculator;
 
     @Override
     protected void handleCancellable(final EntityDamageEvent event) {
@@ -41,13 +41,18 @@ public class ArmorDamageListener extends CancellableEventListener<EntityDamageEv
 
     private void dispatchAsArmorDamageEvent(final EntityDamageEvent event, final LivingEntity damaged, final EquipmentSlot slot) {
         final ItemStack currentItem = Objects.requireNonNull(damaged.getEquipment()).getItem(slot);
-        final ItemDamageInfo damageInfo = ItemDamageSupport.createInfoWithResistanceEffects(currentItem, damaged.getActivePotionEffects());
-        final double inflictedDamage = damageCalculator.calculateInflictedDamage(damageInfo);
+        final ItemDamageInfo info = createItemDamageInfo(damaged, currentItem);
+        final double inflictedDamage = itemDamageCalculator.calculateInflictedDamage(info);
         final ArmorDamageEvent armorDamageEvent = new ArmorDamageEvent(damaged, currentItem, event.getCause(), inflictedDamage);
         eventBus.dispatch(armorDamageEvent);
 
         if (armorDamageEvent.isCancelled())
-            ItemDamageSupport.setDamage(currentItem, ItemDamageSupport.createNoDamageInfo(damageInfo));
+            ItemDamageSupport.setDamage(currentItem, ItemDamageSupport.toNoDamage(info));
+    }
+
+    private ItemDamageInfo createItemDamageInfo(final LivingEntity damaged, final ItemStack currentItem) {
+        final ItemDamageInfo info = ItemDamageSupport.newInfoFromPotionEffects(currentItem, damaged.getActivePotionEffects());
+        return ItemDamageSupport.merge(info, ItemDamageSupport.newInfo(currentItem));
     }
 
     @Override
