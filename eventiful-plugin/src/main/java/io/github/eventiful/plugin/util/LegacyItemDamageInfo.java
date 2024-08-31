@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Getter
 class LegacyItemDamageInfo implements ItemDamageInfo {
-    private static final Set<Enchantment> DURABILITY_ENCHANTMENTS = Set.of(Enchantment.UNBREAKING, Enchantment.MENDING);
+    private static final Set<Enchantment> DURABILITY_ENCHANTMENTS = Set.of(Enchantment.UNBREAKING);
 
     private final Map<Enchantment, Integer> enchantments;
     private final double durability;
