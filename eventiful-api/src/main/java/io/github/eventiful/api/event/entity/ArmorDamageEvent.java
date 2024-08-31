@@ -44,11 +44,12 @@ public class ArmorDamageEvent extends ArmorEvent implements Cancellable {
     }
 
     /**
-     * Retrieves the amount of damage inflicted on the armor item. This value takes into account internally set armor
-     * toughness, as well as any durability-modifying enchantments and potion effects.
+     * Retrieves the amount of damage inflicted on the armor item. This value takes into account
+     * <a href="https://minecraft.fandom.com/wiki/Armor#Armor_toughness">armor toughness</a>, as well as any
+     * durability-modifying enchantments and potion effects.
      *
-     * @apiNote Until an internal solution is devised to calculate a 100% accurate value, this method is considered as
-     * unstable.
+     * @apiNote Until an internal solution is devised to calculate a 100% accurate value for all tested Minecraft versions,
+     * this method is considered unstable.
      * @return the amount of damage inflicted on the armor item
      */
     @ApiStatus.Experimental
