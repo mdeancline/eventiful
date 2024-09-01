@@ -33,16 +33,18 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
 public class EventifulPlugin extends JavaPlugin {
+    private static final long SERVER_LOAD_FINISH_DELAY_TICKS = 1L;
+
     private final EventLogger logger = new EventLogger(getLogger());
-    private final ClassGraphScanner classGraphScanner = new ClassGraphScanner(new ClassGraph().enableAllInfo());
+    private final ClassScanner classScanner = new ClassGraphScanner(new ClassGraph().enableAllInfo());
     private final ReflectionAccess reflectionAccess = createReflectionAccess();
     private final ServerEventBus eventBus = createServerEventBus();
     private final ListenerRegistry listenerRegistry = new ListenerRegistry(createListenerReflector(), eventBus);
 
     private ServerEventBus createServerEventBus() {
-        final ClassScanner classScanner = new CacheableClassScanner(classGraphScanner);
+        final ClassScanner cacheableClassScanner = new CacheableClassScanner(this.classScanner);
         final EventTokenProvider tokenProvider = new SimpleEventTokenProvider();
-        return new EventBusImpl(classScanner, logger, tokenProvider, this);
+        return new EventBusImpl(cacheableClassScanner, logger, tokenProvider, this);
     }
 
     private ReflectionAccess createReflectionAccess() {
@@ -70,7 +72,7 @@ public class EventifulPlugin extends JavaPlugin {
         final HandlerListInjector handlersInjector = new HandlerListInjector(reflectionAccess);
         final RegisteredListener[] listenerProxies = new RegisteredListener[]{eventBusAdapter};
 
-        classGraphScanner.scanSubtypes(Event.class, subtype -> {
+        classScanner.scanSubtypes(Event.class, subtype -> {
             if (!Modifier.isAbstract(subtype.getModifiers())) {
                 final Class<? extends Event> eventSubtype = (Class<? extends Event>) subtype;
                 final HandlerListProxy proxy = new HandlerListProxy(eventSubtype, listenerRegistry, listenerProxies);
@@ -126,7 +128,7 @@ public class EventifulPlugin extends JavaPlugin {
         eventBus.dispatch(new ServerLoadEvent(loadType));
 
         Bukkit.getScheduler().runTaskLater(this, ()
-                -> eventBus.dispatch(new ServerLoadEvent(ServerLoadEvent.Type.FINISHED)), 1);
+                -> eventBus.dispatch(new ServerLoadEvent(ServerLoadEvent.Type.FINISHED)), SERVER_LOAD_FINISH_DELAY_TICKS);
     }
 
     private int getReloadCount() {
