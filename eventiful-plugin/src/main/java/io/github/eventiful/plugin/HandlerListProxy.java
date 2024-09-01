@@ -17,7 +17,7 @@ class HandlerListProxy extends HandlerList {
     private final RegisteredListener[] listenerProxies;
 
     @Override
-    public void register(@NotNull final RegisteredListener listener) {
+    public synchronized void register(@NotNull final RegisteredListener listener) {
         listenerRegistry.register(listener, eventType);
     }
 
@@ -28,17 +28,17 @@ class HandlerListProxy extends HandlerList {
     }
 
     @Override
-    public void unregister(final RegisteredListener listener) {
+    public synchronized void unregister(final RegisteredListener listener) {
         listenerRegistry.unregister(listener.getListener());
     }
 
     @Override
-    public void unregister(@NotNull final Plugin plugin) {
+    public synchronized void unregister(@NotNull final Plugin plugin) {
         listenerRegistry.unregister(plugin);
     }
 
     @Override
-    public void unregister(@NotNull final Listener listener) {
+    public synchronized void unregister(@NotNull final Listener listener) {
         listenerRegistry.unregister(listener);
     }
 
