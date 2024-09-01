@@ -8,6 +8,7 @@ import io.github.eventiful.plugin.util.ItemDamageCalculator;
 import io.github.eventiful.plugin.util.ItemDamageInfo;
 import io.github.eventiful.plugin.util.ItemDamageSupport;
 import lombok.AllArgsConstructor;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventPriority;
@@ -41,7 +42,10 @@ public class EntityArmorDamageListener extends CancellableEventListener<EntityDa
 
     private void dispatchAsArmorDamageEvent(final EntityDamageEvent event, final LivingEntity damaged, final EquipmentSlot slot) {
         final ItemStack currentItem = Objects.requireNonNull(damaged.getEquipment()).getItem(slot);
-        final ItemDamageInfo info = createItemDamageInfo(damaged, currentItem);
+        if (currentItem.getType() == Material.AIR)
+            return;
+
+        final ItemDamageInfo info = ItemDamageSupport.newInfo(currentItem);
         final double inflictedDamage = itemDamageCalculator.calculateInflictedDamage(info);
         final ArmorDamageEvent armorDamageEvent = new ArmorDamageEvent(damaged, currentItem, event.getCause(), inflictedDamage);
         eventBus.dispatch(armorDamageEvent);
