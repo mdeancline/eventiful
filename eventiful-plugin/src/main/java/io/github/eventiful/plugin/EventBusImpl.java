@@ -90,8 +90,8 @@ class EventBusImpl implements ServerEventBus {
     private class Channel<T extends Event> {
         private final Map<EventToken, EventListener<T>> ownedListeners = new Object2ObjectOpenHashMap<>();
         private final Map<EventPriority, List<EventListener<T>>> orderedListeners = new EnumMap<>(EventPriority.class);
+        private EventListener<T>[] iterationCache = (EventListener<T>[]) DEFAULT_CACHE;
         private final EventTokenProvider tokenProvider;
-        private volatile EventListener<T>[] iterationCache = (EventListener<T>[]) DEFAULT_CACHE;
         private int size;
 
         private Channel(final EventTokenProvider tokenProvider) {
@@ -101,7 +101,7 @@ class EventBusImpl implements ServerEventBus {
                 orderedListeners.put(value, new ObjectArrayList<>());
         }
 
-        public void dispatch(final T event) {
+        public synchronized void dispatch(final T event) {
             for (final EventListener<T> listener : iterationCache)
                 listener.handle(event);
         }
@@ -149,7 +149,7 @@ class EventBusImpl implements ServerEventBus {
             };
         }
 
-        public boolean isRegistered(final EventToken token) {
+        public synchronized boolean isRegistered(final EventToken token) {
             return ownedListeners.containsKey(token);
         }
     }
