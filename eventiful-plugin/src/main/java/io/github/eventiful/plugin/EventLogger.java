@@ -22,10 +22,6 @@ public class EventLogger {
         logWarning(builder.toString());
     }
 
-    public void logInfo(final String message) {
-        logger.log(Level.INFO, message);
-    }
-
     public void logWarning(final String message) {
         logger.log(Level.WARNING, message);
     }
