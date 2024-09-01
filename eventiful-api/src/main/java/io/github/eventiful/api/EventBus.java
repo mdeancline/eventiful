@@ -33,31 +33,34 @@ public interface EventBus {
     void dispatch(@NotNull Event event);
 
     /**
-     * Registers an {@link EventListener} to handle a specific type of event.
+     * Registers an {@link EventListener} to handle events of the specified type.
+     *
      * <br><br>
      * <b>Note:</b> The registration process will only maintain synchronous execution if the {@link Server} is not
      * fully loaded.
      *
-     * @param <T>      The type of the event to be handled.
-     * @param type     The class representing the event type to monitor.
+     * @param type     The class representing the event type to be monitored.
      * @param listener The listener that will handle events of the specified type.
-     * @return An {@link EventToken} representing the registration of the listener.
+     * @return An {@link EventToken} that represents the registration of the listener.
+     * @param <T>      The type of the event.
      */
     <T extends Event> EventToken register(@NotNull Class<T> type, @NotNull EventListener<T> listener);
 
     /**
-     * Unregisters an {@link EventListener} using the given token.
+     * Unregisters an {@link EventListener} using the provided token. Once unregistered, the listener
+     * will no longer receive events.
      *
-     * @param token The token representing the listener registration to be removed.
+     * @param token The {@link EventToken} representing the registration of the listener that
+     *              needs to be removed.
      */
     void unregister(@NotNull EventToken token);
 
     /**
-     * Determines if an {@link EventListener} is registered from its associated {@link EventToken}.
+     * Checks whether an {@link EventListener} is currently registered based on the associated {@link EventToken}.
      *
-     * @param token The token representing the listener registration.
+     * @param token The {@link EventToken} representing the listener registration to check.
      * @return {@code true} if the listener associated with the given token is currently registered;
-     * {@code false} otherwise.
+     *         {@code false} otherwise.
      */
     boolean isRegistered(@NotNull EventToken token);
 }
