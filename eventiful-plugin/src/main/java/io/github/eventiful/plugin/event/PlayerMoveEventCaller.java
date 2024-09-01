@@ -17,11 +17,17 @@ public class PlayerMoveEventCaller extends CancellableEventListener<PlayerMoveEv
     public void handleCancellable(final PlayerMoveEvent event) {
         for (final PlayerMoveContext<?> context : contexts) {
             if (context.appliesTo(event)) {
-                final PlayerMoveEvent transformed = context.transform(event);
-                eventBus.dispatch(transformed);
-
-                if (transformed.isCancelled()) event.setCancelled(true);
+                handle(event, context);
+                break;
             }
         }
+    }
+
+    private void handle(final PlayerMoveEvent event, final PlayerMoveContext<?> context) {
+        final PlayerMoveEvent transformed = context.transform(event);
+        eventBus.dispatch(transformed);
+
+        if (transformed.isCancelled())
+            event.setCancelled(true);
     }
 }
