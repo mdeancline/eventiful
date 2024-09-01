@@ -17,6 +17,7 @@ import java.util.Set;
 
 @AllArgsConstructor
 public class EquipmentSlotResolver {
+    private static final EquipmentSlot[] NO_ARMOR_SLOTS = new EquipmentSlot[0];
     private static final EquipmentSlot[] ARMOR_PIECE_SLOTS = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
     private static final Set<EntityType> ENTITIES_WITH_BODY_ARMOR = EnumSet.of(EntityType.HORSE, EntityType.WOLF);
     private static final Set<Material> HEAD_MATERIALS = EnumSet.noneOf(Material.class);
@@ -64,7 +65,7 @@ public class EquipmentSlotResolver {
     public EquipmentSlot[] getArmorSlotsFor(final LivingEntity entity) {
         final EntityEquipment equipment = entity.getEquipment();
         if (equipment == null)
-            return null;
+            return NO_ARMOR_SLOTS;
 
         return ENTITIES_WITH_BODY_ARMOR.contains(entity.getType())
                 ? getEntityArmorSlots()
