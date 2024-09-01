@@ -46,7 +46,7 @@ public class EventCircumscriptionBenchmark {
 
         @Setup
         public void setUp() {
-            eventBus = TestUtils.createServerEventBusImpl();
+            eventBus = TestUtils.newServerEventBusImpl();
             eventBus.register(MockEvent.class, new MockEventListener());
         }
 
@@ -62,7 +62,7 @@ public class EventCircumscriptionBenchmark {
 
         @Setup
         public void setUp() {
-            eventBus = TestUtils.createServerEventBusImpl();
+            eventBus = TestUtils.newServerEventBusImpl();
             eventBus.register(MockEvent.class, new EventExclusion<>(new MockEventListener(), ExtendedMockEvent.class));
         }
 
@@ -78,7 +78,7 @@ public class EventCircumscriptionBenchmark {
 
         @Setup
         public void setUp() {
-            eventBus = TestUtils.createServerEventBusImpl();
+            eventBus = TestUtils.newServerEventBusImpl();
             eventBus.register(MockEvent.class, new EventInclusion<>(new MockEventListener(), ExtendedMockEvent.class));
         }
 
@@ -94,7 +94,7 @@ public class EventCircumscriptionBenchmark {
 
         @Setup
         public void setUp() {
-            eventBus = TestUtils.createServerEventBusImpl();
+            eventBus = TestUtils.newServerEventBusImpl();
             eventBus.register(MockEvent.class, new IdentityEventExclusion<>(new MockEventListener(), ExtendedMockEvent.class));
         }
 
@@ -110,7 +110,7 @@ public class EventCircumscriptionBenchmark {
 
         @Setup
         public void setUp() {
-            eventBus = TestUtils.createServerEventBusImpl();
+            eventBus = TestUtils.newServerEventBusImpl();
             eventBus.register(MockEvent.class, new IdentityEventInclusion<>(new MockEventListener(), ExtendedMockEvent.class));
         }
 

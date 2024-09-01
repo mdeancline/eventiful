@@ -31,7 +31,7 @@ public class EventPipelineTest {
         mockServer = MockBukkit.mock();
         mockPluginManager = mockServer.getPluginManager();
         mockPlugin = MockBukkit.createMockPlugin();
-        eventBus = TestUtils.createServerEventBusImpl();
+        eventBus = TestUtils.newServerEventBusImpl();
     }
 
     @After
