@@ -1,5 +1,6 @@
 package io.github.eventiful.plugin.reflect;
 
+import lombok.AllArgsConstructor;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -29,12 +30,9 @@ public final class CancellableListenerReflector implements ListenerReflector {
         return Collections.unmodifiableCollection(methods);
     }
 
+    @AllArgsConstructor
     private static final class Method<T extends Event & Cancellable> implements ListenerMethod<T> {
         private final ListenerMethod<T> source;
-
-        private Method(final ListenerMethod<T> source) {
-            this.source = source;
-        }
 
         @Override
         public void invoke(final T event) {
