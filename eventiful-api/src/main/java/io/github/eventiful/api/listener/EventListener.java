@@ -4,12 +4,15 @@ import io.github.eventiful.api.EventBus;
 import org.bukkit.event.*;
 
 /**
- * Represents a high-level {@link Listener} that doesn't require the {@link EventHandler} annotation. It leverages
- * generics to enhance efficiency and performance, particularly when dealing with {@link Cancellable} events.
+ * A high-level {@link Listener} that does not require the use of the {@link EventHandler} annotation.
+ * This listener utilizes generics to improve efficiency and performance, especially when handling {@link Cancellable}
+ * events.
  *
- * @param <T> the type of event that this listener handles, extending {@link Event}
- * @apiNote Only one "event handler method" is supported via {@link EventListener#handle(Event)}. If an incoming event
- * is asynchronous, any associated {@code EventListener}s will be executed in a separate thread.
+ * @param <T> the type of event this listener processes, which must extend {@link Event}
+ * @apiNote This listener only supports a single "event handler method," defined in {@link EventListener#handle(Event)}.
+ * If {@link Event#isAsynchronous()} returns {@code true} for an incoming {@link Event}, the associated
+ * {@code EventListener}s will be executed in a separate thread.
+ *
  * @see CancellableEventListener
  * @see EventBus
  * @since 1.0.0
@@ -17,8 +20,9 @@ import org.bukkit.event.*;
 public interface EventListener<T extends Event> {
 
     /**
-     * Processes the incoming {@code Event}.
+     * Processes the incoming {@code Event} within its synchronization state.
      *
+     * @apiNote See the interface documentation for details on concurrent handling.
      * @param event the incoming {@code Event}
      */
     void handle(T event);
