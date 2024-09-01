@@ -7,7 +7,7 @@ import org.bukkit.event.Event;
  * Handles any {@link Event} that implements the {@link Cancellable} interface.
  * <p>
  * If an incoming {@code Event} of this type is cancelled before being passed to this {@code EventListener}, the logic
- * in {@link CancellableEventListener#handleCancellable(Event)} will not be executed.
+ * in {@link CancellableEventListener#handleCancellable(Event)} will not be executed. See the API note for more details.
  *
  * @param <T> {@inheritDoc} and implements {@code Cancellable}
  * @apiNote If {@link CancellableEventListener#isIgnoringCancelled()}, which can be overridden,
