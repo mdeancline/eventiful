@@ -51,12 +51,7 @@ public class EntityArmorDamageListener extends CancellableEventListener<EntityDa
         eventBus.dispatch(armorDamageEvent);
 
         if (armorDamageEvent.isCancelled())
-            ItemDamageSupport.setDamage(currentItem, ItemDamageSupport.toNoDamage(info));
-    }
-
-    private ItemDamageInfo createItemDamageInfo(final LivingEntity damaged, final ItemStack currentItem) {
-        final ItemDamageInfo info = ItemDamageSupport.newInfoFromPotionEffects(currentItem, damaged.getActivePotionEffects());
-        return ItemDamageSupport.merge(info, ItemDamageSupport.newInfo(currentItem));
+            ItemDamageSupport.setDamage(currentItem, ItemDamageSupport.toNoDamageInfo(info));
     }
 
     @Override

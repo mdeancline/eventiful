@@ -8,11 +8,11 @@ import org.bukkit.inventory.meta.Damageable;
 import java.util.Collection;
 import java.util.Objects;
 
-class DamageableItemInfo extends LegacyItemDamageInfo {
+class ItemDamageInfo_1_13 extends AbstractItemDamageInfo {
     private final Damageable meta;
 
-    public DamageableItemInfo(final ItemStack itemStack) {
-        super(itemStack);
+    public ItemDamageInfo_1_13(final ItemStack itemStack) {
+        super(itemStack.getEnchantments());
         this.meta = ItemDamageSupport.toDamageableMeta(Objects.requireNonNull(itemStack.getItemMeta()).clone());
     }
 
@@ -22,7 +22,7 @@ class DamageableItemInfo extends LegacyItemDamageInfo {
     }
 
     @Override
-    public double getDefensePoints() {
+    public double getInitialDefensePoints() {
         return getModifiersAmount(Attribute.GENERIC_ARMOR);
     }
 
