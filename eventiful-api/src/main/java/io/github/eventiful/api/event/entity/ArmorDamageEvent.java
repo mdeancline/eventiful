@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 1.0.0
  */
+@ApiStatus.Experimental
 public class ArmorDamageEvent extends ArmorEvent implements Cancellable {
     private final EntityDamageEvent.DamageCause cause;
     private final double inflictedDamage;
@@ -47,12 +48,8 @@ public class ArmorDamageEvent extends ArmorEvent implements Cancellable {
      * Retrieves the amount of damage inflicted on the armor item. This value takes into account
      * <a href="https://minecraft.fandom.com/wiki/Armor#Armor_toughness">armor toughness</a>, as well as any
      * durability-modifying enchantments and potion effects.
-     *
-     * @apiNote Until an internal solution is devised to calculate a 100% accurate value for all tested Minecraft versions,
-     * this method is considered unstable.
      * @return the amount of damage inflicted on the armor item
      */
-    @ApiStatus.Experimental
     public double getInflictedDamage() {
         return inflictedDamage;
     }
