@@ -29,10 +29,10 @@ public class PlayerArmorInteractListener extends CancellableEventListener<Player
         final EquipmentSlot slot = slotResolver.getArmorSlotFor(event.getMaterial());
 
         if (slot != null && event.useInteractedBlock() != Event.Result.DENY)
-            dispatchAsEquipEvent(event, slot);
+            dispatchAsChangeEvent(event, slot);
     }
 
-    private void dispatchAsEquipEvent(final PlayerInteractEvent event, final EquipmentSlot slot) {
+    private void dispatchAsChangeEvent(final PlayerInteractEvent event, final EquipmentSlot slot) {
         final ItemStack newItem = event.getItem();
         if (newItem == null) return;
 

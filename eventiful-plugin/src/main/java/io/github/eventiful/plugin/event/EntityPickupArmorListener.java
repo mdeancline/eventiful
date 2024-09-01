@@ -23,10 +23,10 @@ public class EntityPickupArmorListener extends CancellableEventListener<EntityPi
         final LivingEntity entity = event.getEntity();
 
         if (slot != null && entity.getEquipment() != null)
-            dispatchAsEquipEvent(event, entity, slot);
+            dispatchAsChangeEvent(event, entity, slot);
     }
 
-    private void dispatchAsEquipEvent(final EntityPickupItemEvent event, final LivingEntity entity, final EquipmentSlot slot) {
+    private void dispatchAsChangeEvent(final EntityPickupItemEvent event, final LivingEntity entity, final EquipmentSlot slot) {
         final ItemStack oldItem = Objects.requireNonNull(entity.getEquipment()).getItem(slot);
         final ItemStack newItem = event.getItem().getItemStack();
         final ArmorChangeEvent equipEvent = new ArmorChangeEvent(entity, newItem, oldItem, slot);
