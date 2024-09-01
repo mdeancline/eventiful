@@ -35,7 +35,7 @@ public interface EventBus {
     /**
      * Registers an {@link EventListener} to handle a specific type of event.
      * <br><br>
-     * <b>Warning:</b> The registration process will only maintain synchronous execution if the {@link Server} is not
+     * <b>Note:</b> The registration process will only maintain synchronous execution if the {@link Server} is not
      * fully loaded.
      *
      * @param <T>      The type of the event to be handled.
