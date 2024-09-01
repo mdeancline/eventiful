@@ -1,6 +1,5 @@
 package io.github.eventiful.plugin.reflect;
 
-import io.github.eventiful.api.exception.EventRegistrationException;
 import lombok.AllArgsConstructor;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -13,15 +12,7 @@ import java.util.Arrays;
 public class HandlerListInjector {
     private final ReflectionAccess reflectionAccess;
 
-    public void inject(final HandlerList handlers, final Class<? extends Event> type) {
-        try {
-            tryInject(handlers, type);
-        } catch (final ReflectiveOperationException e) {
-            throw new EventRegistrationException(e);
-        }
-    }
-
-    private void tryInject(final HandlerList replacement, final Class<? extends Event> type) throws ReflectiveOperationException {
+    public void inject(final HandlerList replacement, final Class<? extends Event> type) {
         for (final Field field : type.getDeclaredFields()) {
             if (field.getType() == HandlerList.class && Modifier.isStatic(field.getModifiers())) {
                 final HandlerList original = (HandlerList) reflectionAccess.getObject(field);
