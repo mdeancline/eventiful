@@ -73,7 +73,7 @@
                                     <shadedPattern>${shadedPattern}</shadedPattern>
                                 </relocation>
                                 <relocation>
-                                    <pattern>net.jodah</pattern>
+                                    <pattern>net.insprill</pattern>
                                     <shadedPattern>${shadedPattern}</shadedPattern>
                                 </relocation>
                                 <relocation>
