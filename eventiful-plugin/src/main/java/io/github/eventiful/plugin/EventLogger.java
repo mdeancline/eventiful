@@ -25,4 +25,8 @@ public class EventLogger {
     public void logWarning(final String message) {
         logger.log(Level.WARNING, message);
     }
+
+    public void logInfo(final String message) {
+        logger.log(Level.INFO, message);
+    }
 }

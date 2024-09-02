@@ -6,6 +6,8 @@ import io.github.eventiful.api.event.server.ServerLoadEvent;
 import io.github.eventiful.api.exception.EventRegistrationException;
 import io.github.eventiful.api.listener.decorator.IdentityEventInclusion;
 import io.github.eventiful.plugin.event.*;
+import io.github.eventiful.plugin.hook.PluginHookPool;
+import io.github.eventiful.plugin.hook.model.ProtocolLibHook;
 import io.github.eventiful.plugin.reflect.*;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
 import io.github.eventiful.plugin.registration.SimpleEventTokenProvider;
@@ -40,6 +42,7 @@ public class EventifulPlugin extends JavaPlugin {
     private final ReflectionAccess reflectionAccess = createReflectionAccess();
     private final ServerEventBus eventBus = createServerEventBus();
     private final ListenerRegistry listenerRegistry = new ListenerRegistry(createListenerReflector(), eventBus);
+    private final PluginHookPool hookPool = new PluginHookPool(logger);
 
     private ServerEventBus createServerEventBus() {
         final ClassScanner cacheableClassScanner = new CacheableClassScanner(this.classScanner);
@@ -118,6 +121,7 @@ public class EventifulPlugin extends JavaPlugin {
         }
 
         dispatchServerLoadEvent();
+        hookPool.setup();
     }
 
     private void dispatchServerLoadEvent() {
