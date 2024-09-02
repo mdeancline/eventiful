@@ -18,8 +18,8 @@ public class PluginHookPool {
 
         for (final PluginHook hook : hooks) {
             if (manager.getPlugin(hook.getName()) != null) {
-                hook.setup();
                 logger.logInfo("Setting up " + hook.getName() + " hook");
+                hook.setup();
             }
         }
     }
