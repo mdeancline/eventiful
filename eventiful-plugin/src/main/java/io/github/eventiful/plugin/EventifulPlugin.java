@@ -121,6 +121,8 @@ public class EventifulPlugin extends JavaPlugin {
         }
 
         dispatchServerLoadEvent();
+
+        hookPool.register(new ProtocolLibHook(eventBus, this));
         hookPool.setup();
     }
 
