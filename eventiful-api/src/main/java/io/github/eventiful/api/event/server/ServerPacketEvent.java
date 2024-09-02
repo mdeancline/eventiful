@@ -33,7 +33,7 @@ public abstract class ServerPacketEvent extends ServerEvent implements Cancellab
     @NotNull
     @Override
     @ApiStatus.Internal
-    public HandlerList getHandlers() {
+    public final HandlerList getHandlers() {
         return NonOperableHandlerList.getInstance();
     }
 
