@@ -48,7 +48,7 @@ public abstract class ServerPacketEvent extends ServerEvent implements Cancellab
     }
 
     /**
-     * Retrieves the {@link PacketContainer} representing the packet being sent.
+     * Retrieves the {@link PacketContainer} representing the packet being intercepted.
      *
      * @return The {@link PacketContainer}.
      */
@@ -57,7 +57,7 @@ public abstract class ServerPacketEvent extends ServerEvent implements Cancellab
     }
 
     /**
-     * Retrieves the {@link PacketType} of the packet being sent.
+     * Retrieves the {@link PacketType} of the packet being intercepted.
      *
      * @return The {@link PacketType}.
      */
