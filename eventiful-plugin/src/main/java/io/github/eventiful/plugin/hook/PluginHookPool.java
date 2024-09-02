@@ -14,9 +14,9 @@ public class PluginHookPool {
     private final EventLogger logger;
 
     public void setup() {
-        for (final PluginHook hook : hooks) {
-            final PluginManager manager = Bukkit.getServer().getPluginManager();
+        final PluginManager manager = Bukkit.getServer().getPluginManager();
 
+        for (final PluginHook hook : hooks) {
             if (manager.getPlugin(hook.getName()) != null) {
                 hook.setup();
                 logger.logInfo("Setting up " + hook.getName() + " hook");
