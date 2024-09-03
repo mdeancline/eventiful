@@ -11,8 +11,6 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
-
 public class EventifulLightInjector extends LightInjector implements PacketStream {
     private final EventBus eventBus;
     private final ReflectionAccess reflectionAccess;
@@ -36,10 +34,6 @@ public class EventifulLightInjector extends LightInjector implements PacketStrea
     protected @Nullable Object onPacketSendAsync(@Nullable final Player player, @NotNull final Channel channel, @NotNull final Object packet) {
         if (player == null)
             return packet;
-
-        final PacketStream stream = Bukkit.getServicesManager().load(PacketStream.class);
-        final Packet newPacket = Objects.requireNonNull(stream).newPacket("PacketPlayOutHealth");
-        newPacket.write(2, 3);
 
         final Packet interceptedPacket = new InterceptedPacket(packet, reflectionAccess);
         return dispatchEvent(new ServerPacketSendEvent(interceptedPacket, this, player)) ? packet : null;
