@@ -1,7 +1,5 @@
 package io.github.eventiful.api.event.server;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.events.PacketContainer;
 import io.github.eventiful.api.NonOperableHandlerList;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
@@ -14,19 +12,18 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Represents a Minecraft packet event involving the {@link Server} and a {@link Player}.
  *
- * @apiNote <a href="https://www.spigotmc.org/resources/protocollib.1997/">ProtocolLib</a> is required for this event
- * type to be dispatched.
  * @since 1.0.0
  */
 public abstract class ServerPacketEvent extends ServerEvent implements Cancellable {
-    private final PacketContainer packet;
-    private final PacketType type;
+    private final Packet packet;
+    private final PacketStream stream;
     private final Player player;
     private boolean cancel;
 
-    protected ServerPacketEvent(@NotNull final PacketContainer packet, @NotNull final PacketType type, @NotNull final Player player) {
+    protected ServerPacketEvent(@NotNull final Packet packet, @NotNull final PacketStream stream, @NotNull final Player player) {
+        super(true);
         this.packet = packet;
-        this.type = type;
+        this.stream = stream;
         this.player = player;
     }
 
@@ -48,21 +45,21 @@ public abstract class ServerPacketEvent extends ServerEvent implements Cancellab
     }
 
     /**
-     * Retrieves the {@link PacketContainer} representing the packet being intercepted.
+     * Retrieves the intercepted {@link Packet}.
      *
-     * @return The {@link PacketContainer}.
+     * @return the intercepted {@link Packet}.
      */
-    public final PacketContainer getPacket() {
+    public final Packet getPacket() {
         return packet;
     }
 
     /**
-     * Retrieves the {@link PacketType} of the packet being intercepted.
+     * Retrieves the {@link PacketStream} associated with this event.
      *
-     * @return The {@link PacketType}.
+     * @return the {@link PacketStream}.
      */
-    public final PacketType getType() {
-        return type;
+    public final PacketStream getStream() {
+        return stream;
     }
 
     /**

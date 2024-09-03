@@ -2,12 +2,12 @@ package io.github.eventiful.plugin;
 
 import io.github.classgraph.ClassGraph;
 import io.github.eventiful.api.EventBus;
+import io.github.eventiful.api.event.server.PacketStream;
 import io.github.eventiful.api.event.server.ServerLoadEvent;
 import io.github.eventiful.api.exception.EventRegistrationException;
 import io.github.eventiful.api.listener.decorator.IdentityEventInclusion;
 import io.github.eventiful.plugin.event.*;
-import io.github.eventiful.plugin.hook.PluginHookPool;
-import io.github.eventiful.plugin.hook.model.ProtocolLibHook;
+import io.github.eventiful.plugin.io.EventifulLightInjector;
 import io.github.eventiful.plugin.reflect.*;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
 import io.github.eventiful.plugin.registration.SimpleEventTokenProvider;
@@ -44,7 +44,7 @@ public class EventifulPlugin extends JavaPlugin {
     private final ReflectionAccess reflectionAccess = createReflectionAccess();
     private final ServerEventBus eventBus = createServerEventBus();
     private final ListenerRegistry listenerRegistry = new ListenerRegistry(createListenerReflector(), eventBus);
-    private final PluginHookPool hookPool = new PluginHookPool(logger);
+    private final PacketStream packetStream = new EventifulLightInjector(this, eventBus, reflectionAccess);
     private Metrics metrics;
 
     private ServerEventBus createServerEventBus() {
@@ -109,6 +109,7 @@ public class EventifulPlugin extends JavaPlugin {
         eventBus.register(EntityDamageEvent.class, new EntityArmorDamageListener(eventBus, slotResolver, itemDamageCalculator));
 
         Bukkit.getServicesManager().register(EventBus.class, eventBus, this, ServicePriority.Normal);
+        Bukkit.getServicesManager().register(PacketStream.class, packetStream, this, ServicePriority.Normal);
     }
 
     @Override
@@ -126,9 +127,8 @@ public class EventifulPlugin extends JavaPlugin {
         }
 
         dispatchServerLoadEvent();
+    }
 
-        hookPool.register(new ProtocolLibHook(eventBus, this));
-        hookPool.setup();
     @Override
     public void onDisable() {
         metrics.shutdown();

@@ -16,6 +16,7 @@
     <properties>
         <plugin.name>Eventiful</plugin.name>
         <eventiful.api.version>1.0.0</eventiful.api.version>
+        <lightinjector.version>1.0.2</lightinjector.version>
         <spigotutils.version>0.4.0</spigotutils.version>
         <classgraph.version>4.8.147</classgraph.version>
         <reflectasm.version>1.11.9</reflectasm.version>
@@ -70,6 +71,10 @@
                                     <pattern>com.esotericsoftware</pattern>
                                     <shadedPattern>${shadedPattern}</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>com.fren_gor</pattern>
+                                    <shadedPattern>${shadedPattern}</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -90,6 +95,27 @@
             <groupId>io.github.eventiful</groupId>
             <artifactId>eventiful-api</artifactId>
             <version>${eventiful.api.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>3.0.2</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.79.Final</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.frengor</groupId>
+            <artifactId>lightinjector</artifactId>
+            <version>${lightinjector.version}</version>
             <scope>compile</scope>
         </dependency>
 
