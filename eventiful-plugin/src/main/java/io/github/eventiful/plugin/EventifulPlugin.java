@@ -18,6 +18,7 @@ import io.github.eventiful.plugin.util.EquipmentSlotResolver;
 import io.github.eventiful.plugin.util.ItemDamageCalculator;
 import io.github.eventiful.plugin.util.ItemDamageSupport;
 import net.insprill.spigotutils.MinecraftVersion;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -36,6 +37,7 @@ import java.lang.reflect.Modifier;
 
 public class EventifulPlugin extends JavaPlugin {
     private static final long SERVER_LOAD_FINISH_DELAY_TICKS = 1L;
+    private static final int METRICS_SERVICE_ID = 23270;
 
     private final EventLogger logger = new EventLogger(getLogger());
     private final ClassScanner classScanner = new ClassGraphScanner(new ClassGraph().enableAllInfo());
@@ -43,6 +45,7 @@ public class EventifulPlugin extends JavaPlugin {
     private final ServerEventBus eventBus = createServerEventBus();
     private final ListenerRegistry listenerRegistry = new ListenerRegistry(createListenerReflector(), eventBus);
     private final PluginHookPool hookPool = new PluginHookPool(logger);
+    private Metrics metrics;
 
     private ServerEventBus createServerEventBus() {
         final ClassScanner cacheableClassScanner = new CacheableClassScanner(this.classScanner);
@@ -110,6 +113,8 @@ public class EventifulPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        metrics = new Metrics(this, METRICS_SERVICE_ID);
+
         for (final Plugin plugin : getServer().getPluginManager().getPlugins()) {
             for (final Field field : reflectionAccess.getAllDeclaringFields(plugin)) {
                 if (field.getType() == PluginLoader.class) {
@@ -124,6 +129,10 @@ public class EventifulPlugin extends JavaPlugin {
 
         hookPool.register(new ProtocolLibHook(eventBus, this));
         hookPool.setup();
+    @Override
+    public void onDisable() {
+        metrics.shutdown();
+        metrics = null;
     }
 
     private void dispatchServerLoadEvent() {
