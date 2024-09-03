@@ -2,7 +2,7 @@ package io.github.eventiful.plugin;
 
 import io.github.classgraph.ClassGraph;
 import io.github.eventiful.api.EventBus;
-import io.github.eventiful.api.event.server.PacketStream;
+import io.github.eventiful.api.PacketBridge;
 import io.github.eventiful.api.event.server.ServerLoadEvent;
 import io.github.eventiful.api.exception.EventRegistrationException;
 import io.github.eventiful.api.listener.decorator.IdentityEventInclusion;
@@ -35,7 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-public class EventifulPlugin extends JavaPlugin {
+public class EventifulImplPlugin extends JavaPlugin {
     private static final long SERVER_LOAD_FINISH_DELAY_TICKS = 1L;
     private static final int METRICS_SERVICE_ID = 23270;
 
@@ -44,7 +44,7 @@ public class EventifulPlugin extends JavaPlugin {
     private final ReflectionAccess reflectionAccess = createReflectionAccess();
     private final ServerEventBus eventBus = createServerEventBus();
     private final ListenerRegistry listenerRegistry = new ListenerRegistry(createListenerReflector(), eventBus);
-    private final PacketStream packetStream = new EventifulLightInjector(this, eventBus, reflectionAccess);
+    private final PacketBridge packetBridge = new EventifulLightInjector(this, eventBus, reflectionAccess);
     private Metrics metrics;
 
     private ServerEventBus createServerEventBus() {
@@ -109,7 +109,7 @@ public class EventifulPlugin extends JavaPlugin {
         eventBus.register(EntityDamageEvent.class, new EntityArmorDamageListener(eventBus, slotResolver, itemDamageCalculator));
 
         Bukkit.getServicesManager().register(EventBus.class, eventBus, this, ServicePriority.Normal);
-        Bukkit.getServicesManager().register(PacketStream.class, packetStream, this, ServicePriority.Normal);
+        Bukkit.getServicesManager().register(PacketBridge.class, packetBridge, this, ServicePriority.Normal);
     }
 
     @Override

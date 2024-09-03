@@ -1,4 +1,4 @@
-package io.github.eventiful.api;
+package io.github.eventiful.api.event;
 
 import io.github.eventiful.api.exception.EventRegistrationException;
 import org.bukkit.event.HandlerList;
@@ -6,6 +6,12 @@ import org.bukkit.plugin.PluginManager;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
+ * A specialized {@link HandlerList} that is non-operable outside the controlled environment of the {@link PluginManager}.
+ * It enforces restrictions on who can access its instance, ensuring that only the plugin manager can interact with it.
+ *<br><br>
+ * The {@link NonOperableHandlerList} serves as a security measure to prevent unauthorized event registrations or handler
+ * manipulations since the Eventiful framework doesn't utilize {@link HandlerList}s.
+ *
  * @since 1.0.0
  */
 public final class NonOperableHandlerList extends HandlerList {

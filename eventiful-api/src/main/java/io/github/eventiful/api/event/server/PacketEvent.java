@@ -1,7 +1,8 @@
 package io.github.eventiful.api.event.server;
 
-import io.github.eventiful.api.NonOperableHandlerList;
-import org.bukkit.Server;
+import io.github.eventiful.api.PacketBridge;
+import io.github.eventiful.api.PacketStructure;
+import io.github.eventiful.api.event.NonOperableHandlerList;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -10,20 +11,20 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a Minecraft packet event involving the {@link Server} and a {@link Player}.
+ * Represents a Minecraft packet event involving the server and a {@link Player}.
  *
  * @since 1.0.0
  */
-public abstract class ServerPacketEvent extends ServerEvent implements Cancellable {
-    private final Packet packet;
-    private final PacketStream stream;
+public abstract class PacketEvent extends ServerEvent implements Cancellable {
+    private final PacketStructure packet;
+    private final PacketBridge bridge;
     private final Player player;
     private boolean cancel;
 
-    protected ServerPacketEvent(@NotNull final Packet packet, @NotNull final PacketStream stream, @NotNull final Player player) {
+    protected PacketEvent(@NotNull final PacketStructure packet, @NotNull final PacketBridge bridge, @NotNull final Player player) {
         super(true);
         this.packet = packet;
-        this.stream = stream;
+        this.bridge = bridge;
         this.player = player;
     }
 
@@ -45,21 +46,21 @@ public abstract class ServerPacketEvent extends ServerEvent implements Cancellab
     }
 
     /**
-     * Retrieves the intercepted {@link Packet}.
+     * Retrieves the intercepted {@link PacketStructure}.
      *
-     * @return the intercepted {@link Packet}.
+     * @return the intercepted {@link PacketStructure}.
      */
-    public final Packet getPacket() {
+    public final PacketStructure getPacket() {
         return packet;
     }
 
     /**
-     * Retrieves the {@link PacketStream} associated with this event.
+     * Retrieves the {@link PacketBridge} associated with this event.
      *
-     * @return the {@link PacketStream}.
+     * @return the {@link PacketBridge}.
      */
-    public final PacketStream getStream() {
-        return stream;
+    public final PacketBridge getBridge() {
+        return bridge;
     }
 
     /**

@@ -3,6 +3,6 @@ description: ${project.description}
 author: Matthew Cline
 version: ${project.version}
 website: ${base.url}
-main: ${project.groupId}.plugin.EventifulPlugin
+main: ${project.groupId}.plugin.EventifulImplPlugin
 api-version: 1.13
 load: STARTUP

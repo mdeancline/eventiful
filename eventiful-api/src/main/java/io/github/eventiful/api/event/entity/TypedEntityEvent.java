@@ -1,6 +1,6 @@
 package io.github.eventiful.api.event.entity;
 
-import io.github.eventiful.api.NonOperableHandlerList;
+import io.github.eventiful.api.event.NonOperableHandlerList;
 import io.github.eventiful.api.listener.EventListener;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.HandlerList;

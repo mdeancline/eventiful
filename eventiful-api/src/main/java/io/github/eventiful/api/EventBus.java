@@ -11,13 +11,14 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Responsible for the registration and dispatching of events.
  *
- * @apiNote The only valid way to retrieve an {@code EventBus} instance is by loading the relevant service from the
+ * @apiNote To obtain a valid {@code PacketBridge} instance, you must load the service using the
  * {@link ServicesManager}.
  * <pre>
  * {@code
  * EventBus eventBus = Bukkit.getServicesManager().load(EventBus.class);
  * }
  * </pre>
+ * @see EventifulPlugin
  * @since 1.0.0
  */
 @ApiStatus.NonExtendable

@@ -1,5 +1,7 @@
 package io.github.eventiful.api.event.server;
 
+import io.github.eventiful.api.PacketBridge;
+import io.github.eventiful.api.PacketStructure;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
@@ -10,10 +12,10 @@ import org.jetbrains.annotations.NotNull;
  *
  * @since 1.0.0
  */
-public class ServerPacketSendEvent extends ServerPacketEvent {
+public class PacketSendEvent extends PacketEvent {
 
     @ApiStatus.Internal
-    public ServerPacketSendEvent(@NotNull final Packet packet, @NotNull final PacketStream stream, @NotNull final Player player) {
-        super(packet, stream, player);
+    public PacketSendEvent(@NotNull final PacketStructure packet, @NotNull final PacketBridge bridge, @NotNull final Player player) {
+        super(packet, bridge, player);
     }
 }

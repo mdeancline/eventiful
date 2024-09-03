@@ -1,14 +1,14 @@
 package io.github.eventiful.plugin.io;
 
-import io.github.eventiful.api.event.server.Packet;
-import io.github.eventiful.api.event.server.PacketScope;
-import io.github.eventiful.api.event.server.PacketState;
+import io.github.eventiful.api.PacketDirection;
+import io.github.eventiful.api.PacketState;
+import io.github.eventiful.api.PacketStructure;
 import io.github.eventiful.plugin.reflect.ReflectionAccess;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-class InterceptedPacket implements Packet {
+class InterceptedPacket implements PacketStructure {
     @Getter
     private final Object handle;
     private final ReflectionAccess reflectionAccess;
@@ -24,7 +24,7 @@ class InterceptedPacket implements Packet {
     }
 
     @Override
-    public PacketScope getScope() {
+    public PacketDirection getDirection() {
         return null;
     }
 

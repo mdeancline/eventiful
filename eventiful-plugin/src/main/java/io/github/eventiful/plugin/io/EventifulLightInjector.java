@@ -2,7 +2,11 @@ package io.github.eventiful.plugin.io;
 
 import com.fren_gor.lightInjector.LightInjector;
 import io.github.eventiful.api.EventBus;
-import io.github.eventiful.api.event.server.*;
+import io.github.eventiful.api.PacketBridge;
+import io.github.eventiful.api.PacketStructure;
+import io.github.eventiful.api.event.server.PacketEvent;
+import io.github.eventiful.api.event.server.PacketReceiveEvent;
+import io.github.eventiful.api.event.server.PacketSendEvent;
 import io.github.eventiful.plugin.reflect.ReflectionAccess;
 import io.netty.channel.Channel;
 import org.bukkit.Bukkit;
@@ -11,7 +15,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class EventifulLightInjector extends LightInjector implements PacketStream {
+public class EventifulLightInjector extends LightInjector implements PacketBridge {
     private final EventBus eventBus;
     private final ReflectionAccess reflectionAccess;
 
@@ -26,8 +30,8 @@ public class EventifulLightInjector extends LightInjector implements PacketStrea
         if (player == null)
             return packet;
 
-        final Packet interceptedPacket = new InterceptedPacket(packet, reflectionAccess);
-        return dispatchEvent(new ServerPacketReceiveEvent(interceptedPacket, this, player)) ? packet : null;
+        final PacketStructure interceptedPacket = new InterceptedPacket(packet, reflectionAccess);
+        return dispatchEvent(new PacketReceiveEvent(interceptedPacket, this, player)) ? packet : null;
     }
 
     @Override
@@ -35,28 +39,35 @@ public class EventifulLightInjector extends LightInjector implements PacketStrea
         if (player == null)
             return packet;
 
-        final Packet interceptedPacket = new InterceptedPacket(packet, reflectionAccess);
-        return dispatchEvent(new ServerPacketSendEvent(interceptedPacket, this, player)) ? packet : null;
+        final PacketStructure interceptedPacket = new InterceptedPacket(packet, reflectionAccess);
+        return dispatchEvent(new PacketSendEvent(interceptedPacket, this, player)) ? packet : null;
     }
 
-    private boolean dispatchEvent(final ServerPacketEvent event) {
+    private boolean dispatchEvent(final PacketEvent event) {
         eventBus.dispatch(event);
         return event.isCancelled();
     }
 
     @Override
-    public void dispatch(final Packet packet) {
+    public void dispatch(final PacketStructure packet) {
+        final Object handle = packet.getHandle();
+
         for (final Player player : Bukkit.getOnlinePlayers())
-            sendPacket(player, packet.getHandle());
+            sendPacket(player, handle);
     }
 
     @Override
-    public void dispatch(final Packet packet, final Player player) {
+    public void dispatch(final PacketStructure packet, final Player player) {
         sendPacket(player, packet.getHandle());
     }
 
     @Override
-    public Packet newPacket(final String name, final Object... parameters) {
-        return new ConstructedPacket(reflectionAccess, name, parameters);
+    public PacketStructure newPacket(final String simpleClassName) {
+        return new ConstructedPacketStructure(simpleClassName);
+    }
+
+    @Override
+    public PacketStructure newPacket(final byte id) {
+        return null;
     }
 }
