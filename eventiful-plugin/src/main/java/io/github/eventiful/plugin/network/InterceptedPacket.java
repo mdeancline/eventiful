@@ -1,14 +1,14 @@
-package io.github.eventiful.plugin.io;
+package io.github.eventiful.plugin.network;
 
+import io.github.eventiful.api.PacketContainer;
 import io.github.eventiful.api.PacketDirection;
 import io.github.eventiful.api.PacketState;
-import io.github.eventiful.api.PacketStructure;
 import io.github.eventiful.plugin.reflect.ReflectionAccess;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
-class InterceptedPacket implements PacketStructure {
+class InterceptedPacket implements PacketContainer {
     @Getter
     private final Object handle;
     private final ReflectionAccess reflectionAccess;

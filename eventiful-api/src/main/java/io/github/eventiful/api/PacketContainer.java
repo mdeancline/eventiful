@@ -1,17 +1,16 @@
 package io.github.eventiful.api;
 
-import org.bukkit.Server;
 import org.jetbrains.annotations.ApiStatus;
 
 /**
- * Represents a network packet that can be sent to or received from the {@link Server}.
+ * Represents a contained Minecraft network packet that can be sent to or received from the server.
  *
  * @see PacketBridge#newPacket(String)
  * @see PacketBridge#newPacket(byte)
  * @since 1.0.0
  */
 @ApiStatus.NonExtendable
-public interface PacketStructure {
+public interface PacketContainer {
 
     /**
      * Writes a value to the specified index within the packet's data structure.
@@ -58,11 +57,10 @@ public interface PacketStructure {
     PacketState getState();
 
     /**
-     * Returns the name of this packet as defined by the Minecraft protocol. This is typically a recognizable identifier
-     * that corresponds to the packet's simple class name in the game, such as {@code PacketPlayOutChat} for chat
-     * messages.
+     * Retrieves the name of this packet as defined by its internal representation. This is typically a recognizable
+     * identifier, such as {@code PacketPlayOutChat} for chat messages.
      *
-     * @return the protocol-defined name of the packet
+     * @return the name of the packet
      */
     String getName();
 }

@@ -25,7 +25,7 @@ public interface PacketBridge {
      *
      * @param packet the packet to be sent to the players
      */
-    void dispatch(PacketStructure packet);
+    void dispatch(PacketContainer packet);
 
     /**
      * Sends a packet directly to a specific player.
@@ -35,7 +35,7 @@ public interface PacketBridge {
      * @param packet the packet to be sent to the specified player
      * @param player the player who will receive the packet
      */
-    void dispatch(PacketStructure packet, Player player);
+    void dispatch(PacketContainer packet, Player player);
 
     /**
      * Creates a new packet instance using the specified internal class name.
@@ -47,20 +47,8 @@ public interface PacketBridge {
      * This allows for compatibility across
      * different versions of the Minecraft server.
      *
-     * @param simpleClassName the simple name of the Minecraft packet class (e.g., {@code "PacketPlayOutHeldItemSlot"})
-     * @return the newly created packet structure
+     * @param simpleClassName the simple name of the Minecraft packet class (e.g., {@code PacketPlayOutHeldItemSlot})
+     * @return the newly created packet container
      */
-    PacketStructure newPacket(String simpleClassName);
-
-    /**
-     * Creates a new packet using a {@code byte} identifier.
-     * This method is useful for handling packets that are not part of the native Minecraft protocol, such as those
-     * introduced by mods.
-     * While {@link PacketBridge#newPacket(String)}
-     * is recommended for standard Minecraft packets, this method provides flexibility for custom packets.
-     *
-     * @param id the {@code byte} identifier for the custom packet
-     * @return the newly created packet structure
-     */
-    PacketStructure newPacket(byte id);
+    PacketContainer newPacket(String simpleClassName);
 }

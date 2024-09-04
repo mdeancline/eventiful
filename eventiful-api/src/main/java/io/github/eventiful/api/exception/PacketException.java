@@ -7,6 +7,10 @@ public class PacketException extends RuntimeException {
         super(message);
     }
 
+    public PacketException(final String message, final Exception cause) {
+        super(message, cause);
+    }
+
     public PacketException(final Exception cause) {
         super(cause);
     }

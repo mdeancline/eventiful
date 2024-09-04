@@ -16,5 +16,5 @@ public interface ReflectionAccess {
 
     Object getObject(int fieldIndex, Object holder);
 
-    Collection<Field> getAllDeclaringFields(Object holder);
+    Collection<Field> getAllDeclaringFields(Class<?> clazz);
 }

@@ -7,7 +7,7 @@ import io.github.eventiful.api.event.server.ServerLoadEvent;
 import io.github.eventiful.api.exception.EventRegistrationException;
 import io.github.eventiful.api.listener.decorator.IdentityEventInclusion;
 import io.github.eventiful.plugin.event.*;
-import io.github.eventiful.plugin.io.EventifulLightInjector;
+import io.github.eventiful.plugin.network.EventifulLightInjector;
 import io.github.eventiful.plugin.reflect.*;
 import io.github.eventiful.plugin.registration.EventTokenProvider;
 import io.github.eventiful.plugin.registration.SimpleEventTokenProvider;
@@ -34,6 +34,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Collection;
 
 public class EventifulImplPlugin extends JavaPlugin {
     private static final long SERVER_LOAD_FINISH_DELAY_TICKS = 1L;
@@ -117,7 +118,9 @@ public class EventifulImplPlugin extends JavaPlugin {
         metrics = new Metrics(this, METRICS_SERVICE_ID);
 
         for (final Plugin plugin : getServer().getPluginManager().getPlugins()) {
-            for (final Field field : reflectionAccess.getAllDeclaringFields(plugin)) {
+            final Collection<Field> pluginFields = reflectionAccess.getAllDeclaringFields(plugin.getClass());
+
+            for (final Field field : pluginFields) {
                 if (field.getType() == PluginLoader.class) {
                     final PluginLoader source = (PluginLoader) reflectionAccess.getObject(field, plugin);
                     reflectionAccess.setObject(field, new PluginLoaderProxy(source, listenerRegistry), plugin);

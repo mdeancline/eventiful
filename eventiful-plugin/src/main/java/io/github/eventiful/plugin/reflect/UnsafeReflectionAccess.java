@@ -31,9 +31,4 @@ public class UnsafeReflectionAccess extends AbstractReflectionAccess {
         final long fieldOffset = THE_UNSAFE.objectFieldOffset(field);
         THE_UNSAFE.putObject(holder, fieldOffset, value);
     }
-
-    @Override
-    public void setObject(final int fieldIndex, final Object value, final Object holder) {
-        setObject(holder.getClass().getDeclaredFields()[fieldIndex], value, holder);
-    }
 }

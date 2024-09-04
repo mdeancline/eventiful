@@ -1,10 +1,12 @@
-package io.github.eventiful.plugin.io;
+package io.github.eventiful.plugin.network;
 
+import io.github.eventiful.api.PacketContainer;
 import io.github.eventiful.api.PacketDirection;
 import io.github.eventiful.api.PacketState;
-import io.github.eventiful.api.PacketStructure;
-import io.github.eventiful.api.exception.EventRegistrationException;
+import io.github.eventiful.api.exception.PacketCreationException;
 import io.github.eventiful.api.exception.PacketException;
+import io.github.eventiful.plugin.reflect.ReflectionAccess;
+import io.github.eventiful.plugin.util.MinecraftVersions;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
@@ -13,43 +15,45 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.insprill.spigotutils.MinecraftVersion;
-import net.insprill.spigotutils.ServerEnvironment;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
 
 @Getter
-class ConstructedPacketStructure implements PacketStructure {
+class ConstructedPacketContainer implements PacketContainer {
     private static final Object2ObjectMap<String, Class<?>> PACKET_CLASS_CACHE = new Object2ObjectOpenHashMap<>();
     private static final Object2ObjectMap<Class<?>, Constructor<?>[]> PACKET_CONSTRUCTOR_CACHE = new Object2ObjectOpenHashMap<>();
-    private static final Class<?> NMS_BASE_PACKET_CLASS;
+    private static final String PROTOCOL_PACKAGE_NAME;
+    private static final Class<?> NMS_BASE_PACKET_INTERFACE;
 
     static {
-        try {
-            NMS_BASE_PACKET_CLASS = getNmsBasePacketClass();
-        } catch (final ClassNotFoundException e) {
-            throw new PacketException(e);
-        }
+        PROTOCOL_PACKAGE_NAME = getProtocolPackageName();
+        NMS_BASE_PACKET_INTERFACE = getPacketClass("Packet");
     }
 
-    private final Int2ObjectMap<Object> fieldData = new Int2ObjectOpenHashMap<>();
+    private final Int2ObjectMap<Object> fieldData;
     @Getter(AccessLevel.NONE)
     private final Class<?> packetClass;
     private final PacketDirection direction;
     private final PacketState state;
+    private final int maxSize;
 
-    public ConstructedPacketStructure(final String simpleClassName) {
-        try {
-            packetClass = getPacketClass(simpleClassName);
-            direction = simpleClassName.contains("PlayIn") ? PacketDirection.CLIENT : PacketDirection.SERVER;
-            state = null;
-        } catch (final ClassNotFoundException e) {
-            throw new PacketException(e);
-        }
+    public ConstructedPacketContainer(final String simpleClassName, final ReflectionAccess reflectionAccess) {
+        if (simpleClassName.equals(NMS_BASE_PACKET_INTERFACE.getSimpleName()))
+            throw new PacketCreationException("Cannot directly create a new packet from the base internal Packet interface");
+
+        packetClass = getCachedPacketClass(simpleClassName);
+        maxSize = reflectionAccess.getAllDeclaringFields(packetClass).size();
+        fieldData = new Int2ObjectOpenHashMap<>(maxSize);
+        direction = simpleClassName.contains("PlayIn") ? PacketDirection.CLIENT : PacketDirection.SERVER;
+        state = getStateFromProtocol();
     }
 
     @Override
     public void write(final int index, final Object value) {
+        if (index >= maxSize)
+            throw new PacketException("Write index is greater than field count");
+
         fieldData.put(index, value);
     }
 
@@ -63,9 +67,9 @@ class ConstructedPacketStructure implements PacketStructure {
         try {
             return newPacketHandle();
         } catch (final IllegalArgumentException e) {
-            throw new PacketException("Insufficient packet field data upon handle creation");
+            throw new PacketCreationException("Insufficient field data upon packet handle creation", e);
         } catch (final ReflectiveOperationException e) {
-            throw new PacketException(e);
+            throw new PacketCreationException(e);
         }
     }
 
@@ -75,12 +79,12 @@ class ConstructedPacketStructure implements PacketStructure {
     }
 
     private Object newPacketHandle() throws ReflectiveOperationException {
-        if (!NMS_BASE_PACKET_CLASS.isAssignableFrom(packetClass))
-            throw new EventRegistrationException("Unrecognized Packet name");
+        if (!NMS_BASE_PACKET_INTERFACE.isAssignableFrom(packetClass))
+            throw new PacketCreationException("Unrecognized Packet name");
 
         final Constructor<?> selectedConstructor = findMatchingConstructor();
         if (selectedConstructor == null)
-            throw new PacketException("Insufficient field data for packet: " + packetClass.getName());
+            throw new PacketCreationException("Insufficient field data for packet handle: " + packetClass.getName());
 
         return selectedConstructor.newInstance(collectConstructorArguments(selectedConstructor));
     }
@@ -129,26 +133,29 @@ class ConstructedPacketStructure implements PacketStructure {
         return initArgs.toArray();
     }
 
-    private static Class<?> getPacketClass(final String simpleClassName) throws ClassNotFoundException {
-        Class<?> cachedPacketClass = PACKET_CLASS_CACHE.get(simpleClassName);
-        if (cachedPacketClass == null) {
-            cachedPacketClass = Class.forName(getProtocolPackage() + simpleClassName);
-            PACKET_CLASS_CACHE.put(simpleClassName, cachedPacketClass);
+    private static Class<?> getCachedPacketClass(final String simpleClassName) {
+        return PACKET_CLASS_CACHE.computeIfAbsent(simpleClassName, key -> {
+            final Class<?> packetClass = getPacketClass(simpleClassName);
+            PACKET_CLASS_CACHE.put(simpleClassName, packetClass);
+            return packetClass;
+        });
+    }
+
+    private static Class<?> getPacketClass(final String simpleClassName) {
+        try {
+            return Class.forName(getProtocolPackageName() + simpleClassName);
+        } catch (final ClassNotFoundException e) {
+            throw new PacketException(e);
         }
-
-        return cachedPacketClass;
     }
 
-    private static Class<?> getNmsBasePacketClass() throws ClassNotFoundException {
-        final String protocolPackage = getProtocolPackage();
-        final boolean isPackageRelocated = MinecraftVersion.isAtLeast(MinecraftVersion.v1_20_5) && ServerEnvironment.isPaper();
-        final String packageName = protocolPackage + (isPackageRelocated
-                ? protocolPackage
-                : MinecraftVersion.getCurrentVersion().getDisplayName());
-        return Class.forName(packageName + "PacketStructure");
+    private PacketState getStateFromProtocol() {
+        return null;
     }
 
-    private static String getProtocolPackage() {
-        return "";
+    private static String getProtocolPackageName() {
+        return MinecraftVersion.isAtLeast(MinecraftVersion.v1_17_0)
+                ? "net.minecraft.network.protocol"
+                : "net.minecraft.server." + MinecraftVersions.getCraftBukkitVersion();
     }
 }

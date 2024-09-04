@@ -10,9 +10,9 @@ import java.util.List;
 
 abstract class AbstractReflectionAccess implements ReflectionAccess {
     @Override
-    public Collection<Field> getAllDeclaringFields(final Object holder) {
+    public Collection<Field> getAllDeclaringFields(final Class<?> clazz) {
         final List<Field> fields = new LinkedList<>();
-        Class<?> superclass = holder.getClass();
+        Class<?> superclass = clazz;
 
         while (superclass != null) {
             fields.addAll(Arrays.asList(superclass.getDeclaredFields()));
@@ -40,5 +40,15 @@ abstract class AbstractReflectionAccess implements ReflectionAccess {
         } catch (final IllegalAccessException e) {
             throw new EventException(e);
         }
+    }
+
+    @Override
+    public Object getObject(final int fieldIndex, final Object holder) {
+        return getAllDeclaringFields(holder.getClass()).toArray()[fieldIndex];
+    }
+
+    @Override
+    public void setObject(final int fieldIndex, final Object value, final Object holder) {
+        setObject(holder.getClass().getDeclaredFields()[fieldIndex], value, holder);
     }
 }

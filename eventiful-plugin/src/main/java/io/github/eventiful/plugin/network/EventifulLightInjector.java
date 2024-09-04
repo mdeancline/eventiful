@@ -1,9 +1,9 @@
-package io.github.eventiful.plugin.io;
+package io.github.eventiful.plugin.network;
 
 import com.fren_gor.lightInjector.LightInjector;
 import io.github.eventiful.api.EventBus;
 import io.github.eventiful.api.PacketBridge;
-import io.github.eventiful.api.PacketStructure;
+import io.github.eventiful.api.PacketContainer;
 import io.github.eventiful.api.event.server.PacketEvent;
 import io.github.eventiful.api.event.server.PacketReceiveEvent;
 import io.github.eventiful.api.event.server.PacketSendEvent;
@@ -30,7 +30,7 @@ public class EventifulLightInjector extends LightInjector implements PacketBridg
         if (player == null)
             return packet;
 
-        final PacketStructure interceptedPacket = new InterceptedPacket(packet, reflectionAccess);
+        final PacketContainer interceptedPacket = new InterceptedPacket(packet, reflectionAccess);
         return dispatchEvent(new PacketReceiveEvent(interceptedPacket, this, player)) ? packet : null;
     }
 
@@ -39,7 +39,7 @@ public class EventifulLightInjector extends LightInjector implements PacketBridg
         if (player == null)
             return packet;
 
-        final PacketStructure interceptedPacket = new InterceptedPacket(packet, reflectionAccess);
+        final PacketContainer interceptedPacket = new InterceptedPacket(packet, reflectionAccess);
         return dispatchEvent(new PacketSendEvent(interceptedPacket, this, player)) ? packet : null;
     }
 
@@ -49,7 +49,7 @@ public class EventifulLightInjector extends LightInjector implements PacketBridg
     }
 
     @Override
-    public void dispatch(final PacketStructure packet) {
+    public void dispatch(final PacketContainer packet) {
         final Object handle = packet.getHandle();
 
         for (final Player player : Bukkit.getOnlinePlayers())
@@ -57,17 +57,12 @@ public class EventifulLightInjector extends LightInjector implements PacketBridg
     }
 
     @Override
-    public void dispatch(final PacketStructure packet, final Player player) {
+    public void dispatch(final PacketContainer packet, final Player player) {
         sendPacket(player, packet.getHandle());
     }
 
     @Override
-    public PacketStructure newPacket(final String simpleClassName) {
-        return new ConstructedPacketStructure(simpleClassName);
-    }
-
-    @Override
-    public PacketStructure newPacket(final byte id) {
-        return null;
+    public PacketContainer newPacket(final String simpleClassName) {
+        return new ConstructedPacketContainer(simpleClassName, reflectionAccess);
     }
 }

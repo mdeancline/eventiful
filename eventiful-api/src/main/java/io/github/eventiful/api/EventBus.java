@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Responsible for the registration and dispatching of events.
  *
- * @apiNote To obtain a valid {@code PacketBridge} instance, you must load the service using the
+ * @apiNote To obtain a valid {@code EventBus} instance, you must load the service using the
  * {@link ServicesManager}.
  * <pre>
  * {@code

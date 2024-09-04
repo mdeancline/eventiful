@@ -1,7 +1,7 @@
 package io.github.eventiful.api.event.server;
 
 import io.github.eventiful.api.PacketBridge;
-import io.github.eventiful.api.PacketStructure;
+import io.github.eventiful.api.PacketContainer;
 import io.github.eventiful.api.event.NonOperableHandlerList;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -16,12 +16,12 @@ import org.jetbrains.annotations.NotNull;
  * @since 1.0.0
  */
 public abstract class PacketEvent extends ServerEvent implements Cancellable {
-    private final PacketStructure packet;
+    private final PacketContainer packet;
     private final PacketBridge bridge;
     private final Player player;
     private boolean cancel;
 
-    protected PacketEvent(@NotNull final PacketStructure packet, @NotNull final PacketBridge bridge, @NotNull final Player player) {
+    protected PacketEvent(@NotNull final PacketContainer packet, @NotNull final PacketBridge bridge, @NotNull final Player player) {
         super(true);
         this.packet = packet;
         this.bridge = bridge;
@@ -46,11 +46,11 @@ public abstract class PacketEvent extends ServerEvent implements Cancellable {
     }
 
     /**
-     * Retrieves the intercepted {@link PacketStructure}.
+     * Retrieves the intercepted {@link PacketContainer}.
      *
-     * @return the intercepted {@link PacketStructure}.
+     * @return the intercepted {@link PacketContainer}.
      */
-    public final PacketStructure getPacket() {
+    public final PacketContainer getPacket() {
         return packet;
     }
 
