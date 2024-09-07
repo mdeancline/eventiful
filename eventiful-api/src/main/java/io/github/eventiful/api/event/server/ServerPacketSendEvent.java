@@ -1,4 +1,3 @@
-
 package io.github.eventiful.api.event.server;
 
 import com.comphenix.protocol.PacketType;

@@ -1,4 +1,3 @@
-
 package io.github.eventiful.plugin.hook;
 
 public interface PluginHook {

@@ -1,4 +1,3 @@
-
 package io.github.eventiful.plugin.hook;
 
 import io.github.eventiful.plugin.EventLogger;

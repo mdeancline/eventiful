@@ -1,4 +1,3 @@
-
 package io.github.eventiful.plugin.hook.model;
 
 import com.comphenix.protocol.ProtocolLibrary;
