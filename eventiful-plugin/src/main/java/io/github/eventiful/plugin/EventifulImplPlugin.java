@@ -133,7 +133,7 @@ public class EventifulImplPlugin extends JavaPlugin {
     }
 
     @Override
-    public void onDisable () {
+    public void onDisable() {
         metrics.shutdown();
         metrics = null;
     }
