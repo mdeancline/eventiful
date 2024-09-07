@@ -106,20 +106,6 @@
         </dependency>
 
         <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.1.79.Final</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.frengor</groupId>
-            <artifactId>lightinjector</artifactId>
-            <version>${lightinjector.version}</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
             <groupId>net.insprill</groupId>
             <artifactId>spigot-utils</artifactId>
             <version>${spigotutils.version}</version>
