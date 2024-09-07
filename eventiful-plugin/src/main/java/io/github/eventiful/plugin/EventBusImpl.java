@@ -94,7 +94,7 @@ class EventBusImpl implements ServerEventBus {
         private final EventTokenProvider tokenProvider;
         private int size;
 
-        private Channel(final EventTokenProvider tokenProvider) {
+        public Channel(final EventTokenProvider tokenProvider) {
             this.tokenProvider = tokenProvider;
 
             for (final EventPriority value : EventPriority.values())

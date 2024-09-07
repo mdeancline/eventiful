@@ -1,6 +1,7 @@
 package io.github.eventiful.plugin.registration;
 
 import io.github.eventiful.api.listener.EventListener;
+import lombok.AllArgsConstructor;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventException;
 import org.bukkit.event.EventPriority;
@@ -11,12 +12,9 @@ public class RegisteredListenerRegistration<T extends Event> extends AbstractEve
         super(type, new RegisteredListenerAdapter<>(listener), listener.getPlugin());
     }
 
+    @AllArgsConstructor
     private static class RegisteredListenerAdapter<T extends Event> implements EventListener<T> {
         private final RegisteredListener listener;
-
-        private RegisteredListenerAdapter(final RegisteredListener listener) {
-            this.listener = listener;
-        }
 
         @Override
         public void handle(final T event) {
