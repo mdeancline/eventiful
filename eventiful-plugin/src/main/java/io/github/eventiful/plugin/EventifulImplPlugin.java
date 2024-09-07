@@ -1,4 +1,3 @@
-
 package io.github.eventiful.plugin;
 
 import io.github.classgraph.ClassGraph;
