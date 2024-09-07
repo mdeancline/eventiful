@@ -2,11 +2,10 @@ package io.github.eventiful.plugin.hook.model;
 
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
 import io.github.eventiful.api.EventBus;
-import io.github.eventiful.api.event.server.ServerPacketEvent;
-import io.github.eventiful.api.event.server.ServerPacketReceiveEvent;
-import io.github.eventiful.api.event.server.ServerPacketSendEvent;
+import io.github.eventiful.api.event.server.PacketEvent;
+import io.github.eventiful.api.event.server.PacketReceiveEvent;
+import io.github.eventiful.api.event.server.PacketSendEvent;
 import io.github.eventiful.plugin.hook.PluginHook;
 import lombok.AllArgsConstructor;
 import org.bukkit.plugin.Plugin;
@@ -20,16 +19,16 @@ public class ProtocolLibHook implements PluginHook {
     public void setup() {
         ProtocolLibrary.getProtocolManager().addPacketListener(new PacketAdapter(plugin) {
             @Override
-            public void onPacketReceiving(final PacketEvent event) {
-                handle(event, new ServerPacketReceiveEvent(event.getPacket(), event.getPacketType(), event.getPlayer()));
+            public void onPacketReceiving(final com.comphenix.protocol.events.PacketEvent event) {
+                handle(event, new PacketReceiveEvent(event.getPacket(), event.getPacketType(), event.getPlayer()));
             }
 
             @Override
-            public void onPacketSending(final PacketEvent event) {
-                handle(event, new ServerPacketSendEvent(event.getPacket(), event.getPacketType(), event.getPlayer()));
+            public void onPacketSending(final com.comphenix.protocol.events.PacketEvent event) {
+                handle(event, new PacketSendEvent(event.getPacket(), event.getPacketType(), event.getPlayer()));
             }
 
-            private void handle(final PacketEvent event, final ServerPacketEvent serverEvent) {
+            private void handle(final com.comphenix.protocol.events.PacketEvent event, final PacketEvent serverEvent) {
                 eventBus.dispatch(serverEvent);
                 event.setCancelled(serverEvent.isCancelled());
             }

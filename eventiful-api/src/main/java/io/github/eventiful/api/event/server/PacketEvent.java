@@ -18,13 +18,13 @@ import org.jetbrains.annotations.NotNull;
  * type to be dispatched.
  * @since 1.0.0
  */
-public abstract class ServerPacketEvent extends ServerEvent implements Cancellable {
+public abstract class PacketEvent extends ServerEvent implements Cancellable {
     private final PacketContainer packet;
     private final PacketType type;
     private final Player player;
     private boolean cancel;
 
-    protected ServerPacketEvent(@NotNull final PacketContainer packet, @NotNull final PacketType type, @NotNull final Player player) {
+    protected PacketEvent(@NotNull final PacketContainer packet, @NotNull final PacketType type, @NotNull final Player player) {
         this.packet = packet;
         this.type = type;
         this.player = player;

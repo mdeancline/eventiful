@@ -8,14 +8,14 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Called when the {@link Server} receives a packet from a {@link Player}.
+ * Called when the {@link Server} sends a packet to a {@link Player}.
  *
  * @since 1.0.0
  */
-public class ServerPacketReceiveEvent extends ServerPacketEvent {
+public class PacketSendEvent extends PacketEvent {
 
     @ApiStatus.Internal
-    public ServerPacketReceiveEvent(@NotNull final PacketContainer packet, @NotNull final PacketType type, @NotNull final Player player) {
+    public PacketSendEvent(@NotNull final PacketContainer packet, @NotNull final PacketType type, @NotNull final Player player) {
         super(packet, type, player);
     }
 }
