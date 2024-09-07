@@ -41,14 +41,4 @@ abstract class AbstractReflectionAccess implements ReflectionAccess {
             throw new EventException(e);
         }
     }
-
-    @Override
-    public Object getObject(final int fieldIndex, final Object holder) {
-        return getAllDeclaringFields(holder.getClass()).toArray()[fieldIndex];
-    }
-
-    @Override
-    public void setObject(final int fieldIndex, final Object value, final Object holder) {
-        setObject(holder.getClass().getDeclaredFields()[fieldIndex], value, holder);
-    }
 }

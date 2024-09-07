@@ -169,8 +169,8 @@
         </repository>
 
         <repository>
-            <id>fren_gor</id>
-            <url>https://nexus.frengor.com/repository/public/</url>
+            <id>dmulloy2-repo</id>
+            <url>https://repo.dmulloy2.net/repository/public/</url>
         </repository>
     </repositories>
 
@@ -196,11 +196,10 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- authlib version for Minecraft 1.8+ -->
         <dependency>
-            <groupId>com.mojang</groupId>
-            <artifactId>authlib</artifactId>
-            <version>1.5.25</version>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib</artifactId>
+            <version>4.8.0</version>
             <scope>provided</scope>
         </dependency>
 

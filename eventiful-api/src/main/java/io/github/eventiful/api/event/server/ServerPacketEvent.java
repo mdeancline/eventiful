@@ -1,8 +1,10 @@
+
 package io.github.eventiful.api.event.server;
 
-import io.github.eventiful.api.PacketBridge;
-import io.github.eventiful.api.PacketContainer;
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.events.PacketContainer;
 import io.github.eventiful.api.event.NonOperableHandlerList;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -11,20 +13,21 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a Minecraft packet event involving the server and a {@link Player}.
+ * Represents a Minecraft packet event involving the {@link Server} and a {@link Player}.
  *
+ * @apiNote <a href="https://www.spigotmc.org/resources/protocollib.1997/">ProtocolLib</a> is required for this event
+ * type to be dispatched.
  * @since 1.0.0
  */
-public abstract class PacketEvent extends ServerEvent implements Cancellable {
+public abstract class ServerPacketEvent extends ServerEvent implements Cancellable {
     private final PacketContainer packet;
-    private final PacketBridge bridge;
+    private final PacketType type;
     private final Player player;
     private boolean cancel;
 
-    protected PacketEvent(@NotNull final PacketContainer packet, @NotNull final PacketBridge bridge, @NotNull final Player player) {
-        super(true);
+    protected ServerPacketEvent(@NotNull final PacketContainer packet, @NotNull final PacketType type, @NotNull final Player player) {
         this.packet = packet;
-        this.bridge = bridge;
+        this.type = type;
         this.player = player;
     }
 
@@ -46,21 +49,21 @@ public abstract class PacketEvent extends ServerEvent implements Cancellable {
     }
 
     /**
-     * Retrieves the intercepted {@link PacketContainer}.
+     * Retrieves the {@link PacketContainer} representing the packet being intercepted.
      *
-     * @return the intercepted {@link PacketContainer}.
+     * @return The {@link PacketContainer}.
      */
     public final PacketContainer getPacket() {
         return packet;
     }
 
     /**
-     * Retrieves the {@link PacketBridge} associated with this event.
+     * Retrieves the {@link PacketType} of the packet being intercepted.
      *
-     * @return the {@link PacketBridge}.
+     * @return The {@link PacketType}.
      */
-    public final PacketBridge getBridge() {
-        return bridge;
+    public final PacketType getType() {
+        return type;
     }
 
     /**

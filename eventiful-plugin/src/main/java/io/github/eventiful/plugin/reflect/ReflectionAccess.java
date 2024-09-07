@@ -8,13 +8,9 @@ public interface ReflectionAccess {
 
     void setObject(Field field, Object value, Object holder);
 
-    void setObject(int fieldIndex, Object value, Object holder);
-
     Object getObject(Field field);
 
     Object getObject(Field field, Object holder);
-
-    Object getObject(int fieldIndex, Object holder);
 
     Collection<Field> getAllDeclaringFields(Class<?> clazz);
 }
