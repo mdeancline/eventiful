@@ -75,32 +75,41 @@ public class MyPlugin extends JavaPlugin {
 ## Registering an `EventListener`
 To listen to specific events, you need to register an `EventListener` with the EventBus. The `EventListener` interface allows you to handle events without needing to use the [`EventHandler`](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/EventHandler.html) annotation.
 ```java
-public class PlayerJoinListener implements EventListener<PlayerJoinEvent> {
+public class PlayerMoveListener implements EventListener<PlayerMoveEvent> {
     @Override
-    public void handle(PlayerJoinEvent event) {
-        event.getPlayer().sendMessage("Welcome to the server!");
+    public void handle(PlayerMoveEvent event) {
+        event.getPlayer().sendMessage("You moved!");
     }
 }
 ```
 Now, register this listener in your plugin:
 ```java
 EventBus eventBus = getEventBus(); // Or retrieve it using ServicesManager
-PlayerJoinListener listener = new PlayerJoinListener();
-eventBus.register(PlayerJoinEvent.class, listener);
+PlayerMoveListener listener = new PlayerMoveListener();
+eventBus.register(PlayerMoveEvent.class, listener);
 ```
-
+## Registering an `EventListener`: `Cancellable` Events
+Eventiful supports [`Cancellable`](https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/event/Cancellable.html) events. When working with cancellable events, you can extend the `CancellableEventListener` class to simplify handling:
+```java
+public class PlayerMoveListener extends CancellableEventListener<PlayerMoveEvent> {
+    @Override
+    protected void handleCancellable(PlayerMoveEvent event) {
+        event.getPlayer().sendMessage("You moved!");
+    }
+}
+```
+If you wish to not have the `CancellableEventListener` ignore cancelled events, override the `isIgnoringCancelled` method to return `false`.
 ## Unregistering an `EventListener`
 To stop listening to events, you can unregister the `EventListener` using the `EventToken` returned during registration.
 ```java
-
-EventToken token = eventBus.register(PlayerJoinEvent.class, listener);
+EventToken token = eventBus.register(PlayerMoveEvent.class, listener);
 // Later, when you want to unregister
 eventBus.unregister(token);
 ```
 ## Dispatching Events
 To trigger events programmatically, use the `dispatch` method on the `EventBus`. This will invoke all registered listeners for the given event.
 ```java
-PlayerJoinEvent event = new PlayerJoinEvent(player, "Welcome message");
+PlayerMoveEvent event = new PlayerMoveEvent(player, from, to);
 eventBus.dispatch(event);
 ```
 ## Notes
